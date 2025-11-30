@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
+<form method="POST">
+    {% csrf_token %}
+    <div class="wrapper">
+        <form method="POST">
+            <h1>Login</h1>
+            {{form|crispy}}
 
+            <button type="submit" class="btn">Login</button>
+            <div class="register-link">
+                <p>Akkauntingiz yo'qmi: <a href="{% url 'sign' %}">Register</a></p>
+
+            </div>
+        </form>
+    </div>
+</form>
 </body>
 </html>
