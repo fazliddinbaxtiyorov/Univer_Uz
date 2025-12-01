@@ -1,0 +1,11 @@
+<h2>IELTS Listening Test</h2>
+
+<audio controls>
+    <source src="{{ test.audio.url }}" type="audio/mpeg">
+</audio>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>

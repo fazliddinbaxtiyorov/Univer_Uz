@@ -49,3 +49,11 @@ class Students(models.Model):
     ism = models.CharField(max_length=50)
     raqam = models.CharField(max_length=50, default='+998')
     hudud = models.CharField(max_length=120)
+
+
+class IELTS_writing(models.Model):
+    text = models.TextField()
+
+
+class IELTS_listening(models.Model):
+    audio = models.FileField()
