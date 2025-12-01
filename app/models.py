@@ -23,5 +23,5 @@ class DTM_Practise(models.Model):
 
 class Students(models.Model):
     ism = models.CharField(max_length=50)
-    raqam = models.IntegerField()
+    raqam = models.CharField(max_length=50, default='+998')
     hudud = models.CharField(max_length=120)
