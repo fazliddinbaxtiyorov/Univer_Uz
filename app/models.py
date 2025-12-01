@@ -9,14 +9,11 @@ class Fanlar(models.Model):
     uchinchi_fan = models.CharField(max_length=120)
     tortinchi_fan = models.CharField(max_length=120)
     beshinchichi_fan = models.CharField(max_length=120)
-    oltinchi_fan = models.CharField(max_length=120)
-    yettinchi_fan = models.CharField(max_length=120)
-    sakkizinchi_fan = models.CharField(max_length=120)
 
 
 class DTM_Practise(models.Model):
     savol = models.TextField()
-    variant = models.CharField()
+    variant = models.CharField(max_length=1)
     togri_javob = models.CharField(max_length=1)
     ball = models.IntegerField()
     reyting = models.CharField(max_length=10)
