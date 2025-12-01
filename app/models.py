@@ -13,3 +13,11 @@ class Fanlar(models.Model):
     yettinchi_fan = models.CharField(max_length=120)
     sakkizinchi_fan = models.CharField(max_length=120)
 
+
+class DTM_Practise(models.Model):
+    savol = models.TextField()
+    variant = models.CharField()
+    togri_javob = models.CharField(max_length=1)
+    ball = models.IntegerField()
+
+
