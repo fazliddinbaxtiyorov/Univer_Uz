@@ -21,3 +21,7 @@ class DTM_Practise(models.Model):
     ball = models.IntegerField()
 
 
+class Students(models.Model):
+    ism = models.CharField(max_length=50)
+    raqam = models.IntegerField()
+    hudud = models.CharField(max_length=120)
