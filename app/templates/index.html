@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Fanlar Formasi</title>
 </head>
 <body>
+
+<h2>Fanlar tanlash</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Saqlash</button>
+</form>
+
+
+<script>
+// 🔥 Birinchi fan o'zgarganda – ikkinchi fandagi shu variant yashiriladi
+function filterSecond() {
+    let birinchi = document.getElementById("id_birinchi_fan").value;
+    let ikkinchi = document.getElementById("id_ikkinchi_fan");
+
+    for (let option of ikkinchi.options) {
+        option.hidden = (option.value === birinchi);
+    }
+
+    // Agar ikkinchi_fan hozir tanlangan qiymat ham yashirilgan bo'lsa – defaultga qaytar
+    if (ikkinchi.value === birinchi) {
+        ikkinchi.selectedIndex = 0;
+    }
+}
+
+// Form yuklanganda ham filtr ishlasin
+window.onload = filterSecond;
+
+// Birinchi fandagi o‘zgarishni kuzatish
+document.getElementById("id_birinchi_fan").addEventListener("change", filterSecond);
+</script>
 
 </body>
 </html>
