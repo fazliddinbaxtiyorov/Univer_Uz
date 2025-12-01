@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 django = "==4.2"
+crispy-bootstrap5 = "*"
 
 [dev-packages]
 
