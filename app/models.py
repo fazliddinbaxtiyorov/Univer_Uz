@@ -19,9 +19,12 @@ class DTM_Practise(models.Model):
     variant = models.CharField()
     togri_javob = models.CharField(max_length=1)
     ball = models.IntegerField()
+    reyting = models.CharField(max_length=10)
 
 
 class Students(models.Model):
     ism = models.CharField(max_length=50)
     raqam = models.CharField(max_length=50, default='+998')
     hudud = models.CharField(max_length=120)
+
+
