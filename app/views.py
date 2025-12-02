@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from .forms import FanlarForm, IELTSReadingForm
-from .models import IELTS_Reading
+from django.shortcuts import render, get_object_or_404, redirect
+from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm
+from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion
+
 
 # Create your views here.
 def fanlar_view(request):
@@ -10,33 +11,96 @@ def fanlar_view(request):
     return render(request, "index.html", {"form": form})
 
 
-def reading_test(request):
-    if request.method == 'POST':
-        form = IELTSReadingForm(request.POST)
+def ielts_reading_view(request):
+    questions = IELTS_Reading.objects.all()[:10]  # masalan 10 ta savol
+
+    if request.method == "POST":
+        form = IELTSReadingForm(request.POST, questions=questions)
         if form.is_valid():
-            # 10 ta A/B/C/D
-            mc_data = {str(i): form.cleaned_data[f'mc_answer_{i}'] for i in range(1,11)}
-            # 10 ta text
-            text_data = {str(i): form.cleaned_data[f'text_answer_{i}'] for i in range(11,21)}
-            # 10 ta heading
-            heading_data = {str(i): form.cleaned_data[f'heading_{i}'] for i in range(21,31)}
+            total = 0
+            results = []
 
-            IELTS_Reading.objects.create(
-                multiple_choice_answers=mc_data,
-                text_answers=text_data,
-                headings=heading_data
-            )
+            for q in questions:
+                user_answer = form.cleaned_data.get(f'q_{q.id}')
+                correct = q.togri_variant
+
+                if user_answer == correct:
+                    total += 2  # har to‘g‘ri javob = 2 ball
+
+                results.append({
+                    "savol": q.savol,
+                    "user_answer": user_answer,
+                    "correct": correct
+                })
+
+            return render(request, "ielts_reading_result.html", {"results": results, "total": total})
+
     else:
-        form = IELTSReadingForm()
-    return render(request, 'reading_test.html', {'form': form})
+        form = IELTSReadingForm(questions=questions)
+
+    return render(request, "reading_test.html", {"form": form})
 
 
-def listening_test(request):
-    if request.method == 'POST':
-        form = IELTSReadingForm(request.POST)
+# ===== Listening =====
+def ielts_listening_view(request):
+    questions = IELTSListeningQuestion.objects.all()[:20]  # 20 ta savol
+
+    if request.method == "POST":
+        form = IELTSListeningForm(request.POST, questions=questions)
         if form.is_valid():
-            data = {str(i): form.cleaned_data[f'answer_{i}'] for i in range(1, 31)}
-            IELTS_Reading.objects.create(answers=data)
+            total = 0
+            results = []
+
+            for q in questions:
+                user_answer = form.cleaned_data.get(f'q_{q.id}')
+                correct = q.togri_variant
+                if user_answer == correct:
+                    total += 2
+
+                results.append({
+                    "savol": q.savol,
+                    "user_answer": user_answer,
+                    "correct": correct
+                })
+
+            return render(request, "ielts_listening_result.html", {"results": results, "total": total})
     else:
-        form = IELTSReadingForm()
-    return render(request, 'listening_test.html', {'form': form})
+        form = IELTSListeningForm(questions=questions)
+
+    return render(request, "listening_test.html", {"form": form, "questions": questions})
+
+
+def fan_tanlash(request):
+    if request.method == "POST":
+        form = FanTanlashForm(request.POST)
+        if form.is_valid():
+            fan = form.cleaned_data["fan"]
+            return redirect("test_boshlash", fan=fan)
+    else:
+        form = FanTanlashForm()
+
+    return render(request, "fan_tanlash.html", {"form": form})
+
+
+def test_boshlash(request, fan):
+    questions = Milliy_Sertifikat.objects.filter(fan=fan)[:50]
+
+    if request.method == "POST":
+        form = TestForm(request.POST, questions=questions)
+
+        if form.is_valid():
+            total = 0
+
+            for q in questions:
+                user_answer = form.cleaned_data.get(f"q_{q.id}")
+
+                if user_answer == q.togri_variant:
+                    total += 2
+
+            return render(request, "test_natija.html", {"ball": total})
+
+    else:
+        form = TestForm(questions=questions)
+
+    return render(request, "test_milliy.html", {"form": form})
+

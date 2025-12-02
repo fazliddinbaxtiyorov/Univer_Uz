@@ -1,0 +1,12 @@
+<h2>Natija: IELTS Reading</h2>
+<p>Jami ball: {{ total }}</p>
+
+<ul>
+{% for r in results %}
+    <li>
+        Savol: {{ r.savol }} <br>
+        Sizning javobingiz: {{ r.user_answer }} <br>
+        To‘g‘ri javob: {{ r.correct }}
+    </li>
+{% endfor %}
+</ul>

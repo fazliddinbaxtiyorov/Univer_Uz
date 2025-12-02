@@ -55,17 +55,49 @@ class IELTS_writing(models.Model):
     text = models.TextField()
 
 
-class IELTS_listening(models.Model):
-    answers = models.JSONField(default=dict)
-
-    def __str__(self):
-        return f"IELTS Listening #{self.id}"
-
-
 class IELTS_Reading(models.Model):
-    multiple_choice_answers = models.JSONField(default=dict)
-    text_answers = models.JSONField(default=dict)
-    headings = models.JSONField(default=dict)
+    savol = models.TextField(default=0)  # Masalan: "2 + 1 = ?"
+    variantlar = models.TextField(default=0)  # Masalan: "A 3 B 4 C 5 D 6"
+    togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
 
     def __str__(self):
-        return f"IELTS Reading #{self.id}"
+        return self.savol
+
+
+class IELTSListeningQuestion(models.Model):
+    savol = models.TextField()  # Savol matni
+    variantlar = models.TextField()  # Masalan: "A 3 B 4 C 5 D 6"
+    togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
+    audio = models.FileField(upload_to='listening_audio/', blank=True, null=True)  # audio fayl
+
+    def __str__(self):
+        return self.savol
+
+
+class Milliy_Sertifikat(models.Model):
+    Fan_CHOICES = (
+        ('Matematika', 'Matematika'),
+        ('Ona Tili', 'Ona Tili'),
+        ('Tarix', 'Tarix'),
+        ('Kimyo', 'Kimyo'),
+        ('Biologiya', 'Biologiya'),
+        ('Fizika', 'Fizika'),
+        ('Ingliz Tili', 'Ingliz Tili'),
+    )
+
+    VARIANT_CHOICES = (
+        ('A', 'A'),
+        ('B', 'B'),
+        ('C', 'C'),
+        ('D', 'D'),
+    )
+
+    fan = models.CharField(max_length=20, choices=Fan_CHOICES)
+    savol = models.TextField()
+
+    togri_javob = models.TextField()
+
+    togri_variant = models.CharField(max_length=1, choices=VARIANT_CHOICES)
+
+    def __str__(self):
+        return f"{self.fan} | {self.savol[:30]}"

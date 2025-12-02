@@ -1,5 +1,26 @@
-<form method="post">
+<h2>IELTS Listening Test</h2>
+<form method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% for field in form %}
+        <div style="margin-bottom:20px;">
+            <p>{{ field.label }}</p>
+
+            {% comment %}Audio faylni chiqarish{% endcomment %}
+            {% with question_id=field.name|slice:"2:" %}
+                {% for q in questions %}
+                    {% if q.id|stringformat:"s" == question_id %}
+                        {% if q.audio %}
+                            <audio controls>
+                                <source src="{{ q.audio.url }}" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+
+            {{ field }}
+        </div>
+    {% endfor %}
     <button type="submit">Submit</button>
 </form>

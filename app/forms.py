@@ -1,5 +1,5 @@
 from django import forms
-from .models import Students, DTM_Practise, Fanlar, IELTS_Reading, IELTS_listening
+from .models import Students, DTM_Practise, Fanlar, IELTS_Reading, IELTSListeningQuestion, Milliy_Sertifikat
 
 
 class DTMForm(forms.ModelForm):
@@ -29,50 +29,66 @@ class StudentsForm(forms.ModelForm):
         fields = '__all__'
 
 
-class IELTSReadingForm(forms.ModelForm):
-    class Meta:
-        model = IELTS_Reading
-        fields = []
-
-    def __init__(self, *args, **kwargs):
+# ===== IELTS Reading =====
+class IELTSReadingForm(forms.Form):
+    def __init__(self, *args, questions=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        for i in range(1, 11):
-            self.fields[f'mc_answer_{i}'] = forms.ChoiceField(
-                label=f'Savol {i} (A/B/C/D)',
-                choices=[('A','A'),('B','B'),('C','C'),('D','D')],
-                widget=forms.RadioSelect,
-                required=True
+        for q in questions:
+            items = q.variantlar.split()  # "A 3 B 4 C 5 D 6" → ['A','3','B','4','C','5','D','6']
+            choices = [(items[i], f"{items[i]} {items[i+1]}") for i in range(0, len(items), 2)]
+
+            self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                label=q.savol,
+                choices=choices,
+                widget=forms.RadioSelect
             )
 
 
-        for i in range(11, 21):
-            self.fields[f'text_answer_{i}'] = forms.CharField(
-                label=f'Savol {i} (Text)',
-                widget=forms.TextInput(attrs={'class':'form-control'}),
-                required=True
-            )
+# ===== IELTS Listening =====
+from django import forms
 
-
-        for i in range(21, 31):
-            self.fields[f'heading_{i}'] = forms.CharField(
-                label=f'Sarlavha {i-20}',
-                widget=forms.TextInput(attrs={'class':'form-control'}),
-                required=True
-            )
-
-
-class IELTSListeningForm(forms.ModelForm):
-    class Meta:
-        model = IELTS_listening
-        fields = []
-
-    def __init__(self, *args, **kwargs):
+class IELTSListeningForm(forms.Form):
+    def __init__(self, *args, questions=None, **kwargs):
         super().__init__(*args, **kwargs)
-        for i in range(1, 41):
-            self.fields[f'answer_{i}'] = forms.ChoiceField(
-                label=f'Savol {i}',
-                choices=[('A','A'),('B','B'),('C','C'),('D','D')],
-                widget=forms.RadioSelect,
-                required=True
+
+        for q in questions:
+            items = q.variantlar.split()  # "A 3 B 4 C 5 D 6" → ['A','3','B','4','C','5','D','6']
+            choices = []
+
+            # Xatolikdan saqlanish: agar noto‘liq yozilgan bo‘lsa
+            for i in range(0, len(items), 2):
+                if i+1 < len(items):
+                    choices.append((items[i], f"{items[i]} {items[i+1]}"))
+
+            self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                label=q.savol,
+                choices=choices,
+                widget=forms.RadioSelect
             )
+
+
+
+class TestForm(forms.Form):
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for q in questions:
+            # q.togri_javob = "A 3 B 4 C 5 D 6"
+            # Split qilib variantlar va matnli javoblar hosil qilamiz
+            items = q.togri_javob.split()  # ['A','3','B','4','C','5','D','6']
+
+            choices = [
+                (items[i], f"{items[i]} {items[i+1]}")  # ('A','A 3')
+                for i in range(0, len(items), 2)
+            ]
+
+            self.fields[f"q_{q.id}"] = forms.ChoiceField(
+                label=q.savol,
+                choices=choices,
+                widget=forms.RadioSelect
+            )
+
+
+class FanTanlashForm(forms.Form):
+    fan = forms.ChoiceField(choices=Milliy_Sertifikat.Fan_CHOICES)
