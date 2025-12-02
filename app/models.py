@@ -56,4 +56,16 @@ class IELTS_writing(models.Model):
 
 
 class IELTS_listening(models.Model):
-    audio = models.FileField()
+    answers = models.JSONField(default=dict)
+
+    def __str__(self):
+        return f"IELTS Listening #{self.id}"
+
+
+class IELTS_Reading(models.Model):
+    multiple_choice_answers = models.JSONField(default=dict)
+    text_answers = models.JSONField(default=dict)
+    headings = models.JSONField(default=dict)
+
+    def __str__(self):
+        return f"IELTS Reading #{self.id}"
