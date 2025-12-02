@@ -46,8 +46,6 @@ class IELTSReadingForm(forms.Form):
 
 
 # ===== IELTS Listening =====
-from django import forms
-
 class IELTSListeningForm(forms.Form):
     def __init__(self, *args, questions=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -66,7 +64,6 @@ class IELTSListeningForm(forms.Form):
                 choices=choices,
                 widget=forms.RadioSelect
             )
-
 
 
 class TestForm(forms.Form):
