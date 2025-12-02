@@ -5,39 +5,231 @@
     <title>Fanlar Formasi</title>
 </head>
 <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="Univer.uz" content="width=device-width, initial-scale=1.0">
+    <title>Univer.uz – Study & Tests</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="Untitled-1.css">
+</head>
+<body>
 
-<h2>Fanlar tanlash</h2>
+    <!-- HEADER -->
+    <header>
+        <div class="logo">Univer<span>.uz</span></div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Flashcards</a>
+            <a href="{% url 'fan_tanlash' %}">Tests</a>
+            <a href="{% url 'login' %}">Login</a>
+        </nav>
+    </header>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>Learn. Test. Succeed.</h1>
+        <p>The best study platform inspired by Quizlet — flashcards, tests, progress tracking.</p>
 
-    <button type="submit">Saqlash</button>
-</form>
+        <div class="hero-buttons">
+            <a href="#" class="btn-primary">Create Flashcards</a>
+            <a href="#" class="btn-secondary">Start Test</a>
+        </div>
+
+        <input class="search-bar" type="text" placeholder="Search flashcards…">
+    </section>
+
+    <!-- FLASHCARD GRID -->
+    <section class="cards-section">
 
 
-<script>
-// 🔥 Birinchi fan o'zgarganda – ikkinchi fandagi shu variant yashiriladi
-function filterSecond() {
-    let birinchi = document.getElementById("id_birinchi_fan").value;
-    let ikkinchi = document.getElementById("id_ikkinchi_fan");
+        <div class="card-grid">
 
-    for (let option of ikkinchi.options) {
-        option.hidden = (option.value === birinchi);
-    }
+    <div class="card">
+        <h3>English Vocabulary</h3>
+        <p>150 cards • Beginner</p>
+    </div>
 
-    // Agar ikkinchi_fan hozir tanlangan qiymat ham yashirilgan bo'lsa – defaultga qaytar
-    if (ikkinchi.value === birinchi) {
-        ikkinchi.selectedIndex = 0;
-    }
+    <div class="card">
+        <h3>Biology – Cells</h3>
+        <p>70 cards • Grade 10</p>
+    </div>
+
+    <div class="card">
+        <h3>Math Formulas</h3>
+        <p>120 cards • Algebra</p>
+    </div>
+
+    <div class="card">
+        <h3>History Dates</h3>
+        <p>90 cards • World History</p>
+    </div>
+
+    <div class="card">
+        <h3>Chemistry Basics</h3>
+        <p>80 cards • Grade 9</p>
+    </div>
+
+    <div class="card">
+        <h3>Programming – Python</h3>
+        <p>60 cards • Beginner</p>
+    </div>
+
+</div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2025 Univer.uz — Study & Test Platform</p>
+    </footer>
+
+</body>
+</html>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
-// Form yuklanganda ham filtr ishlasin
-window.onload = filterSecond;
+body {
+    background: #f6f9fb;
+    color: #0A3F66;
+}
 
-// Birinchi fandagi o‘zgarishni kuzatish
-document.getElementById("id_birinchi_fan").addEventListener("change", filterSecond);
-</script>
+/* HEADER */
+header {
+    background: #ffffff;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
 
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0A3F66;
+}
+.logo span {
+    color: #0FB5A1;
+}
+
+nav a {
+    margin-left: 25px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #0A3F66;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: #0FB5A1;
+}
+
+/* HERO SECTION */
+.hero {
+    padding: 60px 40px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #395b74;
+}
+
+.btn-primary {
+    background: #0FB5A1;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.btn-secondary {
+    background: #0A3F66;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.search-bar {
+    margin-top: 30px;
+    width: 60%;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #d6e2ea;
+    font-size: 16px;
+}
+
+/* CARDS GRID */
+.cards-section {
+    padding: 50px 40px;
+}
+
+.cards-section h2 {
+    font-size: 28px;
+    margin-bottom: 25px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 колонки */
+    gap: 25px;
+    max-width: 700px;
+    margin: 0 auto; /* центр */
+}
+
+.card {
+    background: #fff;
+    padding: 25px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    transition: 0.25s;}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.card h3 {
+    margin-bottom: 8px;
+    font-size: 20px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #425c70;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    margin-top: 40px;
+    color: #395b74;
+}
+</style>
 </body>
 </html>
