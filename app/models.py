@@ -101,3 +101,23 @@ class Milliy_Sertifikat(models.Model):
 
     def __str__(self):
         return f"{self.fan} | {self.savol[:30]}"
+
+
+from django.db import models
+
+
+class SATQuestion(models.Model):
+    savol = models.TextField()
+    variant_a = models.CharField(max_length=255)
+    variant_b = models.CharField(max_length=255)
+    variant_c = models.CharField(max_length=255)
+    variant_d = models.CharField(max_length=255)
+
+    # faqat A/B/C/D saqlaydi
+    togri_variant = models.CharField(
+        max_length=1,
+        choices=[("A","A"),("B","B"),("C","C"),("D","D")]
+    )
+
+    def __str__(self):
+        return self.savol[:40]

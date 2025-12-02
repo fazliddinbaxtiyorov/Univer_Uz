@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Students, DTM_Practise, Fanlar, IELTS_Reading, IELTSListeningQuestion, Milliy_Sertifikat, IELTS_writing
+from .models import Students, DTM_Practise, Fanlar, IELTS_Reading, IELTSListeningQuestion, Milliy_Sertifikat, IELTS_writing, SATQuestion
 # Register your models here.
 admin.site.register(Students)
 admin.site.register(DTM_Practise)
@@ -8,3 +8,4 @@ admin.site.register(IELTS_Reading)
 admin.site.register(IELTSListeningQuestion)
 admin.site.register(Milliy_Sertifikat)
 admin.site.register(IELTS_writing)
+admin.site.register(SATQuestion)

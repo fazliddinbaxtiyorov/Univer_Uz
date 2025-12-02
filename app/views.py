@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm
-from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion
+from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm
+from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion, SATQuestion
 
 
 # Create your views here.
@@ -104,3 +104,36 @@ def test_boshlash(request, fan):
 
     return render(request, "test_milliy.html", {"form": form})
 
+
+def sat_test_view(request):
+    questions = SATQuestion.objects.all()[:20]
+
+    if request.method == "POST":
+        form = SATForm(request.POST, questions=questions)
+
+        if form.is_valid():
+            total = 0
+            results = []
+
+            for q in questions:
+                user_answer = form.cleaned_data.get(f"q_{q.id}")
+                correct = q.togri_variant
+
+                if user_answer == correct:
+                    total += 16.3
+
+                results.append({
+                    "savol": q.savol,
+                    "user_answer": user_answer,
+                    "correct": correct
+                })
+
+            return render(request, "sat_result.html", {
+                "results": results,
+                "total": total
+            })
+
+    else:
+        form = SATForm(questions=questions)
+
+    return render(request, "sat_test.html", {"form": form})

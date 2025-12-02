@@ -1,0 +1,10 @@
+<h2>Sizning ballingiz: {{ total }}</h2>
+
+{% for r in results %}
+    <div>
+        <p><b>Savol:</b> {{ r.savol }}</p>
+        <p>Siz: {{ r.user_answer }}</p>
+        <p>To‘g‘ri: {{ r.correct }}</p>
+        <hr>
+    </div>
+{% endfor %}

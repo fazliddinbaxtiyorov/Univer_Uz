@@ -1,0 +1,9 @@
+<h2>SAT Test</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">Yakunlash</button>
+</form>

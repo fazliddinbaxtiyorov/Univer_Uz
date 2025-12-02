@@ -89,3 +89,22 @@ class TestForm(forms.Form):
 
 class FanTanlashForm(forms.Form):
     fan = forms.ChoiceField(choices=Milliy_Sertifikat.Fan_CHOICES)
+
+
+class SATForm(forms.Form):
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if questions:
+            for q in questions:
+                self.fields[f"q_{q.id}"] = forms.ChoiceField(
+                    label=q.savol,
+                    choices=[
+                        ("A", q.variant_a),
+                        ("B", q.variant_b),
+                        ("C", q.variant_c),
+                        ("D", q.variant_d)
+                    ],
+                    widget=forms.RadioSelect,   # <<< MUHIM
+                    required=True
+                )

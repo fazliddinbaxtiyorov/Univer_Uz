@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import fanlar_view, ielts_listening_view, ielts_reading_view, test_boshlash, fan_tanlash
+from .views import fanlar_view, ielts_listening_view, ielts_reading_view, test_boshlash, fan_tanlash, sat_test_view
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -9,4 +9,5 @@ urlpatterns = [
     path('listening/', ielts_listening_view, name='ielts_listening'),
     path('fan/', fan_tanlash, name='fan_tanlash'),
     path('test/<str:fan>/', test_boshlash, name='test_boshlash'),
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('sat/', sat_test_view),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
