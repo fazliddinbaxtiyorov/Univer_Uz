@@ -1,16 +1,9 @@
 <!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <title>Fanlar Formasi</title>
-</head>
-<body>
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="Univer.uz" content="width=device-width, initial-scale=1.0">
-    <title>Univer.uz – Study & Tests</title>
+    <title>Univer.uz– Study & Tests</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="Untitled-1.css">
 </head>
@@ -18,26 +11,25 @@
 
     <!-- HEADER -->
     <header>
-        <div class="logo">Univer<span>.uz</span></div>
+        <div class="logo">Univer <a href="#"></a><span>.uz</span></div>
         <nav>
             <a href="#">Home</a>
             <a href="#">Flashcards</a>
-            <a href="{% url 'fan_tanlash' %}">Tests</a>
-            <a href="{% url 'login' %}">Login</a>
+            <a href="#">Tests</a>
+            <a href="{% url 'sign' %}">Login</a>
         </nav>
     </header>
 
     <!-- HERO SECTION -->
     <section class="hero">
-        <h1>Learn. Test. Succeed.</h1>
-        <p>The best study platform inspired by Quizlet — flashcards, tests, progress tracking.</p>
+        <h1>Hello world</h1>
+<!--        <p>The best teacher Ms.D</p>-->
 
         <div class="hero-buttons">
-            <a href="#" class="btn-primary">Create Flashcards</a>
-            <a href="#" class="btn-secondary">Start Test</a>
-        </div>
 
-        <input class="search-bar" type="text" placeholder="Search flashcards…">
+
+
+
     </section>
 
     <!-- FLASHCARD GRID -->
@@ -46,35 +38,34 @@
 
         <div class="card-grid">
 
+    <a href="https://www.apple.com"><div class="card">
+        <h3>IELTS PRACTICE</h3>
+       <p >Listening </p>
+        <p>Reading  </p>
+        <p>Writing</p>
+    </div></a>
+
+            <a href="{%url 'fan_tanlash'%}"><div class="card">
+        <h3>DTM Tests</h3>
+        <p>70 cards •</p>
+    </div></a>
+
     <div class="card">
-        <h3>English Vocabulary</h3>
-        <p>150 cards • Beginner</p>
+        <h3>IQ Tests</h3>
+        <p>120 cards •</p>
     </div>
 
     <div class="card">
-        <h3>Biology – Cells</h3>
-        <p>70 cards • Grade 10</p>
+        <h3>Milliy Sertifikat</h3>
+        <p>90 cards •</p>
     </div>
 
-    <div class="card">
-        <h3>Math Formulas</h3>
-        <p>120 cards • Algebra</p>
-    </div>
+            <a href="{% url 'sat_test' %}"><div class="card">
+        <h3>SAT Tests</h3>
+        <p>80 cards</p>
+    </div></a>
 
-    <div class="card">
-        <h3>History Dates</h3>
-        <p>90 cards • World History</p>
-    </div>
 
-    <div class="card">
-        <h3>Chemistry Basics</h3>
-        <p>80 cards • Grade 9</p>
-    </div>
-
-    <div class="card">
-        <h3>Programming – Python</h3>
-        <p>60 cards • Beginner</p>
-    </div>
 
 </div>
     </section>
@@ -231,5 +222,3 @@ footer {
     color: #395b74;
 }
 </style>
-</body>
-</html>

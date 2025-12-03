@@ -9,5 +9,5 @@ urlpatterns = [
     path('listening/', ielts_listening_view, name='ielts_listening'),
     path('fan/', fan_tanlash, name='fan_tanlash'),
     path('test/<str:fan>/', test_boshlash, name='test_boshlash'),
-    path('sat/', sat_test_view),
+    path('sat/', sat_test_view, name='sat_test'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
