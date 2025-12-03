@@ -1,5 +1,5 @@
 from django import forms
-from .models import Students, DTM_Practise, Fanlar, IELTS_Reading, IELTSListeningQuestion, Milliy_Sertifikat
+from .models import Students, DTM_Practise, Fanlar, IELTS_Reading, IELTSListeningQuestion, Milliy_Sertifikat, IELTS_writing
 
 
 class DTMForm(forms.ModelForm):
@@ -108,3 +108,9 @@ class SATForm(forms.Form):
                     widget=forms.RadioSelect,   # <<< MUHIM
                     required=True
                 )
+
+
+class Writing(forms.ModelForm):
+    class Meta:
+        model = IELTS_writing
+        fields = '__all__'

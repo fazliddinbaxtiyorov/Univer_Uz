@@ -1,0 +1,60 @@
+<section class="cards-section">
+    <div class="card-grid">
+        <a href="{% url 'ielts_reading' %}"><div class="card">
+            <h3>Reading</h3>
+            <p></p>
+        </div></a>
+
+        <a href="{% url 'ielts_listening' %}"><div class="card">
+            <h3>Listening</h3>
+            <p></p>
+        </div></a>
+        <a href="{% url 'writing' %}"><div class="card">
+            <h3>Writing</h3>
+            <p></p>
+        </div></a>
+    </div>
+</section>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: black
+    color: #0A3F66;
+}
+
+.cards-section {
+    padding: 50px 40px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #fff;
+    padding: 25px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    transition: 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,

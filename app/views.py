@@ -1,15 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm
+from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm, Writing
 from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion, SATQuestion
 
 
 # Create your views here.
+def ielts(request):
+    return render(request, 'ielts.html')
+
+
 def fanlar_view(request):
     form = FanlarForm(request.POST or None)
     if form.is_valid():
         form.save()
     return render(request, "index.html", {"form": form})
 
+
+def writing(request):
+    form = Writing(request.POST)
+    if form.is_valid():
+        form.save()
+    return render(request, "writing.html", {"form": form})
 
 def ielts_reading_view(request):
     questions = IELTS_Reading.objects.all()[:10]  # masalan 10 ta savol
