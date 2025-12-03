@@ -121,3 +121,18 @@ class SATQuestion(models.Model):
 
     def __str__(self):
         return self.savol[:40]
+
+
+class Davlat_Univer(models.Model):
+    logo = models.ImageField(upload_to='media/')
+    text = models.CharField(max_length=255)
+
+
+class Xususiy_Univer(models.Model):
+    logo = models.ImageField(upload_to='media/')
+    text = models.CharField(max_length=255)
+
+
+class Xorijiy_Univer(models.Model):
+    logo = models.ImageField(upload_to='media/')
+    text = models.CharField(max_length=255)

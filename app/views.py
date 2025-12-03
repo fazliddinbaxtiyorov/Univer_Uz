@@ -21,6 +21,7 @@ def writing(request):
         form.save()
     return render(request, "writing.html", {"form": form})
 
+
 def ielts_reading_view(request):
     questions = IELTS_Reading.objects.all()[:10]  # masalan 10 ta savol
 
@@ -147,3 +148,7 @@ def sat_test_view(request):
         form = SATForm(questions=questions)
 
     return render(request, "sat_test.html", {"form": form})
+
+
+def davlat_univer(request):
+    return render(request, 'davlat_univer.html')
