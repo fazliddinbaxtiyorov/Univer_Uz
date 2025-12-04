@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm, Writing
-from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion, SATQuestion
+from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion, SATQuestion, Davlat_Univer, Xususiy_Univer, Xorijiy_Univer
+from django.db.models import Q
 
 
 # Create your views here.
@@ -150,5 +151,30 @@ def sat_test_view(request):
     return render(request, "sat_test.html", {"form": form})
 
 
+def univerlar(request):
+    davlat = Davlat_Univer.objects.all()
+    xususiy = Xususiy_Univer.objects.all()
+    xorijiy= Xorijiy_Univer.objects.all()
+    return render(request, 'univerlar.html', {'davlat': davlat, 'xususiy': xususiy, 'xorijiy': xorijiy})
+
+
 def davlat_univer(request):
-    return render(request, 'davlat_univer.html')
+    davlat = Davlat_Univer.objects.all()
+    return render(request, 'davlat_univer.html', {'davlat': davlat})
+
+
+def xususiy_univer(request):
+    xususiy = Xususiy_Univer.objects.all()
+    return render(request, 'xususiy.html', {'xususiy': xususiy})
+
+
+def xorijiy_univer(request):
+    xorijiy = Xorijiy_Univer.objects.all()
+    return render(request, 'xorijiy.html', {'xorijiy': xorijiy})
+
+
+def search(request):
+    query = request.GET.get('q')
+    davlat_search = Davlat_Univer.objects.filter(Q(title__icontains=query))
+    xususiy_search = Xususiy_Univer.objects.filter(Q(title__icontains=query))
+    xorijiy_search = Xorijiy_Univer.objects.filter(Q(title__icontains=query))

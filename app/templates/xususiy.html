@@ -1,7 +1,4 @@
-<h2>Univer List</h2>
-
-<ul>
-  {% for item in davlat %}
+{% for item in xususiy %}
     <li>
       <strong>{% if item.logo %}
         <img src="{{ item.logo.url }}" alt="{{ item.name }}" width="200">
@@ -11,4 +8,3 @@
     </li>
   {% empty %}
   {% endfor %}
-</ul>

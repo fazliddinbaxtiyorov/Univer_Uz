@@ -1,0 +1,34 @@
+<h2>Univer List</h2>
+
+<ul>
+  {% for item in davlat %}
+    <li>
+      <strong>{% if item.logo %}
+        <img src="{{ item.logo.url }}" alt="{{ item.name }}" width="200">
+      {% else %}
+        <p>Rasm mavjud emas</p>
+      {% endif %}</strong> — {{ item.text }}
+    </li>
+  {% empty %}
+  {% endfor %}
+  {% for item in xususiy %}
+    <li>
+      <strong>{% if item.logo %}
+        <img src="{{ item.logo.url }}" alt="{{ item.name }}" width="200">
+      {% else %}
+        <p>Rasm mavjud emas</p>
+      {% endif %}</strong> — {{ item.text }}
+    </li>
+  {% empty %}
+  {% endfor %}
+  {% for item in xorijiy %}
+    <li>
+      <strong>{% if item.logo %}
+        <img src="{{ item.logo.url }}" alt="{{ item.name }}" width="200">
+      {% else %}
+        <p>Rasm mavjud emas</p>
+      {% endif %}</strong> — {{ item.text }}
+    </li>
+  {% empty %}
+  {% endfor %}
+</ul>
