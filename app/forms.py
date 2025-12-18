@@ -45,16 +45,14 @@ class IELTSReadingForm(forms.Form):
             )
 
 
-# ===== IELTS Listening =====
 class IELTSListeningForm(forms.Form):
     def __init__(self, *args, questions=None, **kwargs):
         super().__init__(*args, **kwargs)
 
         for q in questions:
-            items = q.variantlar.split()  # "A 3 B 4 C 5 D 6" → ['A','3','B','4','C','5','D','6']
+            items = q.variantlar.split()
             choices = []
 
-            # Xatolikdan saqlanish: agar noto‘liq yozilgan bo‘lsa
             for i in range(0, len(items), 2):
                 if i+1 < len(items):
                     choices.append((items[i], f"{items[i]} {items[i+1]}"))
@@ -71,12 +69,10 @@ class TestForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         for q in questions:
-            # q.togri_javob = "A 3 B 4 C 5 D 6"
-            # Split qilib variantlar va matnli javoblar hosil qilamiz
-            items = q.togri_javob.split()  # ['A','3','B','4','C','5','D','6']
+            items = q.togri_javob.split()
 
             choices = [
-                (items[i], f"{items[i]} {items[i+1]}")  # ('A','A 3')
+                (items[i], f"{items[i]} {items[i+1]}")
                 for i in range(0, len(items), 2)
             ]
 
@@ -105,7 +101,7 @@ class SATForm(forms.Form):
                         ("C", q.variant_c),
                         ("D", q.variant_d)
                     ],
-                    widget=forms.RadioSelect,   # <<< MUHIM
+                    widget=forms.RadioSelect,
                     required=True
                 )
 
