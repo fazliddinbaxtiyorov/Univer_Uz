@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm, Writing
+from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm, Writing, DTMForm
 from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion, SATQuestion, Davlat_Univer, Xususiy_Univer, Xorijiy_Univer
 from django.db.models import Q
 
@@ -13,7 +13,7 @@ def fanlar_view(request):
     form = FanlarForm(request.POST or None)
     if form.is_valid():
         form.save()
-    return render(request, "index.html", {"form": form})
+    return render(request, "home.html", {"form": form})
 
 
 def writing(request):

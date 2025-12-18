@@ -4,112 +4,2255 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <link rel="icon" type="image/x-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Round_Landmark_School_Icon_-_Transparent.svg/1024px-Round_Landmark_School_Icon_-_Transparent.svg.png">
-    <style>
-    * {
+<html lang="en">
+<script>
+    /* ===================================
+   UniBase - Authentication System
+   Handle login, registration, and session management
+   =================================== */
+
+// Registration function
+function registerUser(formData) {
+    const { name, email, password, confirmPassword, studentId } = formData;
+
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
+        return { success: false, message: 'All fields are required' };
+    }
+
+    if (password !== confirmPassword) {
+        return { success: false, message: 'Passwords do not match' };
+    }
+
+    if (password.length < 6) {
+        return { success: false, message: 'Password must be at least 6 characters' };
+    }
+
+    // Check if email already exists
+    const existingUser = getUserByEmail(email);
+    if (existingUser) {
+        return { success: false, message: 'Email already registered' };
+    }
+
+    // Create new user
+    const newUser = {
+        id: 'user-' + Date.now(),
+        name,
+        email,
+        password, // In production, this should be hashed
+        studentId: studentId || '',
+        role: 'student',
+        createdAt: new Date().toISOString()
+    };
+
+    saveUser(newUser);
+
+    return { success: true, message: 'Registration successful!', user: newUser };
+}
+
+// Login function
+function loginUser(email, password) {
+    if (!email || !password) {
+        return { success: false, message: 'Email and password are required' };
+    }
+
+    const user = getUserByEmail(email);
+
+    if (!user) {
+        return { success: false, message: 'Invalid email or password' };
+    }
+
+    if (user.password !== password) {
+        return { success: false, message: 'Invalid email or password' };
+    }
+
+    // Set current user in session
+    setCurrentUser(user);
+
+    return { success: true, message: 'Login successful!', user };
+}
+
+// Check if user is authenticated
+function isAuthenticated() {
+    return getCurrentUser() !== null;
+}
+
+// Check if current user is admin
+function isAdmin() {
+    const user = getCurrentUser();
+    return user && user.role === 'admin';
+}
+
+// Redirect based on role
+function redirectToRolePage() {
+    const user = getCurrentUser();
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    if (user.role === 'admin') {
+        window.location.href = 'admin-dashboard.html';
+    } else {
+        window.location.href = 'student-dashboard.html';
+    }
+}
+
+// Protect page - redirect if not authenticated
+function requireAuth() {
+    if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+    }
+}
+
+// Protect admin page - redirect if not admin
+function requireAdmin() {
+    if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    if (!isAdmin()) {
+        window.location.href = 'student-dashboard.html';
+    }
+}
+
+// Logout function
+function handleLogout() {
+    logout();
+    window.location.href = 'index.html';
+}
+
+// Show/hide navigation based on auth status
+function updateNavigation() {
+    const user = getCurrentUser();
+    const authLinks = document.getElementById('auth-links');
+    const userLinks = document.getElementById('user-links');
+
+    if (!authLinks || !userLinks) return;
+
+    if (user) {
+        authLinks.classList.add('hidden');
+        userLinks.classList.remove('hidden');
+
+        const userName = document.getElementById('user-name');
+        if (userName) {
+            userName.textContent = user.name;
+        }
+    } else {
+        authLinks.classList.remove('hidden');
+        userLinks.classList.add('hidden');
+    }
+}
+/* ===================================
+   UniBase - Multi-Language System
+   Translation management and language switching
+   =================================== */
+
+const TRANSLATIONS = {
+    en: {
+        // Navigation
+        nav_tests: 'Tests',
+        nav_universities: 'Universities',
+        nav_news: 'News',
+        nav_features: 'Features',
+        nav_support: 'Support',
+        nav_login: 'Login',
+        nav_register: 'Register',
+        nav_dashboard: 'Dashboard',
+        nav_logout: 'Logout',
+        nav_manage_tests: 'Manage Tests',
+
+        // Hero Section
+        hero_title: 'Preparation Like a Real Exam',
+        hero_subtitle: 'IELTS, SAT, Milliy certificate, IQ, DTM — timed practice tests in a realistic exam environment',
+        hero_btn_start: 'Start Free',
+        hero_btn_view: 'View Tests',
+
+        // Test Cards
+        test_start: 'Start Test',
+        test_badge_english: 'ENGLISH',
+        test_badge_academic: 'ACADEMIC',
+        test_badge_national: 'NATIONAL',
+        test_badge_entrance: 'ENTRANCE',
+        test_badge_cognitive: 'COGNITIVE',
+
+        // Test Section
+        tests_title: 'Choose Your Test',
+        test_ielts_title: 'IELTS',
+        test_ielts_desc: 'Comprehensive IELTS practice across all sections with realistic exam conditions.',
+        test_sat_title: 'SAT',
+        test_sat_desc: 'Prepare for SAT with Math and English sections in a timed environment.',
+        test_milliy_title: 'Milliy certificate',
+        test_milliy_desc: 'National certification exam practice with comprehensive question bank.',
+        test_dtm_title: 'DTM',
+        test_dtm_desc: 'Prepare for university entrance exams with realistic test simulations.',
+        test_iq_title: 'IQ',
+        test_iq_desc: 'Test your cognitive abilities with timed IQ assessment questions.',
+
+        // Features
+        features_title: 'Why Choose UniBase?',
+        feature_realistic_title: '🎯 Realistic Exam Environment',
+        feature_realistic_desc: 'Experience the pressure and atmosphere of real exams with authentic interfaces, timers, and question formats.',
+        feature_analytics_title: '📊 Detailed Analytics',
+        feature_analytics_desc: 'Track your performance with comprehensive analysis of your strengths, weaknesses, and progress over time.',
+        feature_progress_title: '📈 Track Your Progress',
+        feature_progress_desc: 'Monitor your improvement with dynamic progress tracking, personalized recommendations, and goal setting.',
+
+        // Login Page
+        login_title: 'Welcome Back',
+        login_subtitle: 'Login to continue your exam preparation',
+        login_email: 'Email Address',
+        login_password: 'Password',
+        login_remember: 'Remember me',
+        login_btn: 'Login',
+        login_no_account: "Don't have an account?",
+        login_register_here: 'Register here',
+        login_demo: 'Demo Credentials:',
+
+        // Register Page
+        register_title: 'Create Account',
+        register_subtitle: 'Start your exam preparation journey',
+        register_name: 'Full Name',
+        register_email: 'Email Address',
+        register_student_id: 'Student ID (Optional)',
+        register_password: 'Password',
+        register_confirm: 'Confirm Password',
+        register_btn: 'Create Account',
+        register_have_account: 'Already have an account?',
+        register_login_here: 'Login here',
+
+        // Student Dashboard
+        dashboard_welcome: 'Welcome',
+        dashboard_subtitle: 'Choose a test to start your practice session',
+        dashboard_available_tests: 'Available Tests',
+        dashboard_recent_results: 'My Recent Results',
+        dashboard_no_tests: 'No tests available yet. Please check back later.',
+        dashboard_no_results: "You haven't taken any tests yet. Start practicing to see your results here!",
+
+        // Common
+        duration: 'Duration',
+        questions: 'Questions',
+        minutes: 'minutes',
+        footer_rights: 'All rights reserved.',
+        footer_copyright: '© 2023 UniBase. All rights reserved.',
+        footer_tests: 'Tests',
+        footer_features: 'Features',
+        footer_privacy: 'Privacy Policy',
+        footer_contact: 'Contact',
+        home: 'Home',
+
+        // Admin Dashboard
+        admin_dashboard_title: 'Admin Dashboard',
+        admin_dashboard_subtitle: 'Manage tests and monitor student performance',
+        admin_total_tests: 'Total Tests',
+        admin_registered_students: 'Registered Students',
+        admin_test_attempts: 'Test Attempts',
+        admin_quick_actions: 'Quick Actions',
+        admin_add_new_test: 'Add New Test',
+        admin_add_test_desc: 'Create a new exam for students to practice',
+        admin_create_test: 'Create Test',
+        admin_manage_tests_title: 'Manage Tests',
+        admin_manage_tests_desc: 'View, edit, or delete existing tests',
+        admin_view_tests: 'View Tests',
+        admin_view_students_title: 'View Students',
+        admin_view_students_desc: 'See all registered students and their progress',
+        admin_view_students_btn: 'View Students',
+        admin_recent_activity: 'Recent Test Activity',
+        admin_no_activity: 'No test activity yet.',
+        admin_registered_students_title: 'Registered Students',
+        admin_no_students: 'No students registered yet.',
+
+        // Admin Tests Management
+        admin_tests_manage_title: 'Manage Tests',
+        admin_tests_add_new: 'Add New Test',
+        admin_tests_create_new: 'Create New Test',
+        admin_tests_edit: 'Edit Test',
+        admin_tests_test_name: 'Test Name',
+        admin_tests_category: 'Category',
+        admin_tests_select_category: 'Select category...',
+        admin_tests_duration_min: 'Duration (minutes)',
+        admin_tests_description: 'Description',
+        admin_tests_questions_section: 'Questions',
+        admin_tests_add_question: 'Add Question',
+        admin_tests_save: 'Save Test',
+        admin_tests_cancel: 'Cancel',
+        admin_tests_existing: 'Existing Tests',
+        admin_tests_no_tests: 'No tests created yet. Click "Add New Test" to create one.',
+        admin_tests_edit_btn: 'Edit',
+        admin_tests_delete_btn: 'Delete',
+        admin_tests_created: 'Created',
+        admin_tests_question_text: 'Question Text',
+        admin_tests_option: 'Option',
+        admin_tests_correct_answer: 'Correct Answer',
+        admin_tests_select_correct: 'Select correct answer...',
+        admin_tests_remove: 'Remove',
+        admin_tests_question: 'Question',
+
+        // Test Taking
+        test_taking_loading: 'Loading Test...',
+        test_taking_question_of: 'Question',
+        test_taking_of: 'of',
+        test_taking_pause: 'Pause',
+        test_taking_resume: 'Resume',
+        test_taking_previous: 'Previous',
+        test_taking_next: 'Next',
+        test_taking_submit: 'Submit Test',
+
+        // Test Results
+        results_title: 'Test Results',
+        results_your_score: 'Your Score',
+        results_percentage: 'Percentage',
+        results_time_taken: 'Time Taken',
+        results_answer_review: 'Answer Review',
+        results_back_dashboard: 'Back to Dashboard',
+        results_print: 'Print Results',
+        results_excellent: 'Excellent!',
+        results_excellent_msg: 'Outstanding performance!',
+        results_good: 'Good Job!',
+        results_good_msg: 'You passed the test.',
+        results_fair: 'Fair',
+        results_fair_msg: 'Consider reviewing the material and trying again.',
+        results_keep_practicing: 'Keep Practicing',
+        results_practice_msg: 'Review the material and attempt again.',
+        results_correct: 'Correct',
+        results_incorrect: 'Incorrect',
+        results_your_answer: 'Your Answer',
+        results_correct_answer: 'Correct Answer',
+        results_not_answered: 'Not answered',
+
+        // Table Headers
+        table_name: 'Name',
+        table_email: 'Email',
+        table_student_id: 'Student ID',
+        table_registered: 'Registered',
+        table_student: 'Student',
+        table_test: 'Test',
+        table_test_name: 'Test Name',
+        table_score: 'Score',
+        table_time: 'Time',
+        table_date: 'Date',
+    },
+
+    ru: {
+        // Navigation
+        nav_tests: 'Тесты',
+        nav_universities: 'Университеты',
+        nav_news: 'Новости',
+        nav_features: 'Возможности',
+        nav_support: 'Поддержка',
+        nav_login: 'Войти',
+        nav_register: 'Регистрация',
+        nav_dashboard: 'Панель',
+        nav_logout: 'Выйти',
+        nav_manage_tests: 'Управление тестами',
+
+        // Hero Section
+        hero_title: 'Подготовка как на реальном экзамене',
+        hero_subtitle: 'IELTS, SAT, Milliy certificate, IQ, DTM — тесты с таймером в реалистичной экзаменационной среде',
+        hero_btn_start: 'Начать бесплатно',
+        hero_btn_view: 'Смотреть тесты',
+
+        // Test Cards
+        test_start: 'Начать тест',
+        test_badge_english: 'АНГЛИЙСКИЙ',
+        test_badge_academic: 'АКАДЕМИЧЕСКИЙ',
+        test_badge_national: 'НАЦИОНАЛЬНЫЙ',
+        test_badge_entrance: 'ВСТУПИТЕЛЬНЫЙ',
+        test_badge_cognitive: 'КОГНИТИВНЫЙ',
+
+        // Test Section
+        tests_title: 'Выберите свой тест',
+        test_ielts_title: 'IELTS',
+        test_ielts_desc: 'Всесторонняя практика IELTS по всем разделам с реалистичными условиями экзамена.',
+        test_sat_title: 'SAT',
+        test_sat_desc: 'Подготовьтесь к SAT с разделами математики и английского языка в условиях ограниченного времени.',
+        test_milliy_title: 'Milliy certificate',
+        test_milliy_desc: 'Практика национального сертификационного экзамена с полным банком вопросов.',
+        test_dtm_title: 'DTM',
+        test_dtm_desc: 'Подготовьтесь к вступительным экзаменам в университет с реалистичными симуляциями тестов.',
+        test_iq_title: 'IQ',
+        test_iq_desc: 'Проверьте свои когнитивные способности с помощью тестовых вопросов на IQ с ограничением времени.',
+
+        // Features
+        features_title: 'Почему выбирают UniBase?',
+        feature_realistic_title: '🎯 Реалистичная среда экзамена',
+        feature_realistic_desc: 'Почувствуйте давление и атмосферу настоящих экзаменов с аутентичными интерфейсами, таймерами и форматами вопросов.',
+        feature_analytics_title: '📊 Детальная аналитика',
+        feature_analytics_desc: 'Отслеживайте свою успеваемость с помощью комплексного анализа сильных и слабых сторон, а также прогресса.',
+        feature_progress_title: '📈 Отслеживание прогресса',
+        feature_progress_desc: 'Следите за своим улучшением с помощью динамического отслеживания прогресса и персональных рекомендаций.',
+
+        // Login Page
+        login_title: 'С возвращением',
+        login_subtitle: 'Войдите, чтобы продолжить подготовку к экзамену',
+        login_email: 'Электронная почта',
+        login_password: 'Пароль',
+        login_remember: 'Запомнить меня',
+        login_btn: 'Войти',
+        login_no_account: 'Нет аккаунта?',
+        login_register_here: 'Зарегистрируйтесь здесь',
+        login_demo: 'Демо-учетные данные:',
+
+        // Register Page
+        register_title: 'Создать аккаунт',
+        register_subtitle: 'Начните свое путешествие по подготовке к экзамену',
+        register_name: 'Полное имя',
+        register_email: 'Электронная почта',
+        register_student_id: 'ID студента (необязательно)',
+        register_password: 'Пароль',
+        register_confirm: 'Подтвердите пароль',
+        register_btn: 'Создать аккаунт',
+        register_have_account: 'Уже есть аккаунт?',
+        register_login_here: 'Войдите здесь',
+
+        // Student Dashboard
+        dashboard_welcome: 'Добро пожаловать',
+        dashboard_subtitle: 'Выберите тест, чтобы начать практику',
+        dashboard_available_tests: 'Доступные тесты',
+        dashboard_recent_results: 'Мои последние результаты',
+        dashboard_no_tests: 'Тесты пока недоступны. Пожалуйста, зайдите позже.',
+        dashboard_no_results: 'Вы еще не проходили тесты. Начните практиковаться, чтобы увидеть результаты здесь!',
+
+        // Common
+        duration: 'Продолжительность',
+        questions: 'Вопросы',
+        minutes: 'минут',
+        footer_rights: 'Все права защищены.',
+        footer_copyright: '© 2023 UniBase. Все права защищены.',
+        footer_tests: 'Тесты',
+        footer_features: 'Возможности',
+        footer_privacy: 'Политика конфиденциальности',
+        footer_contact: 'Контакты',
+        home: 'Главная',
+
+        // Admin Dashboard
+        admin_dashboard_title: 'Панель администратора',
+        admin_dashboard_subtitle: 'Управление тестами и мониторинг успеваемости студентов',
+        admin_total_tests: 'Всего тестов',
+        admin_registered_students: 'Зарегистрированных студентов',
+        admin_test_attempts: 'Попыток тестирования',
+        admin_quick_actions: 'Быстрые действия',
+        admin_add_new_test: 'Добавить новый тест',
+        admin_add_test_desc: 'Создать новый экзамен для студентов',
+        admin_create_test: 'Создать тест',
+        admin_manage_tests_title: 'Управление тестами',
+        admin_manage_tests_desc: 'Просмотр, редактирование или удаление существующих тестов',
+        admin_view_tests: 'Смотреть тесты',
+        admin_view_students_title: 'Просмотр студентов',
+        admin_view_students_desc: 'Посмотреть всех зарегистрированных студентов и их прогресс',
+        admin_view_students_btn: 'Смотреть студентов',
+        admin_recent_activity: 'Недавняя активность тестирования',
+        admin_no_activity: 'Активности тестирования пока нет.',
+        admin_registered_students_title: 'Зарегистрированные студенты',
+        admin_no_students: 'Студенты еще не зарегистрированы.',
+
+        // Admin Tests Management
+        admin_tests_manage_title: 'Управление тестами',
+        admin_tests_add_new: 'Добавить новый тест',
+        admin_tests_create_new: 'Создать новый тест',
+        admin_tests_edit: 'Редактировать тест',
+        admin_tests_test_name: 'Название теста',
+        admin_tests_category: 'Категория',
+        admin_tests_select_category: 'Выберите категорию...',
+        admin_tests_duration_min: 'Продолжительность (минуты)',
+        admin_tests_description: 'Описание',
+        admin_tests_questions_section: 'Вопросы',
+        admin_tests_add_question: 'Добавить вопрос',
+        admin_tests_save: 'Сохранить тест',
+        admin_tests_cancel: 'Отмена',
+        admin_tests_existing: 'Существующие тесты',
+        admin_tests_no_tests: 'Тесты еще не созданы. Нажмите «Добавить новый тест», чтобы создать.',
+        admin_tests_edit_btn: 'Редактировать',
+        admin_tests_delete_btn: 'Удалить',
+        admin_tests_created: 'Создано',
+        admin_tests_question_text: 'Текст вопроса',
+        admin_tests_option: 'Вариант',
+        admin_tests_correct_answer: 'Правильный ответ',
+        admin_tests_select_correct: 'Выберите правильный ответ...',
+        admin_tests_remove: 'Удалить',
+        admin_tests_question: 'Вопрос',
+
+        // Test Taking
+        test_taking_loading: 'Загрузка теста...',
+        test_taking_question_of: 'Вопрос',
+        test_taking_of: 'из',
+        test_taking_pause: 'Пауза',
+        test_taking_resume: 'Продолжить',
+        test_taking_previous: 'Предыдущий',
+        test_taking_next: 'Следующий',
+        test_taking_submit: 'Отправить тест',
+
+        // Test Results
+        results_title: 'Результаты теста',
+        results_your_score: 'Ваш результат',
+        results_percentage: 'Процент',
+        results_time_taken: 'Затраченное время',
+        results_answer_review: 'Обзор ответов',
+        results_back_dashboard: 'Вернуться на панель',
+        results_print: 'Печать результатов',
+        results_excellent: 'Отлично!',
+        results_excellent_msg: 'Выдающийся результат!',
+        results_good: 'Хорошая работа!',
+        results_good_msg: 'Вы прошли тест.',
+        results_fair: 'Удовлетворительно',
+        results_fair_msg: 'Рассмотрите возможность повторения материала и попробуйте снова.',
+        results_keep_practicing: 'Продолжайте практиковаться',
+        results_practice_msg: 'Повторите материал и попробуйте снова.',
+        results_correct: 'Правильно',
+        results_incorrect: 'Неправильно',
+        results_your_answer: 'Ваш ответ',
+        results_correct_answer: 'Правильный ответ',
+        results_not_answered: 'Не отвечено',
+
+        // Table Headers
+        table_name: 'Имя',
+        table_email: 'Email',
+        table_student_id: 'ID студента',
+        table_registered: 'Зарегистрирован',
+        table_student: 'Студент',
+        table_test: 'Тест',
+        table_test_name: 'Название теста',
+        table_score: 'Результат',
+        table_time: 'Время',
+        table_date: 'Дата',
+    },
+
+    uz: {
+        // Navigation
+        nav_tests: 'Testlar',
+        nav_universities: 'Universitetlar',
+        nav_news: 'Yangiliklar',
+        nav_features: "Xususiyatlar",
+        nav_support: 'Yordam',
+        nav_login: 'Kirish',
+        nav_register: "Ro'yxatdan o'tish",
+        nav_dashboard: 'Boshqaruv paneli',
+        nav_logout: 'Chiqish',
+        nav_manage_tests: "Testlarni boshqarish",
+
+        // Hero Section
+        hero_title: 'Haqiqiy imtihonga tayyorgarlik',
+        hero_subtitle: "IELTS, SAT, Milliy sertifikat, IQ, DTM — real imtihon muhitida vaqt bilan cheklangan mashq testlari",
+        hero_btn_start: 'Bepul boshlash',
+        hero_btn_view: "Testlarni ko'rish",
+
+        // Test Cards
+        test_start: "Testni boshlash",
+        test_badge_english: 'INGLIZ TILI',
+        test_badge_academic: 'AKADEMIK',
+        test_badge_national: 'MILLIY',
+        test_badge_entrance: 'KIRISH',
+        test_badge_cognitive: 'KOGNITIV',
+
+        // Test Section
+        tests_title: 'Testingizni tanlang',
+        test_ielts_title: 'IELTS',
+        test_ielts_desc: "Haqiqiy imtihon sharoitida barcha bo'limlar bo'yicha keng qamrovli IELTS amaliyoti.",
+        test_sat_title: 'SAT',
+        test_sat_desc: "Vaqt bilan cheklangan muhitda matematika va ingliz tili bo'limlari bilan SAT ga tayyorlaning.",
+        test_milliy_title: 'Milliy sertifikat',
+        test_milliy_desc: "Keng qamrovli savol bankasi bilan milliy sertifikatlash imtihoni amaliyoti.",
+        test_dtm_title: 'DTM',
+        test_dtm_desc: "Haqiqiy test simulyatsiyalari bilan universitet kirish imtihonlariga tayyorlaning.",
+        test_iq_title: 'IQ',
+        test_iq_desc: "Vaqt bilan cheklangan IQ baholash savollari bilan kognitiv qobiliyatingizni sinab ko'ring.",
+
+        // Features
+        features_title: 'Nega UniBase?',
+        feature_realistic_title: '🎯 Real imtihon muhiti',
+        feature_realistic_desc: "Haqiqiy interfeys, taymer va savol formatlari bilan real imtihonlarning bosim va muhitini his qiling.",
+        feature_analytics_title: "📊 Batafsil tahlil",
+        feature_analytics_desc: "Kuchli va zaif tomonlaringizni, vaqt o'tishi bilan taraqqiyotingizni to'liq tahlil qilish orqali baholang.",
+        feature_progress_title: "📈 Taraqqiyotni kuzatish",
+        feature_progress_desc: "Dinamik taraqqiyot kuzatuvi, shaxsiy tavsiyalar va maqsad belgilash bilan yaxshilanishingizni kuzating.",
+
+        // Login Page
+        login_title: 'Xush kelibsiz',
+        login_subtitle: "Imtihonga tayyorgarlikni davom ettirish uchun kiring",
+        login_email: 'Email manzil',
+        login_password: 'Parol',
+        login_remember: "Meni eslab qol",
+        login_btn: 'Kirish',
+        login_no_account: "Hisobingiz yo'qmi?",
+        login_register_here: "Bu yerda ro'yxatdan o'ting",
+        login_demo: "Demo ma'lumotlar:",
+
+        // Register Page
+        register_title: "Hisob yaratish",
+        register_subtitle: "Imtihonga tayyorgarlik sayohatingizni boshlang",
+        register_name: "To'liq ism",
+        register_email: 'Email manzil',
+        register_student_id: "Talaba ID (ixtiyoriy)",
+        register_password: 'Parol',
+        register_confirm: "Parolni tasdiqlang",
+        register_btn: "Hisob yaratish",
+        register_have_account: "Hisobingiz bormi?",
+        register_login_here: "Bu yerda kiring",
+
+        // Student Dashboard
+        dashboard_welcome: 'Xush kelibsiz',
+        dashboard_subtitle: "Amaliy mashg'ulotni boshlash uchun testni tanlang",
+        dashboard_available_tests: "Mavjud testlar",
+        dashboard_recent_results: "Mening so'nggi natijalarim",
+        dashboard_no_tests: "Hozircha testlar mavjud emas. Keyinroq tekshiring.",
+        dashboard_no_results: "Siz hali test topshirmadingiz. Natijalarni ko'rish uchun mashq qilishni boshlang!",
+
+        // Common
+        duration: 'Davomiyligi',
+        questions: 'Savollar',
+        minutes: 'daqiqa',
+        footer_rights: "Barcha huquqlar himoyalangan.",
+        footer_copyright: '© 2023 UniBase. Barcha huquqlar himoyalangan.',
+        footer_tests: 'Testlar',
+        footer_features: 'Xususiyatlar',
+        footer_privacy: 'Maxfiylik siyosati',
+        footer_contact: 'Aloqa',
+        home: 'Bosh sahifa',
+
+        // Admin Dashboard
+        admin_dashboard_title: 'Admin paneli',
+        admin_dashboard_subtitle: "Testlarni boshqarish va talabalar faoliyatini kuzatish",
+        admin_total_tests: 'Jami testlar',
+        admin_registered_students: "Ro'yxatdan o'tgan talabalar",
+        admin_test_attempts: 'Test urinishlari',
+        admin_quick_actions: 'Tez harakatlar',
+        admin_add_new_test: 'Yangi test qo\'shish',
+        admin_add_test_desc: "Talabalar uchun yangi imtihon yaratish",
+        admin_create_test: 'Test yaratish',
+        admin_manage_tests_title: "Testlarni boshqarish",
+        admin_manage_tests_desc: "Mavjud testlarni ko'rish, tahrirlash yoki o'chirish",
+        admin_view_tests: "Testlarni ko'rish",
+        admin_view_students_title: "Talabalarni ko'rish",
+        admin_view_students_desc: "Barcha ro'yxatdan o'tgan talabalar va ularning taraqqiyotini ko'rish",
+        admin_view_students_btn: "Talabalarni ko'rish",
+        admin_recent_activity: "So'nggi test faoliyati",
+        admin_no_activity: "Test faoliyati hali yo'q.",
+        admin_registered_students_title: "Ro'yxatdan o'tgan talabalar",
+        admin_no_students: "Hali talabalar ro'yxatdan o'tmagan.",
+
+        // Admin Tests Management
+        admin_tests_manage_title: "Testlarni boshqarish",
+        admin_tests_add_new: "Yangi test qo'shish",
+        admin_tests_create_new: 'Yangi test yaratish',
+        admin_tests_edit: 'Testni tahrirlash',
+        admin_tests_test_name: 'Test nomi',
+        admin_tests_category: 'Kategoriya',
+        admin_tests_select_category: 'Kategoriyani tanlang...',
+        admin_tests_duration_min: 'Davomiyligi (daqiqa)',
+        admin_tests_description: 'Tavsif',
+        admin_tests_questions_section: 'Savollar',
+        admin_tests_add_question: "Savol qo'shish",
+        admin_tests_save: 'Testni saqlash',
+        admin_tests_cancel: 'Bekor qilish',
+        admin_tests_existing: 'Mavjud testlar',
+        admin_tests_no_tests: "Testlar hali yaratilmagan. Yaratish uchun \"Yangi test qo'shish\" tugmasini bosing.",
+        admin_tests_edit_btn: 'Tahrirlash',
+        admin_tests_delete_btn: "O'chirish",
+        admin_tests_created: 'Yaratilgan',
+        admin_tests_question_text: 'Savol matni',
+        admin_tests_option: 'Variant',
+        admin_tests_correct_answer: "To'g'ri javob",
+        admin_tests_select_correct: "To'g'ri javobni tanlang...",
+        admin_tests_remove: "O'chirish",
+        admin_tests_question: 'Savol',
+
+        // Test Taking
+        test_taking_loading: 'Test yuklanmoqda...',
+        test_taking_question_of: 'Savol',
+        test_taking_of: 'dan',
+        test_taking_pause: 'Pauza',
+        test_taking_resume: 'Davom ettirish',
+        test_taking_previous: 'Oldingi',
+        test_taking_next: 'Keyingi',
+        test_taking_submit: "Testni topshirish",
+
+        // Test Results
+        results_title: 'Test natijalari',
+        results_your_score: 'Sizning natijangiz',
+        results_percentage: 'Foiz',
+        results_time_taken: 'Sarflangan vaqt',
+        results_answer_review: "Javoblarni ko'rib chiqish",
+        results_back_dashboard: 'Panelga qaytish',
+        results_print: "Natijalarni chop etish",
+        results_excellent: 'Ajoyib!',
+        results_excellent_msg: "A'lo natija!",
+        results_good: "Yaxshi ish!",
+        results_good_msg: 'Siz testdan o\'tdingiz.',
+        results_fair: "Yaxshi",
+        results_fair_msg: "Materialni ko'rib chiqishni va qayta urinib ko'rishni o'ylab ko'ring.",
+        results_keep_practicing: "Mashq qilishda davom eting",
+        results_practice_msg: "Materialni ko'rib chiqing va qayta urinib ko'ring.",
+        results_correct: "To'g'ri",
+        results_incorrect: "Noto'g'ri",
+        results_your_answer: 'Sizning javobingiz',
+        results_correct_answer: "To'g'ri javob",
+        results_not_answered: 'Javob berilmagan',
+
+        // Table Headers
+        table_name: 'Ism',
+        table_email: 'Email',
+        table_student_id: 'Talaba ID',
+        table_registered: "Ro'yxatdan o'tgan",
+        table_student: 'Talaba',
+        table_test: 'Test',
+        table_test_name: 'Test nomi',
+        table_score: 'Natija',
+        table_time: 'Vaqt',
+        table_date: 'Sana',
+    }
+};
+
+// Get saved language or default to English
+function getCurrentLanguage() {
+    return localStorage.getItem('unibase_language') || 'en';
+}
+
+// Set language
+function setLanguage(lang) {
+    localStorage.setItem('unibase_language', lang);
+    applyTranslations(lang);
+}
+
+// Apply translations to the page
+function applyTranslations(lang) {
+    const translations = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
+    // Find all elements with data-translate attribute
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[key]) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = translations[key];
+            } else {
+                element.textContent = translations[key];
+            }
+        }
+    });
+
+    // Update language selector
+    const langSelector = document.getElementById('language-selector');
+    if (langSelector) {
+        langSelector.value = lang;
+    }
+}
+
+// Initialize language on page load
+document.addEventListener('DOMContentLoaded', function () {
+    const currentLang = getCurrentLanguage();
+    applyTranslations(currentLang);
+
+    // Language selector change event
+    const langSelector = document.getElementById('language-selector');
+    if (langSelector) {
+        langSelector.value = currentLang;
+        langSelector.addEventListener('change', function () {
+            setLanguage(this.value);
+        });
+    }
+});/* ===================================
+   UniBase - LocalStorage Management
+   Storage keys and data access functions
+   =================================== */
+
+const STORAGE_KEYS = {
+    USERS: 'unibase_users',
+    TESTS: 'unibase_tests',
+    RESULTS: 'unibase_results',
+    CURRENT_USER: 'unibase_current_user'
+};
+
+// Default admin credentials
+const DEFAULT_ADMIN = {
+    id: 'admin-001',
+    email: 'admin@unibase.com',
+    password: 'admin123', // In production, this should be hashed
+    role: 'admin',
+    name: 'Admin User',
+    createdAt: new Date().toISOString()
+};
+
+// Initialize storage with default admin
+function initializeStorage() {
+    if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+        const users = [DEFAULT_ADMIN];
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    }
+
+    if (!localStorage.getItem(STORAGE_KEYS.TESTS)) {
+        localStorage.setItem(STORAGE_KEYS.TESTS, JSON.stringify([]));
+    }
+
+    if (!localStorage.getItem(STORAGE_KEYS.RESULTS)) {
+        localStorage.setItem(STORAGE_KEYS.RESULTS, JSON.stringify([]));
+    }
+}
+
+// User management
+function saveUser(user) {
+    const users = getUsers();
+    users.push(user);
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+}
+
+function getUsers() {
+    const users = localStorage.getItem(STORAGE_KEYS.USERS);
+    return users ? JSON.parse(users) : [];
+}
+
+function getUserByEmail(email) {
+    const users = getUsers();
+    return users.find(user => user.email === email);
+}
+
+function setCurrentUser(user) {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+}
+
+function getCurrentUser() {
+    const user = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+    return user ? JSON.parse(user) : null;
+}
+
+function logout() {
+    localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+}
+
+// Test management
+function saveTest(test) {
+    const tests = getTests();
+    test.id = 'test-' + Date.now();
+    test.createdAt = new Date().toISOString();
+    tests.push(test);
+    localStorage.setItem(STORAGE_KEYS.TESTS, JSON.stringify(tests));
+    return test;
+}
+
+function getTests() {
+    const tests = localStorage.getItem(STORAGE_KEYS.TESTS);
+    return tests ? JSON.parse(tests) : [];
+}
+
+function getTestById(testId) {
+    const tests = getTests();
+    return tests.find(test => test.id === testId);
+}
+
+function updateTest(testId, updatedTest) {
+    const tests = getTests();
+    const index = tests.findIndex(test => test.id === testId);
+    if (index !== -1) {
+        tests[index] = { ...tests[index], ...updatedTest };
+        localStorage.setItem(STORAGE_KEYS.TESTS, JSON.stringify(tests));
+        return tests[index];
+    }
+    return null;
+}
+
+function deleteTest(testId) {
+    const tests = getTests();
+    const filtered = tests.filter(test => test.id !== testId);
+    localStorage.setItem(STORAGE_KEYS.TESTS, JSON.stringify(filtered));
+}
+
+// Results management
+function saveResult(result) {
+    const results = getResults();
+    result.id = 'result-' + Date.now();
+    result.completedAt = new Date().toISOString();
+    results.push(result);
+    localStorage.setItem(STORAGE_KEYS.RESULTS, JSON.stringify(results));
+    return result;
+}
+
+function getResults() {
+    const results = localStorage.getItem(STORAGE_KEYS.RESULTS);
+    return results ? JSON.parse(results) : [];
+}
+
+function getResultsByUserId(userId) {
+    const results = getResults();
+    return results.filter(result => result.userId === userId);
+}
+
+function getResultsByTestId(testId) {
+    const results = getResults();
+    return results.filter(result => result.testId === testId);
+}
+
+// Initialize on load
+initializeStorage();
+/* ===================================
+   UniBase - Theme Management
+   Dark mode toggle functionality
+   =================================== */
+
+// Get saved theme or default to light
+function getCurrentTheme() {
+    return localStorage.getItem('unibase_theme') || 'light';
+}
+
+// Set theme
+function setTheme(theme) {
+    localStorage.setItem('unibase_theme', theme);
+    applyTheme(theme);
+}
+
+// Apply theme to document
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+
+    // Update toggle button icon
+    updateThemeToggleIcon(theme);
+}
+
+// Update theme toggle icon
+function updateThemeToggleIcon(theme) {
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        if (theme === 'dark') {
+            themeToggle.innerHTML = '☀️';
+            themeToggle.title = 'Switch to light mode';
+        } else {
+            themeToggle.innerHTML = '🌙';
+            themeToggle.title = 'Switch to dark mode';
+        }
+    }
+}
+
+// Toggle theme
+function toggleTheme() {
+    const currentTheme = getCurrentTheme();
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+}
+
+// Initialize theme on page load
+document.addEventListener('DOMContentLoaded', function () {
+    const currentTheme = getCurrentTheme();
+    applyTheme(currentTheme);
+
+    // Theme toggle button event
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+});
+/* ===================================
+   UniBase - Timer Component
+   Countdown timer for test-taking
+   =================================== */
+
+class TestTimer {
+    constructor(durationMinutes, onTimeUp) {
+        this.duration = durationMinutes * 60; // Convert to seconds
+        this.remainingTime = this.duration;
+        this.onTimeUp = onTimeUp;
+        this.intervalId = null;
+        this.isPaused = false;
+    }
+
+    start() {
+        if (this.intervalId) return; // Already running
+
+        this.intervalId = setInterval(() => {
+            if (!this.isPaused) {
+                this.remainingTime--;
+                this.updateDisplay();
+
+                // Check warnings
+                if (this.remainingTime === 300) { // 5 minutes
+                    this.showWarning('5 minutes remaining!');
+                } else if (this.remainingTime === 60) { // 1 minute
+                    this.showWarning('1 minute remaining!');
+                }
+
+                // Time up
+                if (this.remainingTime <= 0) {
+                    this.stop();
+                    if (this.onTimeUp) {
+                        this.onTimeUp();
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    stop() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
+    }
+
+    pause() {
+        this.isPaused = true;
+    }
+
+    resume() {
+        this.isPaused = false;
+    }
+
+    updateDisplay() {
+        const timerElement = document.getElementById('timer-display');
+        if (!timerElement) return;
+
+        const minutes = Math.floor(this.remainingTime / 60);
+        const seconds = this.remainingTime % 60;
+
+        timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        // Update timer class based on time remaining
+        timerElement.classList.remove('warning', 'danger');
+        if (this.remainingTime <= 60) {
+            timerElement.classList.add('danger');
+        } else if (this.remainingTime <= 300) {
+            timerElement.classList.add('warning');
+        }
+    }
+
+    showWarning(message) {
+        // Show alert
+        const alertContainer = document.getElementById('alert-container');
+        if (alertContainer) {
+            alertContainer.innerHTML = `
+        <div class="alert alert-warning">
+          <strong>⚠️ Warning:</strong> ${message}
+        </div>
+      `;
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+    }
+
+    getTimeSpent() {
+        return this.duration - this.remainingTime;
+    }
+
+    getFormattedTimeSpent() {
+        const timeSpent = this.getTimeSpent();
+        const minutes = Math.floor(timeSpent / 60);
+        const seconds = timeSpent % 60;
+        return `${minutes}m ${seconds}s`;
+    }
+}
+
+</script>
+<style>
+/* ===================================
+   UniBase Exam Platform - Main Styles
+   =================================== */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ===================================
+   CSS Custom Properties (Design Tokens)
+   =================================== */
+:root {
+    /* Primary Colors */
+    --color-primary: #1e3a5f;
+    --color-primary-dark: #152b47;
+    --color-primary-light: #2a4d7a;
+
+    /* Accent Colors */
+    --color-accent: #26d0ce;
+    --color-accent-dark: #1db5b3;
+    --color-accent-light: #4dd9d7;
+
+    /* Neutral Colors */
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
+
+    /* Semantic Colors */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-error: #ef4444;
+    --color-info: #3b82f6;
+
+    /* Typography */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+
+    /* Border Radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   Global Reset & Base Styles
+   =================================== */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-
 }
-body{
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--color-gray-800);
+    background-color: var(--color-gray-50);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===================================
+   Typography
+   =================================== */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+h1 {
+    font-size: var(--font-size-5xl);
+}
+
+h2 {
+    font-size: var(--font-size-4xl);
+}
+
+h3 {
+    font-size: var(--font-size-3xl);
+}
+
+h4 {
+    font-size: var(--font-size-2xl);
+}
+
+h5 {
+    font-size: var(--font-size-xl);
+}
+
+h6 {
+    font-size: var(--font-size-lg);
+}
+
+p {
+    margin-bottom: var(--spacing-md);
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-accent-dark);
+}
+
+/* ===================================
+   Layout Utilities
+   =================================== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+.container-fluid {
+    width: 100%;
+    padding: 0 var(--spacing-lg);
+}
+
+.section {
+    padding: var(--spacing-3xl) 0;
+}
+
+.grid {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.flex {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.flex-center {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height:100vh;
-    background: DarkSlateBlue;
-    background-size: cover;
-    background-position: center;
 }
-.wrapper{
-    width: 420px;
-    background: transparent;
-    border: 2px solid CornflowerBlue;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 10px black;
 
-    color: #fff;
-    border-radius: 10px;
-    padding: 30px 40px;
-
-}
-.wrapper h1{
-    font-size: 36px;
-    text-align: center;
-}
-.wrapper .remember-forgot{
+.flex-between {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
-    margin: -15px 0 15px;
-
-}
-.remember-forgot label input{
-    accent-color: #fff;
-    margin-right: 3px;
+    align-items: center;
 }
 
-.remember-forgot a {
-    color: #fff;
-    text-decoration: none;
-}
-.remember-forgot a:hover{
-    text-decoration: underline;
-}
-.wrapper .btn{
-    width: 100%;
-    height: 45px;
-    background: #fff;
-    border: none;
-    outline: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px black;
-    cursor: pointer;
-    font-size: 16px;
-    color: #333;
-    font-weight:600 ;
-}
-
-.wrapper .register-link{
-    font-size: 14px;
+.text-center {
     text-align: center;
-    margin: 20px 0 15px;
 }
-.register-link{
-    color: white;
-    text-decoration:none ;
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* ===================================
+   Header & Navigation
+   =================================== */
+header {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: var(--spacing-lg) 0;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    color: var(--color-white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: transform var(--transition-fast);
+}
+
+.logo:hover {
+    color: var(--color-accent-light);
+    transform: scale(1.02);
+}
+
+.logo-img {
+    height: 45px;
+    width: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: transform var(--transition-fast);
+}
+
+.logo-text {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    color: var(--color-white);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+}
+
+nav a {
+    color: var(--color-white);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+nav a:hover {
+    background-color: var(--color-primary-light);
+    color: var(--color-white);
+    transform: translateY(-2px);
+}
+
+.auth-links {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.language-selector {
+    background-color: var(--color-primary-light);
+    color: var(--color-white);
+    border: 2px solid var(--color-white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-family);
+}
+
+.language-selector:hover {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+}
+
+.language-selector:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.theme-toggle {
+    background-color: var(--color-primary-light);
+    color: var(--color-white);
+    border: 2px solid var(--color-white);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    background-color: var(--color-white);
+    transform: scale(1.1) rotate(15deg);
+}
+
+.theme-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* ===================================
+   Buttons
+   =================================== */
+.btn {
+    display: inline-block;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-decoration: none;
+    font-family: var(--font-family);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+    color: var(--color-white);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: var(--color-white);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-white);
+    border: 2px solid var(--color-white);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+
+.btn-outline:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.btn-danger {
+    background-color: var(--color-error);
+    color: var(--color-white);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btn-success {
+    background-color: var(--color-success);
+    color: var(--color-white);
+}
+
+.btn-success:hover {
+    background-color: #059669;
+}
+
+.btn-lg {
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    font-size: var(--font-size-lg);
+}
+
+.btn-sm {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===================================
+   Cards
+   =================================== */
+.card {
+    background-color: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.card-header {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--color-gray-100);
+}
+
+.card-title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.card-description {
+    color: var(--color-gray-600);
+    font-size: var(--font-size-sm);
+}
+
+.card-body {
+    margin-bottom: var(--spacing-lg);
+}
+
+.card-footer {
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+/* ===================================
+   Hero Section
+   =================================== */
+.hero {
+    background: linear-gradient(135deg, rgba(30, 58, 95, 0.85) 0%, rgba(21, 43, 71, 0.9) 100%),
+        url('../../media/media/hero-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--color-white);
+    padding: var(--spacing-3xl) 0;
+    text-align: center;
+    position: relative;
+}
+
+.hero-title {
+    font-size: var(--font-size-5xl);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-lg);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-gray-200);
+    margin-bottom: var(--spacing-2xl);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-actions {
+    display: flex;
+    gap: var(--spacing-lg);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ===================================
+   Forms
+   =================================== */
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--color-gray-700);
+    font-size: var(--font-size-sm);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    transition: all var(--transition-fast);
+    background-color: var(--color-white);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
+}
+
+.form-input.error,
+.form-select.error,
+.form-textarea.error {
+    border-color: var(--color-error);
+}
+
+.form-error {
+    color: var(--color-error);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-xs);
+    display: block;
+}
+
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.form-checkbox input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* ===================================
+   Test Cards
+   =================================== */
+.test-card {
+    background: linear-gradient(135deg, var(--color-white) 0%, var(--color-gray-50) 100%);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    transition: all var(--transition-base);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.test-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-primary) 100%);
+    transform: scaleX(0);
+    transition: transform var(--transition-base);
+}
+
+.test-card:hover::before {
+    transform: scaleX(1);
+}
+
+.test-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-xl);
+}
+
+.test-card-badge {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+}
+
+/* ===================================
+   Timer Display
+   =================================== */
+.timer {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: var(--color-white);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    box-shadow: var(--shadow-lg);
+    min-width: 200px;
+}
+
+.timer.warning {
+    background: linear-gradient(135deg, var(--color-warning) 0%, #d97706 100%);
+    animation: pulse 1s infinite;
+}
+
+.timer.danger {
+    background: linear-gradient(135deg, var(--color-error) 0%, #dc2626 100%);
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* ===================================
+   Question Display
+   =================================== */
+.question-container {
+    background-color: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.question-number {
+    color: var(--color-accent);
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.question-text {
+    font-size: var(--font-size-xl);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.6;
+}
+
+.answer-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.answer-option {
+    padding: var(--spacing-lg);
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background-color: var(--color-white);
+    font-size: var(--font-size-base);
+}
+
+.answer-option:hover {
+    border-color: var(--color-accent);
+    background-color: var(--color-gray-50);
+    transform: translateX(8px);
+}
+
+.answer-option.selected {
+    border-color: var(--color-accent);
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+    color: var(--color-white);
     font-weight: 600;
 }
-.register-link a{
-    color: Black;
-    text-decoration:none ;
+
+/* ===================================
+   Dashboard Stats
+   =================================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
 }
-.register-link p a:hover{
-    text-decoration: underline;
+
+.stat-card {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    color: var(--color-white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-value {
+    font-size: var(--font-size-4xl);
+    font-weight: 800;
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-label {
+    font-size: var(--font-size-base);
+    opacity: 0.9;
+}
+
+/* ===================================
+   Footer
+   =================================== */
+footer {
+    background-color: var(--color-gray-900);
+    color: var(--color-gray-400);
+    padding: var(--spacing-2xl) 0;
+    margin-top: var(--spacing-3xl);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+}
+
+.footer-links {
+    display: flex;
+    gap: var(--spacing-xl);
+    list-style: none;
+}
+
+.footer-links a {
+    color: var(--color-gray-400);
+    transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: var(--color-white);
+}
+
+/* ===================================
+   Alerts & Messages
+   =================================== */
+.alert {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-left: 4px solid var(--color-success);
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid var(--color-error);
+}
+
+.alert-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+    border-left: 4px solid var(--color-warning);
+}
+
+.alert-info {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-left: 4px solid var(--color-info);
+}
+
+/* ===================================
+   Utility Classes
+   =================================== */
+.mt-1 {
+    margin-top: var(--spacing-sm);
+}
+
+.mt-2 {
+    margin-top: var(--spacing-md);
+}
+
+.mt-3 {
+    margin-top: var(--spacing-lg);
+}
+
+.mt-4 {
+    margin-top: var(--spacing-xl);
+}
+
+.mb-1 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.mb-2 {
+    margin-bottom: var(--spacing-md);
+}
+
+.mb-3 {
+    margin-bottom: var(--spacing-lg);
+}
+
+.mb-4 {
+    margin-bottom: var(--spacing-xl);
+}
+
+.p-1 {
+    padding: var(--spacing-sm);
+}
+
+.p-2 {
+    padding: var(--spacing-md);
+}
+
+.p-3 {
+    padding: var(--spacing-lg);
+}
+
+.p-4 {
+    padding: var(--spacing-xl);
+}
+
+.hidden {
+    display: none;
+}
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+/* ===================================
+   UniBase - Dark Mode Styles
+   =================================== */
+
+/* Dark mode color overrides */
+body.dark-mode {
+    --color-gray-50: #1f2937;
+    --color-gray-100: #1f2937;
+    --color-gray-200: #374151;
+    --color-gray-300: #4b5563;
+    --color-gray-400: #6b7280;
+    --color-gray-500: #9ca3af;
+    --color-gray-600: #d1d5db;
+    --color-gray-700: #e5e7eb;
+    --color-gray-800: #f3f4f6;
+    --color-gray-900: #f9fafb;
+
+    background-color: #111827;
+    color: var(--color-gray-800);
+}
+
+/* Dark mode specific overrides */
+body.dark-mode .card {
+    background-color: #1f2937;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .test-card {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    border-color: #374151;
+}
+
+body.dark-mode .form-input,
+body.dark-mode .form-select,
+body.dark-mode .form-textarea {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: var(--color-gray-800);
+}
+
+body.dark-mode .question-container {
+    background-color: #1f2937;
+}
+
+body.dark-mode .answer-option {
+    background-color: #1f2937;
+    border-color: #374151;
+}
+
+body.dark-mode footer {
+    background-color: #000000;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    background-color: transparent;
+    border: 2px solid var(--color-white);
+    color: var(--color-white);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-toggle:hover {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+}
+
+/* Language selector */
+.language-selector {
+    background-color: transparent;
+    border: 2px solid var(--color-white);
+    color: var(--color-white);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+}
+
+.language-selector:hover {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+}
+
+.language-selector option {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+/* ===================================
+   UniBase - Responsive Styles
+   =================================== */
+
+/* Tablet Devices (768px and below) */
+@media (max-width: 768px) {
+
+    /* Typography adjustments */
+    h1 {
+        font-size: var(--font-size-4xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-3xl);
+    }
+
+    h3 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .hero-title {
+        font-size: var(--font-size-4xl);
+    }
+
+    /* Grid adjustments */
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Navigation */
+    nav ul {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        width: 100%;
+    }
+
+    .header-container {
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    /* Logo responsive */
+    .logo-img {
+        height: 35px;
+        width: 35px;
+    }
+
+    .logo-text {
+        font-size: var(--font-size-xl);
+    }
+
+    /* Auth links responsive */
+    .auth-links {
+        width: 100%;
+        justify-content: center;
+        gap: var(--spacing-sm);
+    }
+
+    /* Hero section */
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    /* Spacing adjustments */
+    .section {
+        padding: var(--spacing-2xl) 0;
+    }
+
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+}
+
+/* Mobile Devices (480px and below) */
+@media (max-width: 480px) {
+
+    /* Further typography adjustments */
+    h1 {
+        font-size: var(--font-size-3xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .hero-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .hero-subtitle {
+        font-size: var(--font-size-base);
+    }
+
+    /* Logo mobile */
+    .logo-img {
+        height: 30px;
+        width: 30px;
+    }
+
+    .logo-text {
+        font-size: var(--font-size-lg);
+    }
+
+    /* Auth buttons mobile */
+    .auth-links {
+        flex-direction: row;
+        gap: var(--spacing-sm);
+        width: 100%;
+    }
+
+    .auth-links .btn {
+        flex: 1;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+
+    /* Buttons */
+    .btn {
+        width: 100%;
+        padding: var(--spacing-md);
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+    }
+
+    /* Cards */
+    .card {
+        padding: var(--spacing-md);
+    }
+
+    .test-card {
+        padding: var(--spacing-md);
+    }
+
+    /* Question container */
+    .question-container {
+        padding: var(--spacing-lg);
+    }
+
+    .question-text {
+        font-size: var(--font-size-base);
+    }
+
+    /* Timer */
+    .timer {
+        font-size: var(--font-size-xl);
+        min-width: 150px;
+    }
+
+    /* Forms */
+    .form-input,
+    .form-select,
+    .form-textarea {
+        font-size: var(--font-size-base);
+    }
 }
 </style>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
-    <link rel="stylesheet" href="style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Login - UniBase</title>
 </head>
-<body>
-<form method="POST">
-    {% csrf_token %}
-    <div class="wrapper">
-        <form method="POST">
-            <h1>Sign In</h1>
-            {{form|crispy}}
-            <button type="submit" class="btn">Sign In</button>
-            <div class="register-link">
-                <p>Akkauntingiz Bormi: <a href="{% url 'login' %}">Log In</a></p>
 
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="index.html" class="logo">UniBase</a>
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'fanlar' %}" data-translate="home">Home</a></li>
+                        <li><a href="{% url 'sign' %}" data-translate="nav_register">Register</a></li>
+                        <li>
+                            <select id="language-selector" class="language-selector">
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                                <option value="uz">O'zbekcha</option>
+                            </select>
+                        </li>
+                        <li>
+                            <button id="theme-toggle" class="theme-toggle">🌙</button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-        </form>
-    </div>
-</form>
+        </div>
+    </header>
+<section class="section">
+        <div class="container" style="max-width: 500px;">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 class="card-title" data-translate="login_title">Welcome Back</h2>
+                    <p class="card-description" data-translate="login_subtitle">Login to continue your exam preparation
+                    </p>
+                </div>
+
+                <div class="card-body">
+                    <div id="alert-container"></div>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <form method="POST">
+                        {% csrf_token %}
+                         <div class="wrapper" style="justify-content: center">
+                            <form method="POST">
+                                {{form|crispy}}
+                                <button style="border-radius: 30px" type="submit" class="btn btn-primary">Sign Up</button>
+                            </form>
+                        </div>
+                    </form>
+                            <div class="text-center mt-3">
+                        <p><span data-translate="register_have_account">Already have an account?</span> <a
+                                href="{% url 'login' %}" data-translate="register_login_here">Login here</a></p>
+                    </div>
+
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
+
 </html>
