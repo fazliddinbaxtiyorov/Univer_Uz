@@ -9,29 +9,34 @@ from .forms import UserRegisterForm
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, 'Your account has been registered.')
-                return redirect('/')
-            else:
-                messages.error(request, 'Failed to authenticate user.')
-        else:
-            messages.error(request, 'Invalid form submission.')
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Siz muvaffaqiyatli ro‘yxatdan o‘tdingiz!')
+            return redirect('/')
     else:
         form = UserRegisterForm()
-    return render(request, 'sign.html', {'form': form})
 
+    return render(request, 'sign.html', {'form': form})
 
 class Login(LoginView):
     template_name = 'login.html'
+    redirect_authenticated_user = True
 
     def get_success_url(self):
+        return reverse_lazy('fanlar')
 
-        return reverse_lazy('adminpage')
+
+def profile(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        username = form.cleaned_data.get('username')
+        return render(request, 'profile.html', {'user': username})
+    else:
+        form = UserRegisterForm()
+        return render(request, 'profile.html', {'form': form})

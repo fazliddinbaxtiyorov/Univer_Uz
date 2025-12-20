@@ -1,0 +1,23 @@
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <div class="card shadow p-5" style="max-width: 600px; margin: auto; border-radius: 20px;">
+        <div class="mb-4">
+            <i class="fas fa-trophy fa-5x text-warning"></i>
+        </div>
+        <h1 class="display-4 font-weight-bold">Test Yakunlandi!</h1>
+        <hr>
+        <p class="h4 text-muted mb-4">Sizning umumiy natijangiz:</p>
+
+        <div class="score-display bg-primary text-white p-4 rounded-circle d-inline-block shadow" style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <h1 style="font-size: 48px; margin: 0;">{{ score }}</h1>
+            <span>ball</span>
+        </div>
+
+        <div class="mt-5">
+            <a href="{% url 'dtm_test' %}" class="btn btn-outline-primary btn-lg mr-2">Qayta topshirish</a>
+            <a href="/" class="btn btn-primary btn-lg">Bosh sahifaga qaytish</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

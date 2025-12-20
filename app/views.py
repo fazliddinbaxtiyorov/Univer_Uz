@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm, Writing, DTMForm
+from .forms import FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm, IELTSListeningForm, SATForm, Writing, TestFanForm
 from .models import IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion, SATQuestion, Davlat_Univer, Xususiy_Univer, Xorijiy_Univer
 from django.db.models import Q
 
@@ -87,7 +87,7 @@ def fan_tanlash(request):
         form = FanTanlashForm(request.POST)
         if form.is_valid():
             fan = form.cleaned_data["fan"]
-            return redirect("test_boshlash", fan=fan)
+            return redirect("milliy", fan=fan)
     else:
         form = FanTanlashForm()
 
@@ -178,3 +178,66 @@ def search(request):
     davlat_search = Davlat_Univer.objects.filter(Q(title__icontains=query))
     xususiy_search = Xususiy_Univer.objects.filter(Q(title__icontains=query))
     xorijiy_search = Xorijiy_Univer.objects.filter(Q(title__icontains=query))
+
+
+
+
+def dtm_test_view(request):
+    if 'selected_subjects' not in request.session:
+        if request.method == "POST":
+            birinchi_fan = request.POST.get('birinchi_fan')
+            ikkinchi_fan = request.POST.get('ikkinchi_fan')
+
+            if birinchi_fan and ikkinchi_fan and birinchi_fan != ikkinchi_fan:
+                tanlangan = [birinchi_fan, ikkinchi_fan]
+                fanlar = {
+                    '1': birinchi_fan,
+                    '2': ikkinchi_fan,
+                    '3': 'Ona Tili' if 'Ona Tili' not in tanlangan else 'Ingliz Tili',
+                    '4': 'Matematika' if 'Matematika' not in tanlangan else 'Fizika',
+                    '5': 'Tarix'
+                }
+
+                request.session['selected_subjects'] = fanlar
+                request.session['current_step'] = 1
+                request.session['total_score'] = 0.0
+                return redirect('dtm_test')
+            else:
+                return render(request, 'select_subjects.html', {'xato': 'Ikkala fan ham tanlanishi va bir xil bo\'lmasligi kerak!'})
+
+        return render(request, 'select_subjects.html')
+
+    step = request.session.get('current_step', 1)
+    subjects = request.session['selected_subjects']
+
+    if step > 5:
+        score = request.session.get('total_score', 0)
+        request.session.flush()
+        return render(request, 'result.html', {'score': round(score, 1)})
+
+    current_subject = subjects[str(step)]
+    ball = 3.1 if step == 1 else 2.1 if step == 2 else 1.1
+    questions = Milliy_Sertifikat.objects.filter(fan=current_subject)
+
+    form = TestFanForm(questions=questions)
+
+    if request.method == "POST":
+        form = TestFanForm(request.POST, questions=questions)
+        if form.is_valid():
+            togri_javoblar = 0
+            for q in questions:
+                user_javob = form.cleaned_data.get(f'q_{q.id}')
+                if user_javob == q.togri_variant:
+                    togri_javoblar += 1
+
+            request.session['total_score'] += togri_javoblar * ball
+            request.session['current_step'] += 1
+            return redirect('dtm_test')
+
+    return render(request, 'test_process.html', {
+        'subject': current_subject,
+        'questions': questions,
+        'step': step,
+        'ball': ball,
+        'form': form
+    })

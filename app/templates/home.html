@@ -2194,43 +2194,45 @@ body.dark-mode footer {
 <body>
     <!-- Header -->
     <header>
-        <div class="container">
-            <div class="header-container">
-                <a href="index.html" class="logo">
-                    <img src=/media/media/logo.jpg alt="UniBase - UNIVER.UZ Logo" class="logo-img">
-                    <span class="logo-text">UniBase</span>
-                </a>
-                <nav>
-                    <ul>
-                        <li><a href="#tests" data-translate="nav_tests">Tests</a></li>
-                        <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
-                        <li><a href="#news" data-translate="nav_news">News</a></li>
-                        <li><a href="#features" data-translate="nav_features">Features</a></li>
-                        <li><a href="#support" data-translate="nav_support">Support</a></li>
-                        <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
+    <div class="container">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <span class="logo-text">UniBase</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#tests" data-translate="nav_tests">Tests</a></li>
+                    <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
+                    <li><a href="{% url 'profile' %}" data-translate="nav_news">News</a></li>
+
+                    <li>
+                        <select id="language-selector" class="language-selector">
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                            <option value="uz">O'zbekcha</option>
+                        </select>
+                    </li>
+                    <li>
+                        <button id="theme-toggle" class="theme-toggle">🌙</button>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        <li class="auth-links">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
                         </li>
-                        <li>
-                            <button id="theme-toggle" class="theme-toggle">🌙</button>
-                        </li>
-                        <li id="auth-links" class="auth-links">
+                    {% else %}
+                        <li class="auth-links">
                             <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
-                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm"
-                                data-translate="nav_register">Register</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
                         </li>
-                        <li id="user-links" class="hidden">
-                            <a href="#" id="dashboard-link" data-translate="nav_dashboard">Dashboard</a>
-                            <a href="#" onclick="handleLogout(); return false;" data-translate="nav_logout">Logout</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
-    </header>
+    </div>
+</header>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -2248,56 +2250,68 @@ body.dark-mode footer {
 
     <!-- Tests Section -->
     <section id="tests" class="section">
-        <div class="container">
-            <h2 class="text-center mb-4" data-translate="tests_title">Choose Your Test</h2>
-            <div class="grid grid-4" id="tests-grid">
-                <!-- Test cards will be loaded dynamically or shown statically -->
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_english">ENGLISH</span>
-                    <h3 class="card-title" data-translate="test_ielts_title">IELTS</h3>
-                    <p class="card-description" data-translate="test_ielts_desc">Comprehensive IELTS practice across all
-                        sections with realistic exam
-                        conditions.</p>
+    <div class="container">
+        <h2 class="text-center mb-4" data-translate="tests_title">Choose Your Test</h2>
+        <div class="grid grid-4" id="tests-grid">
+
+            <div class="test-card">
+                <span class="test-card-badge" data-translate="test_badge_english">ENGLISH</span>
+                <h3 class="card-title" data-translate="test_ielts_title">IELTS</h3>
+                <p class="card-description" data-translate="test_ielts_desc">Comprehensive IELTS practice across all sections with realistic exam conditions.</p>
+                {% if user.is_authenticated %}
                     <a href="{% url 'ielts' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                </div>
-
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_academic">ACADEMIC</span>
-                    <h3 class="card-title" data-translate="test_sat_title">SAT</h3>
-                    <p class="card-description" data-translate="test_sat_desc">Prepare for SAT with Math and English
-                        sections in a timed environment.
-                    </p>
-                    <a href="{% url 'sat' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                </div>
-
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_national">NATIONAL</span>
-                    <h3 class="card-title" data-translate="test_milliy_title">Milliy certificate</h3>
-                    <p class="card-description" data-translate="test_milliy_desc">National certification exam practice
-                        with comprehensive question bank.
-                    </p>
-                    <a href="{% url 'fan_tanlash' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                </div>
-
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_entrance">ENTRANCE</span>
-                    <h3 class="card-title" data-translate="test_dtm_title">DTM</h3>
-                    <p class="card-description" data-translate="test_dtm_desc">Prepare for university entrance exams
-                        with realistic test simulations.
-                    </p>
-                    <a href="{% url 'fan_tanlash' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                </div>
-
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_cognitive">COGNITIVE</span>
-                    <h3 class="card-title" data-translate="test_iq_title">IQ</h3>
-                    <p class="card-description" data-translate="test_iq_desc">Test your cognitive abilities with timed
-                        IQ assessment questions.</p>
+                {% else %}
                     <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                </div>
+                {% endif %}
             </div>
+
+            <div class="test-card">
+                <span class="test-card-badge" data-translate="test_badge_academic">ACADEMIC</span>
+                <h3 class="card-title" data-translate="test_sat_title">SAT</h3>
+                <p class="card-description" data-translate="test_sat_desc">Prepare for SAT with Math and English sections in a timed environment.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'sat' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% endif %}
+            </div>
+
+            <div class="test-card">
+                <span class="test-card-badge" data-translate="test_badge_national">NATIONAL</span>
+                <h3 class="card-title" data-translate="test_milliy_title">Milliy certificate</h3>
+                <p class="card-description" data-translate="test_milliy_desc">National certification exam practice with comprehensive question bank.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'fan_tanlash' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% endif %}
+            </div>
+
+            <div class="test-card">
+                <span class="test-card-badge" data-translate="test_badge_entrance">ENTRANCE</span>
+                <h3 class="card-title" data-translate="test_dtm_title">DTM</h3>
+                <p class="card-description" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic test simulations.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dtm_test' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% endif %}
+            </div>
+
+            <div class="test-card">
+                <span class="test-card-badge" data-translate="test_badge_cognitive">COGNITIVE</span>
+                <h3 class="card-title" data-translate="test_iq_title">IQ</h3>
+                <p class="card-description" data-translate="test_iq_desc">Test your cognitive abilities with timed IQ assessment questions.</p>
+                {% if user.is_authenticated %}
+                    <a href="" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                {% endif %}
+            </div>
+
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Features Section -->
     <section id="features" class="section" style="background-color: var(--color-white);">

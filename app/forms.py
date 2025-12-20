@@ -8,6 +8,25 @@ class DTMForm(forms.ModelForm):
         fields = '__all__'
 
 
+class TestFanForm(forms.Form):
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if questions:
+            for q in questions:
+                items = q.togri_javob.split()
+                choices = []
+                for i in range(0, len(items), 2):
+                    if i + 1 < len(items):
+                        key = items[i]
+                        value = f"{items[i]} {items[i + 1]}"  # A salom
+                        choices.append((key, value))
+
+                self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                    label=q.savol[:50],
+                    choices=choices[:4],
+                    widget=forms.RadioSelect
+                )
+
 class FanlarForm(forms.ModelForm):
     class Meta:
         model = Fanlar
@@ -29,7 +48,6 @@ class StudentsForm(forms.ModelForm):
         fields = '__all__'
 
 
-# ===== IELTS Reading =====
 class IELTSReadingForm(forms.Form):
     def __init__(self, *args, questions=None, **kwargs):
         super().__init__(*args, **kwargs)

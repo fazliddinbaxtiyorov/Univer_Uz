@@ -56,8 +56,8 @@ class IELTS_writing(models.Model):
 
 
 class IELTS_Reading(models.Model):
-    savol = models.TextField(default=0)  # Masalan: "2 + 1 = ?"
-    variantlar = models.TextField(default=0)  # Masalan: "A 3 B 4 C 5 D 6"
+    savol = models.TextField(default=0)
+    variantlar = models.TextField(default=0)
     togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
 
     def __str__(self):
@@ -65,10 +65,10 @@ class IELTS_Reading(models.Model):
 
 
 class IELTSListeningQuestion(models.Model):
-    savol = models.TextField()  # Savol matni
-    variantlar = models.TextField()  # Masalan: "A 3 B 4 C 5 D 6"
+    savol = models.TextField()
+    variantlar = models.TextField()
     togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
-    audio = models.FileField(upload_to='listening_audio/', blank=True, null=True)  # audio fayl
+    audio = models.FileField(upload_to='listening_audio/', blank=True, null=True)
 
     def __str__(self):
         return self.savol
