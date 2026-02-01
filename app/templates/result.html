@@ -1,23 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results - UniBase</title>
 
-{% block content %}
-<div class="container mt-5 text-center">
-    <div class="card shadow p-5" style="max-width: 600px; margin: auto; border-radius: 20px;">
-        <div class="mb-4">
-            <i class="fas fa-trophy fa-5x text-warning"></i>
+     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="{% url 'home'%}" class="logo">UniBase</a>
+                <nav>
+                    <ul>
+                        <li><a href="student-dashboard.html" data-translate="nav_dashboard">Dashboard</a></li>
+                        <li><a href="../../user/templates/profile.html" data-translate="nav_profile">Profile</a></li>
+                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
+                        <li>
+                            <select id="language-selector" class="language-selector">
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                                <option value="uz">O'zbekcha</option>
+                            </select>
+                        </li>
+
+                        <li><a href="{% url 'logout'%}"  data-translate="nav_logout">Logout</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-        <h1 class="display-4 font-weight-bold">Test Yakunlandi!</h1>
+    </header>
+
+    <!-- Results Content -->
+    <section class="section">
+        <div class="container" style="max-width: 800px;">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h1 class="card-title" data-translate="results_title">Test Results</h1>
+                </div>
+
+                <div class="card-body">
+                    <!-- Score Display -->
+                    <div class="stats-grid" style="margin-bottom: 2rem;">
+                        <div class="stat-card">
+                            <div class="stat-value" id="score-display">{{ total }}</div>
+                            <div class="stat-label" data-translate="results_your_score">Your Score</div>
+                        </div>
+<!--                        <div class="stat-card">-->
+<!--                            <div class="stat-value" id="percentage-display">-</div>-->
+<!--                            <div class="stat-label" data-translate="results_percentage">Percentage</div>-->
+<!--                        </div>-->
+                        <div class="stat-card">
+                            <div class="stat-value" id="time-display"><p><p>{{ minutes }} m {{ seconds }} s</p>
+</p></div>
+                            <div class="stat-label" data-translate="results_time_taken">Time Taken</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                            <div class="stat-value" id="percentage-display">{{percentage}} %</div>
+                            <div class="stat-label" data-translate="results_percentage">Percentage</div>
+                        </div>
+
+                    <!-- Performance Message -->
+                    <div id="performance-message" class="alert text-center"></div>
+
+                    <!-- Answer Review -->
+                    <h3 class="mb-3" data-translate="results_answer_review">Answer Review</h3>
+                    <div id="answer-review">
+                        {% for r in results %}
+    <div>
+        <p><b>Savol:</b> {{ r.savol }}</p>
+        <p>Siz: {{ r.user_answer }}</p>
+        <p>To‘g‘ri: {{ r.correct }}</p>
         <hr>
-        <p class="h4 text-muted mb-4">Sizning umumiy natijangiz:</p>
-
-        <div class="score-display bg-primary text-white p-4 rounded-circle d-inline-block shadow" style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
-            <h1 style="font-size: 48px; margin: 0;">{{ score }}</h1>
-            <span>ball</span>
-        </div>
-
-        <div class="mt-5">
-            <a href="{% url 'dtm_test' %}" class="btn btn-outline-primary btn-lg mr-2">Qayta topshirish</a>
-            <a href="/" class="btn btn-primary btn-lg">Bosh sahifaga qaytish</a>
-        </div>
     </div>
-</div>
-{% endblock %}
+{% endfor %}
+
+                        <!-- Answers will be displayed here -->
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex-center mt-4" style="gap: 1rem;">
+                        <a href="student-dashboard.html" class="btn btn-primary"
+                            data-translate="results_back_dashboard">Back to Dashboard</a>
+                        {% for r in results %}
+
+{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

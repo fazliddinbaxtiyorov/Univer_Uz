@@ -1,26 +1,94 @@
-<h2>IELTS Listening Test</h2>
-<form method="POST">
-    {% csrf_token %}
-    {% for field in form %}
-        <div style="margin-bottom:20px;">
-            <p>{{ field.label }}</p>
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening Test - UniBase</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-container">
+                <span class="logo-text">UniBase</span>
+            </a>
 
-            {% comment %}Audio faylni chiqarish{% endcomment %}
-            {% with question_id=field.name|slice:"2:" %}
-                {% for q in questions %}
-                    {% if q.id|stringformat:"s" == question_id %}
-                        {% if q.audio %}
-                            <audio controls>
-                                <source src="{{ q.audio.url }}" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                            </audio>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% endwith %}
+            <div class="flex-center" style="flex: 1; justify-content: center;">
+                <div class="timer" id="timer-display" style="min-width: 120px; padding: 0.5rem 1rem; font-size: 1.5rem; margin: 0;">00:00</div>
+            </div>
 
-            {{ field }}
+            <nav>
+                <ul>
+                    <li>
+                        <select id="language-selector" class="language-selector">
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                            <option value="uz">O'zbekcha</option>
+                        </select>
+                    </li>
+                </ul>
+            </nav>
         </div>
-    {% endfor %}
-    <button type="submit">Submit</button>
-</form>
+    </div>
+</header>
+
+<section class="section">
+    <div class="container" style="max-width: 900px;">
+        <div id="alert-container"></div>
+
+        <div class="card mb-3">
+            <div class="flex-between">
+                <div>
+                    <h2>IELTS Listening Test</h2>
+                    <p>Savollar soni: {{ questions|length }}</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="question-block" style="margin-bottom: 25px;">
+                    <p><strong>{{ field.label }}</strong></p>
+
+                    {% comment %} Audio faylni chiqarish {% endcomment %}
+                    {% with question_id=field.name|slice:"2:" %}
+                        {% for q in questions %}
+                            {% if q.id|stringformat:"s" == question_id %}
+                                {% if q.audio %}
+                                    <audio controls style="margin-bottom: 10px;">
+                                        <source src="{{ q.audio.url }}" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary">Testni Yakunlash</button>
+        </form>
+    </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let seconds = 3600;
+    const el = document.getElementById("timer-display");
+
+    setInterval(() => {
+        seconds--;
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        el.textContent = `${m}:${s}`;
+    }, 1000);
+});
+</script>
+
+</body>
+</html>

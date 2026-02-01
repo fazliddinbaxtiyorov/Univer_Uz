@@ -1,34 +1,397 @@
-<h2>Univer List</h2>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
 
-<ul>
-  {% for item in davlat %}
-    <li>
-      <strong>{% if item.logo %}
-        <img src="{{ item.logo.url }}" alt="{{ item.name }}" width="200">
-      {% else %}
-        <p>Rasm mavjud emas</p>
-      {% endif %}</strong> — {{ item.text }}
-    </li>
-  {% empty %}
-  {% endfor %}
-  {% for item in xususiy %}
-    <li>
-      <strong>{% if item.logo %}
-        <img src="{{ item.logo.url }}" alt="{{ item.name }}" width="200">
-      {% else %}
-        <p>Rasm mavjud emas</p>
-      {% endif %}</strong> — {{ item.text }}
-    </li>
-  {% empty %}
-  {% endfor %}
-  {% for item in xorijiy %}
-    <li>
-      <strong>{% if item.logo %}
-        <img src="{{ item.logo.url }}" alt="{{ item.name }}" width="200">
-      {% else %}
-        <p>Rasm mavjud emas</p>
-      {% endif %}</strong> — {{ item.text }}
-    </li>
-  {% empty %}
-  {% endfor %}
-</ul>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universities - UniBase</title>
+   <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <style>
+        .universities-hero {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: var(--color-white);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .search-section {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            margin: -2rem auto 3rem;
+            max-width: 800px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr 200px auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .search-row input,
+        .search-row select {
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--color-gray-200);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-base);
+            transition: border-color var(--transition-fast);
+        }
+
+        .search-row input:focus,
+        .search-row select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .uni-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .uni-card {
+            background: var(--color-white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            border: 2px solid transparent;
+        }
+
+        .uni-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--color-primary);
+        }
+
+        .uni-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--color-gray-900);
+            font-size: var(--font-size-lg);
+        }
+
+        .uni-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-gray-600);
+            margin-bottom: 1rem;
+            font-size: var(--font-size-sm);
+        }
+
+        .uni-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .uni-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            background-color: var(--color-gray-100);
+            color: var(--color-gray-700);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .uni-link:hover {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-gray-600);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--color-gray-200);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #fee;
+            border-left: 4px solid #f66;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            color: #c33;
+            margin: 2rem 0;
+        }
+
+        .stats-banner {
+            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+            color: var(--color-white);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .stats-banner h2 {
+            margin: 0;
+            font-size: var(--font-size-2xl);
+        }
+
+        @media (max-width: 768px) {
+            .search-row {
+                grid-template-columns: 1fr;
+            }
+
+            .uni-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .universities-hero {
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="{% url 'home' %}" class="logo">UniBase</a>
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'home' %}" data-translate="nav_home">Home</a></li>
+                        <li><a href="universities.html" class="active"
+                                data-translate="nav_universities">Universities</a></li>
+                        <li><a href="{% url 'support' %}" data-translate="nav_support">Support</a></li>
+                        <li>
+                            <select id="language-selector" class="language-selector">
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                                <option value="uz">O'zbekcha</option>
+                            </select>
+                        </li>
+                        <li><a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
+                        </li>
+                        <li><a href="{% url 'sign' %}" class="btn btn-primary btn-sm"
+                                data-translate="nav_register">Register</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="universities-hero">
+        <div class="container">
+            <h1>🎓 Explore Universities Worldwide</h1>
+            <p style="font-size: var(--font-size-lg); margin-top: 1rem; opacity: 0.95;">
+                Search and discover universities from around the globe
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-row">
+                    <div>
+                        <label for="university-search"
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Search University</label>
+                        <input type="text" id="university-search" placeholder="Enter university name...">
+                    </div>
+                    <div>
+                        <label for="country-select"
+                            style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Country</label>
+                        <select id="country-select">
+                            <option value="">All Countries</option>
+                            <option value="United States">United States</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Germany">Germany</option>
+                            <option value="France">France</option>
+                            <option value="China">China</option>
+                            <option value="Japan">Japan</option>
+                            <option value="South Korea">South Korea</option>
+                            <option value="India">India</option>
+                            <option value="Uzbekistan">Uzbekistan</option>
+                            <option value="Russia">Russia</option>
+                        </select>
+                    </div>
+                    <button id="search-btn" class="btn btn-primary" style="padding: 0.875rem 2rem;">🔍 Search</button>
+                </div>
+            </div>
+
+            <!-- Stats Banner -->
+            <div id="stats-banner" class="stats-banner" style="display: none;">
+                <h2 id="results-count">0 Universities Found</h2>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p style="margin-top: 1rem;">Loading universities...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="error-message" style="display: none;"></div>
+
+            <!-- Universities Grid -->
+            <div id="universities-grid" class="uni-grid"></div>
+
+            <!-- Welcome Message -->
+            <div id="welcome-message" class="text-center" style="padding: 3rem;">
+                <h2 style="color: var(--color-gray-700);">🌍 Discover World Universities</h2>
+                <p style="color: var(--color-gray-600); margin-top: 1rem;">
+                    Use the search above to find universities by name or filter by country.<br>
+                    Get instant access to official websites and domains.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="js/language.js"></script>
+    <script>
+        const API_BASE_URL = 'http://universities.hipolabs.com';
+        let currentResults = [];
+
+        // Search universities
+        async function searchUniversities() {
+            const searchTerm = document.getElementById('university-search').value.trim();
+            const country = document.getElementById('country-select').value;
+
+            // Build API URL
+            let apiUrl = `${API_BASE_URL}/search?`;
+            if (searchTerm) {
+                apiUrl += `name=${encodeURIComponent(searchTerm)}`;
+            }
+            if (country) {
+                apiUrl += `${searchTerm ? '&' : ''}country=${encodeURIComponent(country)}`;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('universities-grid').innerHTML = '';
+            document.getElementById('stats-banner').style.display = 'none';
+            document.getElementById('welcome-message').style.display = 'none';
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch universities');
+                }
+
+                const universities = await response.json();
+                currentResults = universities;
+                displayUniversities(universities);
+            } catch (error) {
+                console.error('Error fetching universities:', error);
+                document.getElementById('error-message').textContent = 'Failed to load universities. Please check your internet connection and try again.';
+                document.getElementById('error-message').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // Display universities
+        function displayUniversities(universities) {
+            const grid = document.getElementById('universities-grid');
+            const statsBanner = document.getElementById('stats-banner');
+            const resultsCount = document.getElementById('results-count');
+
+            if (universities.length === 0) {
+                grid.innerHTML = `
+                    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <h3>No universities found</h3>
+                        <p style="color: var(--color-gray-600); margin-top: 0.5rem;">
+                            Try adjusting your search criteria
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show stats
+            resultsCount.textContent = `${universities.length} ${universities.length === 1 ? 'University' : 'Universities'} Found`;
+            statsBanner.style.display = 'block';
+
+            // Render universities
+            grid.innerHTML = universities.map(uni => `
+                <div class="uni-card">
+                    <h3>${escapeHtml(uni.name)}</h3>
+                    <div class="uni-location">
+                        <span>🌍</span>
+                        <span>${escapeHtml(uni.country)}${uni['state-province'] ? ', ' + escapeHtml(uni['state-province']) : ''}</span>
+                    </div>
+                    ${uni.domains && uni.domains.length > 0 ? `
+                        <div style="margin-top: 0.75rem; font-size: var(--font-size-sm); color: var(--color-gray-600);">
+                            <strong>Domain:</strong> ${escapeHtml(uni.domains[0])}
+                        </div>
+                    ` : ''}
+                    ${uni.web_pages && uni.web_pages.length > 0 ? `
+                        <div class="uni-links">
+                            ${uni.web_pages.map(url => `
+                                <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="uni-link">
+                                    🔗 Website
+                                </a>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
+        document.getElementById('search-btn').addEventListener('click', searchUniversities);
+
+        // Enter key to search
+        document.getElementById('university-search').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchUniversities();
+            }
+        });
+
+        document.getElementById('country-select').addEventListener('change', () => {
+            const searchTerm = document.getElementById('university-search').value.trim();
+            const country = document.getElementById('country-select').value;
+            if (searchTerm || country) {
+                searchUniversities();
+            }
+        });
+    </script>
+</body>
+
+</html>

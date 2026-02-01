@@ -1,60 +1,112 @@
-<section class="cards-section">
-    <div class="card-grid">
-        <a href="{% url 'ielts_reading' %}"><div class="card">
-            <h3>Reading</h3>
-            <p></p>
-        </div></a>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-        <a href="{% url 'ielts_listening' %}"><div class="card">
-            <h3>Listening</h3>
-            <p></p>
-        </div></a>
-        <a href="{% url 'writing' %}"><div class="card">
-            <h3>Writing</h3>
-            <p></p>
-        </div></a>
-    </div>
-</section>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Practice - UniBase</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="{% url 'home'%}" class="logo">UniBase</a>
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'home'%}" data-translate="nav_dashboard">Dashboard</a></li>
+                        <li><a href="../../user/templates/profile.html" data-translate="nav_profile">Profile</a></li>
+                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
+                        <li><a href="#" id="user-name-display"></a></li>
+                        <li>
+                            <select id="language-selector" class="language-selector">
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                                <option value="uz">O'zbekcha</option>
+                            </select>
+                        </li>
+                        <li><a href="{% url 'logout' %}" class="btn btn-secondary btn-sm"
+                                data-translate="nav_logout">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+    <!-- Hero Section -->
+    <section class="hero" style="min-height: 40vh; display: flex; align-items: center;">
+        <div class="container text-center">
+            <h1 class="hero-title" data-translate="test_ielts_title">IELTS Practice</h1>
+            <p class="hero-subtitle" data-translate="test_ielts_desc">Comprehensive IELTS practice across all sections
+                with realistic exam conditions.</p>
+        </div>
+    </section>
 
-body {
-    background: black
-    color: #0A3F66;
-}
+    <!-- Tests Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="mb-4">Available Tests</h2>
+            <div class="grid grid-3" id="tests-container">
+                <!-- Tests will be loaded here -->
+            </div>
+        </div>
+    </section>
 
-.cards-section {
-    padding: 50px 40px;
-}
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="../static/auth.js"></script>
+    <script src="js/language.js"></script>
+    <script>
+        // Protect page
+        requireAuth();
 
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
-    max-width: 700px;
-    margin: 0 auto;
-}
+        const user = getCurrentUser();
+        document.getElementById('user-name-display').textContent = user.name;
 
-.card {
-    background: #fff;
-    padding: 25px;
-    height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-    transition: 0.25s;
-}
+        // Load IELTS tests
+        function loadIELTSTests() {
+            const allTests = getTests();
+            const ieltsTests = allTests.filter(test => test.category === 'ENGLISH');
+            const container = document.getElementById('tests-container');
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,
+            if (ieltsTests.length === 0) {
+                container.innerHTML = `
+                    <div class="card" style="grid-column: 1 / -1;">
+                        <div class="card-body text-center">
+                            <h3>No tests available yet</h3>
+                            <p>Please check back later for new IELTS practice tests.</p>
+                            <a href="student-dashboard.html" class="btn btn-outline mt-3">Back to Dashboard</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = ieltsTests.map(test => `
+                <div class="test-card" onclick="startTest('${test.id}')">
+                    <span class="test-card-badge">IELTS</span>
+                    <h3 class="card-title">${test.name}</h3>
+                    <p class="card-description">${test.description || 'Practice your IELTS skills.'}</p>
+                    <p style="margin-top: 1rem; color: var(--color-gray-600);">
+                        <strong>⏱️ Duration:</strong> ${test.duration} minutes<br>
+                        <strong>📝 Questions:</strong> ${test.questions.length}
+                    </p>
+                    <button class="btn btn-primary mt-3" style="width: 100%;">Start Test</button>
+                </div>
+            `).join('');
+        }
+
+        function startTest(testId) {
+            localStorage.setItem('current_test_id', testId);
+            window.location.href = 'test-taking.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadIELTSTests);
+    </script>
+</body>
+
+</html>

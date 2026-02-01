@@ -1,0 +1,34 @@
+<!-- Statistics Card -->
+<div class="profile-card">
+    <h2 style="margin-bottom: 1.5rem;">📊 My Statistics</h2>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <h3 id="stat-tests-taken">{{ total_tests_taken }}</h3>
+            <p>Tests Taken</p>
+        </div>
+        <div class="stat-box"
+            style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);">
+            <h3 id="stat-avg-score">{{ average_score }}%</h3>
+            <p>Average Score</p>
+        </div>
+        <div class="stat-box"
+            style="background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);">
+            <h3 id="stat-best-score">{{ best_score }}%</h3>
+            <p>Best Score</p>
+        </div>
+    </div>
+
+    <!-- Agar xohlasa testlarni ham ko'rsatish -->
+    {% if user_results %}
+    <div style="margin-top: 2rem;">
+        <h3>📌 My Test Results</h3>
+        <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+            {% for result in user_results %}
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                <strong>{{ result.test_name }}</strong> - {{ result.score }}% ({{ result.date_taken|date:"d-m-Y H:i" }})
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>

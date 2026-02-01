@@ -11,8 +11,7 @@ class Fanlar(models.Model):
         ('Tarix', 'Tarix'),
         ('Kimyo', 'Kimyo'),
         ('Biologiya', 'Biologiya'),
-        ('Geografiya', 'Geografiya'),
-        ('Fizika', 'Fiziki'),
+        ('Fizika', 'Fizika'),
         ('Ingliz Tili', 'Ingliz Tili'),
     )
     birinchi_fan = models.CharField(max_length=30, choices=Fan_CHOICES)
@@ -45,37 +44,53 @@ class DTM_Practise(models.Model):
         super().save(*args, **kwargs)
 
 
-class Students(models.Model):
-    ism = models.CharField(max_length=50)
-    raqam = models.CharField(max_length=50, default='+998')
-    hudud = models.CharField(max_length=120)
-
-
 class IELTS_writing(models.Model):
     text = models.TextField()
 
 
 class IELTS_Reading(models.Model):
-    savol = models.TextField(default=0)
-    variantlar = models.TextField(default=0)
-    togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
+    savol = models.TextField()
+
+    variant_a = models.CharField(max_length=255, default='')
+    variant_b = models.CharField(max_length=255, default='')
+    variant_c = models.CharField(max_length=255,default='')
+    variant_d = models.CharField(max_length=255,default='')
+
+    togri_variant = models.CharField(
+        max_length=1,
+        choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")]
+    )
 
     def __str__(self):
-        return self.savol
+        return self.savol[:40]
 
 
 class IELTSListeningQuestion(models.Model):
     savol = models.TextField()
-    variantlar = models.TextField()
-    togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
-    audio = models.FileField(upload_to='listening_audio/', blank=True, null=True)
+
+    variant_a = models.CharField(max_length=255,default='')
+    variant_b = models.CharField(max_length=255,default='')
+    variant_c = models.CharField(max_length=255,default='')
+    variant_d = models.CharField(max_length=255,default='')
+
+    togri_variant = models.CharField(
+        max_length=1,
+        choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")]
+    )
+
+    audio = models.FileField(
+        upload_to="listening_audio/",
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
-        return self.savol
+        return self.savol[:40]
+
 
 
 class Milliy_Sertifikat(models.Model):
-    Fan_CHOICES = (
+    FAN_CHOICES = (
         ('Matematika', 'Matematika'),
         ('Ona Tili', 'Ona Tili'),
         ('Tarix', 'Tarix'),
@@ -85,25 +100,22 @@ class Milliy_Sertifikat(models.Model):
         ('Ingliz Tili', 'Ingliz Tili'),
     )
 
-    VARIANT_CHOICES = (
-        ('A', 'A'),
-        ('B', 'B'),
-        ('C', 'C'),
-        ('D', 'D'),
-    )
-
-    fan = models.CharField(max_length=20, choices=Fan_CHOICES)
+    fan = models.CharField(max_length=20, choices=FAN_CHOICES)
     savol = models.TextField()
 
-    togri_javob = models.TextField()
+    variant_a = models.CharField(max_length=255,default='')
+    variant_b = models.CharField(max_length=255,default='')
+    variant_c = models.CharField(max_length=255,default='')
+    variant_d = models.CharField(max_length=255,default='')
 
-    togri_variant = models.CharField(max_length=1, choices=VARIANT_CHOICES)
+    # faqat A / B / C / D
+    togri_variant = models.CharField(
+        max_length=1,
+        choices=[('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D')]
+    )
 
     def __str__(self):
         return f"{self.fan} | {self.savol[:30]}"
-
-
-from django.db import models
 
 
 class SATQuestion(models.Model):
@@ -113,7 +125,6 @@ class SATQuestion(models.Model):
     variant_c = models.CharField(max_length=255)
     variant_d = models.CharField(max_length=255)
 
-    # faqat A/B/C/D saqlaydi
     togri_variant = models.CharField(
         max_length=1,
         choices=[("A","A"),("B","B"),("C","C"),("D","D")]
@@ -136,3 +147,25 @@ class Xususiy_Univer(models.Model):
 class Xorijiy_Univer(models.Model):
     logo = models.ImageField(upload_to='media/')
     text = models.CharField(max_length=255)
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.subject
+
+from django.contrib.auth.models import User
+from django.db import models
+
+class UserTestResult(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    test_name = models.CharField(max_length=255)
+    score = models.FloatField()   # masalan: 0-100%
+    date_taken = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} | {self.test_name} | {self.score}%"

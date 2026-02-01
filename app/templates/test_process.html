@@ -1,7 +1,87 @@
-<h2>{{ subject }} - {{ step }} ({{ ball }} ball)</h2>
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - UniBase</title>
+     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let seconds = 3600;
+    const el = document.getElementById("timer-display");
 
+    setInterval(() => {
+        seconds--;
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        el.textContent = `${m}:${s}`;
+    }, 1000);
+});
+</script>
+    <style>
+        ul.errorlist {
+    display: none;  /* error matnini yashirish */
+}
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="student-dashboard.html" class="logo">
+                    <span class="logo-text">UniBase</span>
+                </a>
+
+                <div class="flex-center" style="flex: 1; justify-content: center;">
+<div style="min-width: 120px; padding: 0.5rem 1rem; font-size: 1.5rem; margin: 0"; class="timer" id="timer-display">00:00</div>
+
+<script>
+let seconds = 3600;
+const el = document.getElementById("timer-display");
+
+setInterval(() => {
+    seconds--;
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    el.textContent = `${m}:${s}`;
+}, 1000);
+</script>
+</body>
+
+                </div>
+
+                <nav>
+                    <ul>
+                        <li>
+                            <select id="language-selector" class="language-selector">
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                                <option value="uz">O'zbekcha</option>
+                            </select>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Test Content -->
+    <section class="section">
+        <div class="container" style="max-width: 900px;">
+            <div id="alert-container"></div>
+
+            <div class="question-container" id="question-container">
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Keyingi →</button>
 </form>
+
+    </section>
+</body>
+</html>

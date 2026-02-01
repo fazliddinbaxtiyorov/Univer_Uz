@@ -1,3 +1,111 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTM Practice - UniBase</title>
+     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-container">
+                <a href="index.html" class="logo">UniBase</a>
+                <nav>
+                    <ul>
+                        <li><a href="student-dashboard.html" data-translate="nav_dashboard">Dashboard</a></li>
+                        <li><a href="../../user/templates/profile.html" data-translate="nav_profile">Profile</a></li>
+                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
+                        <li><a href="#" id="user-name-display"></a></li>
+                        <li>
+                            <select id="language-selector" class="language-selector">
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                                <option value="uz">O'zbekcha</option>
+                            </select>
+                        </li>
+                        <li><a href="#" onclick="handleLogout(); return false;" class="btn btn-secondary btn-sm"
+                                data-translate="nav_logout">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" style="min-height: 40vh; display: flex; align-items: center;">
+        <div class="container text-center">
+            <h1 class="hero-title" data-translate="test_dtm_title">DTM</h1>
+            <p class="hero-subtitle" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic
+                test simulations.</p>
+        </div>
+    </section>
+
+    <!-- Tests Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="mb-4">Available Tests</h2>
+            <div class="grid grid-3" id="tests-container">
+                <!-- Tests will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="../static/auth.js"></script>
+    <script src="js/language.js"></script>
+    <script>
+        requireAuth();
+        const user = getCurrentUser();
+        document.getElementById('user-name-display').textContent = user.name;
+
+        function loadDTMTests() {
+            const allTests = getTests();
+            const dtmTests = allTests.filter(test => test.category === 'ENTRANCE');
+            const container = document.getElementById('tests-container');
+
+            if (dtmTests.length === 0) {
+                container.innerHTML = `
+                    <div class="card" style="grid-column: 1 / -1;">
+                        <div class="card-body text-center">
+                            <h3>No tests available yet</h3>
+                            <p>Please check back later for new DTM practice tests.</p>
+                            <a href="student-dashboard.html" class="btn btn-outline mt-3">Back to Dashboard</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = dtmTests.map(test => `
+                <div class="test-card" onclick="startTest('${test.id}')">
+                    <span class="test-card-badge">DTM</span>
+                    <h3 class="card-title">${test.name}</h3>
+                    <p class="card-description">${test.description || 'Practice for DTM entrance exam.'}</p>
+                    <p style="margin-top: 1rem; color: var(--color-gray-600);">
+                        <strong>⏱️ Duration:</strong> ${test.duration} minutes<br>
+                        <strong>📝 Questions:</strong> ${test.questions.length}
+                    </p>
+                    <button class="btn btn-primary mt-3" style="width: 100%;">Start Test</button>
+                </div>
+            `).join('');
+        }
+
+        function startTest(testId) {
+            localStorage.setItem('current_test_id', testId);
+            window.location.href = 'test-taking.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDTMTests);
+    </script>
+</body>
+
+</html>
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}

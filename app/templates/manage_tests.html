@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Tests - UniBase Admin</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <link rel="stylesheet" href="{% static 'responsive.css' %}">
+  <style>
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-container">
+        <a href="{% url 'home'%}" class="logo">UniBase</a>
+        <nav>
+          <ul>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <h1>Manage Tests</h1>
+
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <!-- Test Creation Form -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h2>Create New Test</h2>
+        </div>
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+              <label for="category">Category *</label>
+              <select name="category" id="category" class="form-select" required>
+                <option value="">Select category...</option>
+                <option value="IELTS_READING">IELTS Reading</option>
+                <option value="IELTS_LISTENING">IELTS Listening</option>
+                <option value="SAT">SAT</option>
+                <option value="MILL_NATIONAL">Milliy Sertifikat</option>
+              </select>
+            </div>
+
+            <!-- Milliy Sertifikat fan select -->
+            <div class="form-group hidden" id="fan-group">
+              <label for="fan">Fan (Milliy Sertifikat only)</label>
+              <select name="fan" id="fan" class="form-select">
+                <option value="">Select fan...</option>
+                {% for key, value in milliy_fan_choices %}
+                  <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- IELTS Listening audio upload -->
+            <div class="form-group hidden" id="audio-group">
+              <label>Audio (IELTS Listening only)</label>
+              <input type="file" name="audio">
+            </div>
+
+            <div class="form-group">
+              <label for="savol">Question *</label>
+              <textarea name="savol" id="savol" class="form-input" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Variant A *</label>
+              <input type="text" name="variant_a" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label>Variant B *</label>
+              <input type="text" name="variant_b" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label>Variant C *</label>
+              <input type="text" name="variant_c" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label>Variant D *</label>
+              <input type="text" name="variant_d" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label>Correct Answer *</label>
+              <select name="togri_variant" class="form-select" required>
+                <option value="">Select correct answer</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Save Test</button>
+          </form>
+        </div>
+      </div>
+
+
+
+  <script>
+    const categorySelect = document.getElementById("category");
+    const fanGroup = document.getElementById("fan-group");
+    const audioGroup = document.getElementById("audio-group");
+
+    function updateFields() {
+      const value = categorySelect.value;
+      // Milliy Sertifikat -> show fan
+      fanGroup.classList.toggle("hidden", value !== "MILL_NATIONAL");
+      // IELTS Listening -> show audio
+      audioGroup.classList.toggle("hidden", value !== "IELTS_LISTENING");
+    }
+
+    categorySelect.addEventListener("change", updateFields);
+    window.addEventListener("DOMContentLoaded", updateFields);
+  </script>
+</body>
+</html>

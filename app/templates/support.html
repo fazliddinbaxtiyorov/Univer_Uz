@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="UniBase Support - Get help and answers to your questions">
+    <title>Support - UniBase</title>
+
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
+
+<body>
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <span class="logo-text">UniBase</span>
+            </a>
+
+            <button class="mobile-menu-btn">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="{% url 'home' %}">Tests</a></li>
+                    <li><a href="{% url 'univers' %}">Universities</a></li>
+                    <li><a href="{% url 'home' %}">News</a></li>
+                    <li><a href="{% url 'support' %}" class="active">Support</a></li>
+
+                    <li>
+                        <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a>
+                        <a href="{% url 'sign' %}" class="btn btn-primary btn-sm">Register</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero" style="padding: 4rem 0;">
+    <div class="container">
+        <h1 class="hero-title">How can we help you?</h1>
+        <p class="hero-subtitle">
+            Find answers to common questions or contact our support team.
+        </p>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+    <div class="container">
+        <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+
+        <div class="grid grid-2">
+            <div class="card">
+                <h3>How do I start a test?</h3>
+                <p>Register, go to Tests and click Start.</p>
+            </div>
+            <div class="card">
+                <h3>Are tests free?</h3>
+                <p>Yes, all tests are currently free.</p>
+            </div>
+            <div class="card">
+                <h3>Can I review answers?</h3>
+                <p>Yes, after finishing the test.</p>
+            </div>
+            <div class="card">
+                <h3>Reset password?</h3>
+                <p>Use the “Forgot password” link.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section class="section" style="background-color: #fff;">
+    <div class="container">
+        <div class="card" style="max-width:800px;margin:auto;">
+            <div class="card-header text-center">
+                <h2>Contact Us</h2>
+                <p>Send us a message and we’ll get back to you.</p>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="{% url 'support' %}">
+                    {% csrf_token %}
+
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="name" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" name="subject" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" rows="5" class="form-textarea" required></textarea>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p>&copy; 2026 UniBase. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
