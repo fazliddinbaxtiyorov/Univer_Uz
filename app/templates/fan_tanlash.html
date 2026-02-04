@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DTM Practice - UniBase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- STATIC CSS (MUHIM) -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: #f1f5f9;
+        }
+
+        header {
+            background: #1e293b;
+            padding: 1rem 0;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hero {
+            background:
+              linear-gradient(rgba(15,23,42,.85), rgba(15,23,42,.9)),
+              url("{% static 'images/dtm-background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 1rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .hero-subtitle {
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .dtm-container {
+            max-width: 900px;
+            background: white;
+            margin: -3rem auto 3rem;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,.1);
+        }
+
+        .dtm-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+            gap: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        select {
+            width: 100%;
+            padding: .75rem;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        button {
+            background: #14b8a6;
+            color: white;
+            border: none;
+            padding: .9rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0d9488;
+        }
+
+        #msg {
+            margin-top: 1rem;
+            color: red;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <a href="{% url 'home' %}">UniBase</a>
+    </div>
+</header>
+
+<section class="hero">
+    <h1 class="hero-title">DTM</h1>
+    <p class="hero-subtitle">
+        Prepare for university entrance exams with realistic test simulations.
+    </p>
+</section>
+
+<section class="dtm-container">
+    <h2>Available Practice Tests</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+            </div>
+            <div class="flex-between">
+                <button class="btn btn-primary" id="next-btn" type="submit">Testni Boshlash</button>
+            </div>
+        </div>
+    </section>
+</form>
+</body>
+</html>
