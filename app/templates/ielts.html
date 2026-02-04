@@ -1,13 +1,217 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Practice - UniBase</title>
+    <title>IELTS Practice - UniBase (Demo)</title>
+
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <!-- Google Fonts: Inter for a modern, clean look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-main: 'Inter', sans-serif;
+            --color-listening: #8b5cf6;
+            /* Violet */
+            --color-reading: #0ea5e9;
+            /* Sky Blue */
+            --color-writing: #f97316;
+            /* Orange */
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #f8fafc;
+        }
+
+        /* Skill Selection Cards */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            padding: 0 1rem;
+        }
+
+        .skill-card {
+            background: white;
+            padding: 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .skill-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .skill-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .skill-duration {
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            background-color: #f3f4f6;
+            color: #374151;
+            margin-top: auto;
+        }
+
+        .skill-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover .skill-icon-wrapper {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .skill-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+
+        .skill-desc {
+            color: #64748b;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        .skill-action {
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.2s;
+            opacity: 0;
+            transform: translateY(10px);
+            background-color: #f1f5f9;
+        }
+
+        .skill-card:hover .skill-action {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .skill-card.active .skill-action {
+            opacity: 1;
+            transform: translateY(0);
+            color: white;
+        }
+
+        /* Specific Themes */
+        /* Listening */
+        .skill-card[data-skill="LISTENING"] .skill-icon-wrapper {
+            background-color: #f5f3ff;
+            color: var(--color-listening);
+        }
+
+        .skill-card[data-skill="LISTENING"]:hover {
+            border-color: var(--color-listening);
+        }
+
+        .skill-card[data-skill="LISTENING"].active {
+            border-color: var(--color-listening);
+            background-color: #fdfcff;
+        }
+
+        .skill-card[data-skill="LISTENING"].active .skill-icon-wrapper {
+            background-color: var(--color-listening);
+            color: white;
+        }
+
+        .skill-card[data-skill="LISTENING"].active .skill-action {
+            background-color: var(--color-listening);
+        }
+
+        /* Reading */
+        .skill-card[data-skill="READING"] .skill-icon-wrapper {
+            background-color: #f0f9ff;
+            color: var(--color-reading);
+        }
+
+        .skill-card[data-skill="READING"]:hover {
+            border-color: var(--color-reading);
+        }
+
+        .skill-card[data-skill="READING"].active {
+            border-color: var(--color-reading);
+            background-color: #f8fcff;
+        }
+
+        .skill-card[data-skill="READING"].active .skill-icon-wrapper {
+            background-color: var(--color-reading);
+            color: white;
+        }
+
+        .skill-card[data-skill="READING"].active .skill-action {
+            background-color: var(--color-reading);
+        }
+
+        /* Writing */
+        .skill-card[data-skill="WRITING"] .skill-icon-wrapper {
+            background-color: #fff7ed;
+            color: var(--color-writing);
+        }
+
+        .skill-card[data-skill="WRITING"]:hover {
+            border-color: var(--color-writing);
+        }
+
+        .skill-card[data-skill="WRITING"].active {
+            border-color: var(--color-writing);
+            background-color: #fffaf5;
+        }
+
+        .skill-card[data-skill="WRITING"].active .skill-icon-wrapper {
+            background-color: var(--color-writing);
+            color: white;
+        }
+
+        .skill-card[data-skill="WRITING"].active .skill-action {
+            background-color: var(--color-writing);
+        }
+    </style>
 </head>
 
 <body>
@@ -15,22 +219,18 @@
     <header>
         <div class="container">
             <div class="header-container">
-                <a href="{% url 'home'%}" class="logo">UniBase</a>
+                <a href="index.html" class="logo">
+                    <img src="images/logo.jpg" alt="UniBase Logo" class="logo-img">
+                    <span class="logo-text">UniBase</span>
+                </a>
                 <nav>
                     <ul>
-                        <li><a href="{% url 'home'%}" data-translate="nav_dashboard">Dashboard</a></li>
-                        <li><a href="../../user/templates/profile.html" data-translate="nav_profile">Profile</a></li>
-                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
-                        <li><a href="#" id="user-name-display"></a></li>
+                        <li><a href="#" class="active">Demo Dashboard</a></li>
+                        <li><a href="#">Demo Profile</a></li>
+                        <li><a href="#" id="user-name-display" style="font-weight: 600;">Demo User</a></li>
                         <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
+                            <button class="btn btn-secondary btn-sm">Logout</button>
                         </li>
-                        <li><a href="{% url 'logout' %}" class="btn btn-secondary btn-sm"
-                                data-translate="nav_logout">Logout</a></li>
                     </ul>
                 </nav>
             </div>
@@ -49,37 +249,90 @@
     <!-- Tests Section -->
     <section class="section">
         <div class="container">
-            <h2 class="mb-4">Available Tests</h2>
+            <!-- Skill Selection -->
+            <!-- Skill Selection -->
+            <div class="skills-grid">
+                <div class="skill-card" onclick="filterTests('LISTENING')" data-skill="LISTENING">
+                    <img src="images/ielts-listening.png" alt="Listening Practice" class="skill-image">
+                    <div class="skill-content">
+                        <h3 class="skill-title">Listening</h3>
+                        <p class="skill-desc">Test your ability to understand spoken English</p>
+                        <span class="skill-duration">30 minutes</span>
+                    </div>
+                </div>
+                <div class="skill-card" onclick="filterTests('READING')" data-skill="READING">
+                    <img src="images/ielts-reading.png" alt="Reading Practice" class="skill-image">
+                    <div class="skill-content">
+                        <h3 class="skill-title">Reading</h3>
+                        <p class="skill-desc">Assess your reading comprehension skills</p>
+                        <span class="skill-duration">60 minutes</span>
+                    </div>
+                </div>
+                <div class="skill-card" onclick="filterTests('WRITING')" data-skill="WRITING">
+                    <img src="images/ielts-writing.png" alt="Writing Practice" class="skill-image">
+                    <div class="skill-content">
+                        <h3 class="skill-title">Writing</h3>
+                        <p class="skill-desc">Evaluate your written English proficiency</p>
+                        <span class="skill-duration">60 minutes</span>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="mb-4" id="tests-header">Available Tests</h2>
             <div class="grid grid-3" id="tests-container">
                 <!-- Tests will be loaded here -->
             </div>
         </div>
     </section>
 
-    <!-- Scripts -->
-    <script src="js/storage.js"></script>
-    <script src="../static/auth.js"></script>
-    <script src="js/language.js"></script>
     <script>
-        // Protect page
-        requireAuth();
+        // Mock Data for Demo
+        const MOCK_TESTS = [
+            { id: 'ielts_list_1', category: 'ENGLISH', name: 'IELTS Listening Practice 1', description: 'Section 1-4 full listening practice.', duration: 40, questions: new Array(40) },
+            { id: 'ielts_read_1', category: 'ENGLISH', name: 'IELTS Reading Academic 1', description: 'Academic reading passages with questions.', duration: 60, questions: new Array(40) },
+            { id: 'ielts_write_1', category: 'ENGLISH', name: 'IELTS Writing Task 1', description: 'Identify trends in charts and graphs.', duration: 20, questions: new Array(1) },
+            { id: 'ielts_write_2', category: 'ENGLISH', name: 'IELTS Writing Task 2', description: 'Essay writing practice.', duration: 40, questions: new Array(1) },
+            { id: 'ielts_list_2', category: 'ENGLISH', name: 'IELTS Listening Practice 2', description: 'Advanced listening exercises.', duration: 40, questions: new Array(40) }
+        ];
 
-        const user = getCurrentUser();
-        document.getElementById('user-name-display').textContent = user.name;
+        let currentFilter = 'ALL';
 
-        // Load IELTS tests
-        function loadIELTSTests() {
-            const allTests = getTests();
-            const ieltsTests = allTests.filter(test => test.category === 'ENGLISH');
+        function loadIELTSTests(filter = 'ALL') {
+            let ieltsTests = MOCK_TESTS; // Use mock data
+
+            // Filter logic
+            if (filter !== 'ALL') {
+                ieltsTests = ieltsTests.filter(test => {
+                    const name = test.name.toLowerCase();
+                    const desc = (test.description || '').toLowerCase();
+                    return name.includes(filter.toLowerCase()) || desc.includes(filter.toLowerCase());
+                });
+            }
+
             const container = document.getElementById('tests-container');
+            const header = document.getElementById('tests-header');
+
+            // Update active state of cards
+            document.querySelectorAll('.skill-card').forEach(card => {
+                if (card.dataset.skill === filter) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+
+            if (filter === 'ALL') {
+                header.textContent = 'All Available Practice Tests';
+            } else {
+                header.textContent = `Available ${filter.charAt(0).toUpperCase() + filter.slice(1).toLowerCase()} Tests`;
+            }
 
             if (ieltsTests.length === 0) {
                 container.innerHTML = `
                     <div class="card" style="grid-column: 1 / -1;">
                         <div class="card-body text-center">
-                            <h3>No tests available yet</h3>
-                            <p>Please check back later for new IELTS practice tests.</p>
-                            <a href="student-dashboard.html" class="btn btn-outline mt-3">Back to Dashboard</a>
+                            <h3>No tests found for ${filter.toLowerCase()}</h3>
+                            <p>Try selecting a different section.</p>
                         </div>
                     </div>
                 `;
@@ -87,25 +340,25 @@
             }
 
             container.innerHTML = ieltsTests.map(test => `
-                <div class="test-card" onclick="startTest('${test.id}')">
+                <div class="test-card" onclick="alert('Starting demo test: ${test.name}')">
                     <span class="test-card-badge">IELTS</span>
                     <h3 class="card-title">${test.name}</h3>
-                    <p class="card-description">${test.description || 'Practice your IELTS skills.'}</p>
+                    <p class="card-description">${test.description}</p>
                     <p style="margin-top: 1rem; color: var(--color-gray-600);">
                         <strong>⏱️ Duration:</strong> ${test.duration} minutes<br>
                         <strong>📝 Questions:</strong> ${test.questions.length}
                     </p>
-                    <button class="btn btn-primary mt-3" style="width: 100%;">Start Test</button>
+                    <button class="btn btn-primary mt-3" style="width: 100%;">Start Demo</button>
                 </div>
             `).join('');
         }
 
-        function startTest(testId) {
-            localStorage.setItem('current_test_id', testId);
-            window.location.href = 'test-taking.html';
+        function filterTests(skill) {
+            currentFilter = skill;
+            loadIELTSTests(skill);
         }
 
-        document.addEventListener('DOMContentLoaded', loadIELTSTests);
+        document.addEventListener('DOMContentLoaded', () => loadIELTSTests('ALL'));
     </script>
 </body>
 
