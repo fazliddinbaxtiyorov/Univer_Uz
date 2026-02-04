@@ -1,12 +1,255 @@
+!DOCTYPE html>
 {% load static %}
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DTM Practice - UniBase</title>
-     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <title>DTM Practice - UniBase (Demo)</title>
+    <!-- Google Fonts: Inter for a modern, clean look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <style>
+        :root {
+            --font-main: 'Inter', sans-serif;
+            --color-hero-bg: #1e293b;
+            /* Slate 800 - Deep, rich blue */
+            --color-teal: #14b8a6;
+            /* Teal 500 */
+            --color-teal-hover: #0d9488;
+            /* Teal 600 */
+            --color-white: #ffffff;
+            --color-gray-100: #f1f5f9;
+            --color-gray-300: #cbd5e1;
+            --color-text-main: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-gray-100);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Overrides */
+        header {
+            background-color: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-container .nav-link {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            /* Background image with overlay */
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.9)), url('images/dtm-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--color-white);
+            padding: 8rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Main Content Container */
+        .dtm-container {
+            max-width: 1100px;
+            margin: -3rem auto 3rem;
+            /* Negative margin for overlap effect */
+            padding: 3rem;
+            background: var(--color-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 10;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--color-text-main);
+            margin-bottom: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 2rem;
+            background-color: var(--color-teal);
+            border-radius: 4px;
+        }
+
+        /* Form Layout */
+        .dtm-form-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            align-items: end;
+        }
+
+        /* Select Styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .dtm-select {
+            appearance: none;
+            padding: 0.75rem 1rem;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            color: var(--color-text-main);
+            background-color: #fff;
+            border: 1px solid var(--color-gray-300);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dtm-select:hover {
+            border-color: #94a3b8;
+        }
+
+        .dtm-select:focus {
+            outline: none;
+            border-color: var(--color-teal);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+        }
+
+        /* Button Styling */
+        .btn-start-dtm {
+            background-color: var(--color-teal);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-md);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.55rem;
+            /* Optical alignment with labels */
+        }
+
+        .btn-start-dtm:hover {
+            background-color: var(--color-teal-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-start-dtm:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Success/Error Message */
+        #test-message {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .msg-error {
+            background-color: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+        }
+
+        .msg-success {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .dtm-container {
+                padding: 2rem 1.5rem;
+                margin-top: -2rem;
+            }
+
+            .dtm-form-container {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-start-dtm {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -14,22 +257,23 @@
     <header>
         <div class="container">
             <div class="header-container">
-                <a href="index.html" class="logo">UniBase</a>
+                <a href="index.html" class="logo">
+                    <img src="images/logo.jpg" alt="UniBase Logo" class="logo-img">
+                    <span class="logo-text">UniBase</span>
+                </a>
                 <nav>
                     <ul>
-                        <li><a href="student-dashboard.html" data-translate="nav_dashboard">Dashboard</a></li>
-                        <li><a href="../../user/templates/profile.html" data-translate="nav_profile">Profile</a></li>
-                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
-                        <li><a href="#" id="user-name-display"></a></li>
+                        <li><a href="#" class="active" style="color:var(--color-teal);">Demo Mode</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8);">Dashboard</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8);">Profile</a></li>
                         <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div
+                                    style="width: 32px; height: 32px; background: var(--color-teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">
+                                    D</div>
+                                <span style="color: white; font-weight: 500;">Demo User</span>
+                            </div>
                         </li>
-                        <li><a href="#" onclick="handleLogout(); return false;" class="btn btn-secondary btn-sm"
-                                data-translate="nav_logout">Logout</a></li>
                     </ul>
                 </nav>
             </div>
@@ -37,77 +281,106 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" style="min-height: 40vh; display: flex; align-items: center;">
+    <section class="hero">
         <div class="container text-center">
             <h1 class="hero-title" data-translate="test_dtm_title">DTM</h1>
             <p class="hero-subtitle" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic
-                test simulations.</p>
+                test simulations in a timed environment.</p>
         </div>
     </section>
 
-    <!-- Tests Section -->
-    <section class="section">
-        <div class="container">
-            <h2 class="mb-4">Available Tests</h2>
-            <div class="grid grid-3" id="tests-container">
-                <!-- Tests will be loaded here -->
+    <!-- Main Content -->
+    <section class="dtm-container">
+        <h2>Available Practice Tests</h2>
+
+        <div class="dtm-form-container">
+            <div class="form-group">
+                <label for="subject-1">First Subject</label>
+                <select class="dtm-select" id="subject-1">
+                    <option value="" disabled selected>Select Subject 1</option>
+                    <option value="math">📐 Mathematics</option>
+                    <option value="physics">⚡ Physics</option>
+                    <option value="english">🇬🇧 English</option>
+                    <option value="biology">🧬 Biology</option>
+                    <option value="chemistry">🧪 Chemistry</option>
+                    <option value="history">📜 History</option>
+                </select>
             </div>
+
+            <div class="form-group">
+                <label for="subject-2">Second Subject</label>
+                <select class="dtm-select" id="subject-2">
+                    <option value="" disabled selected>Select Subject 2</option>
+                    <option value="math">📐 Mathematics</option>
+                    <option value="physics">⚡ Physics</option>
+                    <option value="english">🇬🇧 English</option>
+                    <option value="biology">🧬 Biology</option>
+                    <option value="chemistry">🧪 Chemistry</option>
+                    <option value="history">📜 History</option>
+                </select>
+            </div>
+
+            <button class="btn-start-dtm" onclick="startDTMTest()">
+                <span>Start Test</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
         </div>
+
+        <div id="test-message"></div>
     </section>
 
-    <!-- Scripts -->
-    <script src="js/storage.js"></script>
-    <script src="../static/auth.js"></script>
-    <script src="js/language.js"></script>
     <script>
-        requireAuth();
-        const user = getCurrentUser();
-        document.getElementById('user-name-display').textContent = user.name;
+        // Mock Auth Logic for Demo
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Demo Mode Active: Authentication Bypassed");
+        });
 
-        function loadDTMTests() {
-            const allTests = getTests();
-            const dtmTests = allTests.filter(test => test.category === 'ENTRANCE');
-            const container = document.getElementById('tests-container');
+        function startDTMTest() {
+            const subject1 = document.getElementById('subject-1').value;
+            const subject2 = document.getElementById('subject-2').value;
+            const msg = document.getElementById('test-message');
 
-            if (dtmTests.length === 0) {
-                container.innerHTML = `
-                    <div class="card" style="grid-column: 1 / -1;">
-                        <div class="card-body text-center">
-                            <h3>No tests available yet</h3>
-                            <p>Please check back later for new DTM practice tests.</p>
-                            <a href="student-dashboard.html" class="btn btn-outline mt-3">Back to Dashboard</a>
-                        </div>
-                    </div>
-                `;
+            msg.style.display = 'none';
+            msg.className = '';
+
+            if (!subject1 || !subject2) {
+                msg.textContent = 'Please select both subjects to continue.';
+                msg.className = 'msg-error';
+                msg.style.display = 'block';
                 return;
             }
 
-            container.innerHTML = dtmTests.map(test => `
-                <div class="test-card" onclick="startTest('${test.id}')">
-                    <span class="test-card-badge">DTM</span>
-                    <h3 class="card-title">${test.name}</h3>
-                    <p class="card-description">${test.description || 'Practice for DTM entrance exam.'}</p>
-                    <p style="margin-top: 1rem; color: var(--color-gray-600);">
-                        <strong>⏱️ Duration:</strong> ${test.duration} minutes<br>
-                        <strong>📝 Questions:</strong> ${test.questions.length}
-                    </p>
-                    <button class="btn btn-primary mt-3" style="width: 100%;">Start Test</button>
-                </div>
-            `).join('');
-        }
+            if (subject1 === subject2) {
+                msg.textContent = 'Please select two different subjects.';
+                msg.className = 'msg-error';
+                msg.style.display = 'block';
+                return;
+            }
 
-        function startTest(testId) {
-            localStorage.setItem('current_test_id', testId);
-            window.location.href = 'test-taking.html';
-        }
+            msg.textContent = `Starting practice session: ${subject1} + ${subject2} (Demo Mode)`;
+            msg.className = 'msg-success';
+            msg.style.display = 'block';
 
-        document.addEventListener('DOMContentLoaded', loadDTMTests);
+            // Loading state
+            const btn = document.querySelector('.btn-start-dtm');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Starting...';
+            btn.style.opacity = '0.8';
+            btn.style.pointerEvents = 'none';
+
+            // Mock functionality for now
+            setTimeout(() => {
+                alert(`Redirecting to exam interface for subjects:\n1. ${subject1}\n2. ${subject2}\n\n(This is a demo)`);
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            }, 800);
+        }
     </script>
 </body>
 
 </html>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Boshlash</button>
-</form>

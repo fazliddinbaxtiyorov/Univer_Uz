@@ -1,88 +1,178 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DTM Practice - UniBase</title>
-     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- STATIC CSS (MUHIM) -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: #f1f5f9;
+        }
+
+        header {
+            background: #1e293b;
+            padding: 1rem 0;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hero {
+            background:
+              linear-gradient(rgba(15,23,42,.85), rgba(15,23,42,.9)),
+              url("{% static 'images/dtm-background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 1rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .hero-subtitle {
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .dtm-container {
+            max-width: 900px;
+            background: white;
+            margin: -3rem auto 3rem;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,.1);
+        }
+
+        .dtm-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+            gap: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        select {
+            width: 100%;
+            padding: .75rem;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        button {
+            background: #14b8a6;
+            color: white;
+            border: none;
+            padding: .9rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0d9488;
+        }
+
+        #msg {
+            margin-top: 1rem;
+            color: red;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-container">
-                <a href="{% url 'home'%}" class="logo">UniBase</a>
-                <nav>
-                    <ul>
-                        <li><a href="student-dashboard.html" data-translate="nav_dashboard">Dashboard</a></li>
-                        <li><a href="../../user/templates/profile.html" data-translate="nav_profile">Profile</a></li>
-                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
-                        <li><a href="#" id="user-name-display"></a></li>
-                        <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
-                        </li>
-                        <li><a href="{% url 'home'%}" class="btn btn-secondary btn-sm"
-                                data-translate="nav_logout">Logout</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero" style="min-height: 40vh; display: flex; align-items: center;">
-        <div class="container text-center">
-            <h1 class="hero-title" data-translate="test_dtm_title">DTM</h1>
-            <p class="hero-subtitle" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic
-                test simulations.</p>
-        </div>
-    </section>
+<header>
+    <div class="container">
+        <a href="{% url 'home' %}">UniBase</a>
+    </div>
+</header>
 
-    <!-- Tests Section -->
-    <section class="section">
-        <div class="container">
-            <h2 class="mb-4">Available Tests</h2>
-            <form method="post">
+<section class="hero">
+    <h1 class="hero-title">DTM</h1>
+    <p class="hero-subtitle">
+        Prepare for university entrance exams with realistic test simulations.
+    </p>
+</section>
+
+<section class="dtm-container">
+    <h2>Available Practice Tests</h2>
+
+    <form method="post" onsubmit="return checkSubjects()" class="dtm-form">
         {% csrf_token %}
-        <select name="birinchi_fan" id="birinchi_fan" required onchange="updateSecondOptions()">
-            <option value="">1-fan tanlang</option>
-            <option value="Matematika">Matematika</option>
-            <option value="Ona Tili">Ona Tili</option>
-            <option value="Tarix">Tarix</option>
-            <option value="Kimyo">Kimyo</option>
-            <option value="Biologiya">Biologiya</option>
-            <option value="Geografiya">Geografiya</option>
-            <option value="Fizika">Fizika</option>
-            <option value="Ingliz Tili">Ingliz Tili</option>
-        </select>
 
-        <select name="ikkinchi_fan" id="ikkinchi_fan" required>
-            <option value="">2-fan tanlang</option>
-            <option value="Matematika">Matematika</option>
-            <option value="Ona Tili">Ona Tili</option>
-            <option value="Tarix">Tarix</option>
-            <option value="Kimyo">Kimyo</option>
-            <option value="Biologiya">Biologiya</option>
-            <option value="Geografiya">Geografiya</option>
-            <option value="Fizika">Fizika</option>
-            <option value="Ingliz Tili">Ingliz Tili</option>
-        </select>
-<button class="btn btn-primary" id="next-btn" type="submit">Boshlash</button>
-    </form>
-
-            <div class="grid grid-3" id="tests-container">
-
-            </div>
+        <div>
+            <label>First Subject</label>
+            <select id="s1" name="birinchi_fan" required>
+                <option value="">Tanlang</option>
+                <option>Matematika</option>
+                <option>Ona Tili</option>
+                <option>Tarix</option>
+                <option>Kimyo</option>
+                <option>Biologiya</option>
+                <option>Geografiya</option>
+                <option>Fizika</option>
+                <option>Ingliz Tili</option>
+            </select>
         </div>
-    </section>
+
+        <div>
+            <label>Second Subject</label>
+            <select id="s2" name="ikkinchi_fan" required>
+                <option value="">Tanlang</option>
+                <option>Matematika</option>
+                <option>Ona Tili</option>
+                <option>Tarix</option>
+                <option>Kimyo</option>
+                <option>Biologiya</option>
+                <option>Geografiya</option>
+                <option>Fizika</option>
+                <option>Ingliz Tili</option>
+            </select>
+        </div>
+
+        <button type="submit">Boshlash</button>
+
+        <div id="msg">Ikkala fan bir xil bo‘lishi mumkin emas!</div>
+    </form>
+</section>
+
+<script>
+function checkSubjects() {
+    const s1 = document.getElementById('s1').value;
+    const s2 = document.getElementById('s2').value;
+    const msg = document.getElementById('msg');
+
+    if (s1 === s2) {
+        msg.style.display = 'block';
+        return false;
+    }
+    return true;
+}
+</script>
+
 </body>
-
 </html>
-
