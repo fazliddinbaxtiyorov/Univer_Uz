@@ -18,9 +18,7 @@
                 <a href="{% url 'home'%}" class="logo">UniBase</a>
                 <nav>
                     <ul>
-                        <li><a href="student-dashboard.html" data-translate="nav_dashboard">Dashboard</a></li>
-                        <li><a href="../../user/templates/profile.html" data-translate="nav_profile">Profile</a></li>
-                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
+                        <li><a href="{% url 'profile' %}" data-translate="nav_dashboard">Profile</a></li>
                         <li>
                             <select id="language-selector" class="language-selector">
                                 <option value="en">English</option>
@@ -87,16 +85,39 @@
 
                     <!-- Actions -->
                     <div class="flex-center mt-4" style="gap: 1rem;">
-                        <a href="student-dashboard.html" class="btn btn-primary"
+                        <a href="{% url 'profile' %}" class="btn btn-primary"
                             data-translate="results_back_dashboard">Back to Dashboard</a>
-                        {% for r in results %}
-
-{% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // 🔹 Prevent duplicate form submission
+    const forms = document.querySelectorAll("form"); // agar result sahifasida form bo'lsa
+    forms.forEach(form => {
+        let submitted = false;
+        form.addEventListener("submit", function(e){
+            if(submitted){
+                e.preventDefault();
+                alert("Siz allaqachon testni yubordingiz!");
+            } else {
+                submitted = true;
+            }
+        });
+    });
+
+    // 🔹 Alert on page reload/refresh
+    let resultDisplayed = true; // result sahifasida natija allaqachon ko'rsatildi
+    window.onbeforeunload = function() {
+        if(resultDisplayed){
+            return "Natija sahifasida chiqdingiz. Refresh qilinsa testga coin yana yechilmaydi.";
+        }
+    };
+});
+</script>
+
 </body>
 
 </html>

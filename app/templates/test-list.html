@@ -1,0 +1,16 @@
+<div class="grid grid-3">
+    {% for test in tests %}
+    <div class="test-card">
+        <span class="test-card-badge">IELTS</span>
+        <h3 class="card-title">{{ test.title }}</h3>
+        <p class="card-description">{{ test.description }}</p>
+        <p style="margin-top: 1rem; color: var(--color-gray-600);">
+            <strong>⏱️ Duration:</strong> {{ test.duration }} minutes<br>
+            <strong>📝 Questions:</strong> {{ test.questions.count }}
+        </p>
+        <a href="{% url 'ielts_reading' test.id %}" class="btn btn-primary mt-3" style="width: 100%; text-align: center; display: block;">
+            Start Test
+        </a>
+    </div>
+    {% endfor %}
+</div>

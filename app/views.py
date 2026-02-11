@@ -6,15 +6,36 @@ from .forms import (
 from .models import (
     IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion,
     SATQuestion, Davlat_Univer, Xususiy_Univer, Xorijiy_Univer,
-    ContactMessage, UserTestResult
+    ContactMessage, UserTestResult, ReadingTest, ListeningTest, Sat, TestAccess
 )
-from django.db.models import Q, Avg, Max
 from django.contrib import messages
-import time
-from django.contrib.auth.decorators import login_required
+
+from django.db import transaction
+
+def check_test_access(user, test, category):
+    profile = user.profile
+
+    with transaction.atomic():
+        access, created = TestAccess.objects.get_or_create(
+            user=user,
+            category=category,
+            test_id=test.id
+        )
 
 
-# ======================== Helper ========================
+        if profile.coins < test.price:
+            return False, "not_enough_coins"
+        profile.coins -= test.price
+        profile.save()
+
+        access.paid = True
+        access.save()
+
+    return True, "paid_now"
+
+
+
+
 def get_time_spent(request, session_key):
     start_time = request.session.get(session_key)
     end_time = time.time()
@@ -23,8 +44,6 @@ def get_time_spent(request, session_key):
     seconds = spent_seconds % 60
     return minutes, seconds
 
-
-# ======================== Static Pages ========================
 def support(request):
     return render(request, 'support.html')
 
@@ -43,83 +62,212 @@ def writing(request):
         form.save()
     return render(request, "writing.html", {"form": form})
 
+def test_list_listening(request):
+    tests = ListeningTest.objects.all()
+    return render(request, "ielts.html", {
+        "tests_listening": tests,
+        "current_category": "LISTENING"
+    })
 
-# ======================== IELTS ========================
+def test_list_view(request):
+    all_passages = ReadingTest.objects.filter(category='READING').order_by('id')[:10]
+    total_questions = sum(p.questions.count() for p in all_passages)
+    duration = 60
+    return render(request, "ielts.html", {
+        "tests": all_passages,
+        "total_questions": total_questions,
+        "duration": duration,
+    })
+
+
+
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+import random, time
+from .models import ReadingTest, IELTS_Reading, UserTestResult
+from .forms import IELTSReadingForm
+
+import random
+import time
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
+import random
+import time
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 @login_required
-def ielts_reading_view(request):
-    questions = IELTS_Reading.objects.all()[:10]
-    if 'ielts_reading_start' not in request.session:
-        request.session['ielts_reading_start'] = time.time()
+def ielts_reading_view(request, test_id=None):
+    """
+    IELTS Reading test view
+    - test_id berilsa o'sha test ishlatiladi
+    - yo'q bo'lsa, birinchi test ishlatiladi
+    """
+    if test_id:
+        reading_test = get_object_or_404(ReadingTest, pk=test_id)
+    else:
+        reading_test = ReadingTest.objects.first()
 
-    form = IELTSReadingForm(request.POST or None, questions=questions)
+    if not reading_test:
+        messages.error(request, "Reading testi mavjud emas!")
+        return redirect("ielts_list")
+
+    if request.method == "POST":
+        allowed, status = check_test_access(
+            request.user,
+            reading_test,
+            category="IELTS_READING"
+        )
+        if not allowed:
+            messages.error(request, "Sizda yetarli coin yo‘q!")
+            return redirect("buy_coins")
+
+    all_passages = list(ReadingTest.objects.filter(category='READING'))
+    if len(all_passages) > 10:
+        all_passages = random.sample(all_passages, 10)
+
+    all_questions = []
+    passage_question_map = {}
+    for p in all_passages:
+        qs = list(p.questions.all())
+        if len(qs) > 4:
+            qs = random.sample(qs, 4)
+        all_questions.extend(qs)
+        passage_question_map[p.id] = qs
+
+    if 'reading_start' not in request.session:
+        request.session['reading_start'] = time.time()
+
+    form = IELTSReadingForm(request.POST or None, questions=all_questions)
 
     if request.method == "POST" and form.is_valid():
-        total = sum(2 for q in questions if form.cleaned_data.get(f'q_{q.id}') == q.togri_variant)
-        minutes, seconds = get_time_spent(request, 'ielts_reading_start')
-        del request.session['ielts_reading_start']
+        total = sum(
+            2 for q in all_questions
+            if form.cleaned_data.get(f'q_{q.id}') == q.togri_variant
+        )
 
-        # Save result
+        start = request.session.pop('reading_start', time.time())
+        spent = int(time.time() - start)
+        minutes = spent // 60
+        seconds = spent % 60
+
+        percentage = round(total / (len(all_questions) * 2) * 100, 1)
+
         UserTestResult.objects.create(
             user=request.user,
-            test_name="IELTS Reading",
-            score=round(total / (len(questions)*2) * 100, 1)
+            test_name=f"IELTS Reading - {reading_test.id}",
+            score=percentage
         )
+
 
         results = [{
             "savol": q.savol,
             "user_answer": form.cleaned_data.get(f'q_{q.id}'),
             "correct": q.togri_variant
-        } for q in questions]
+        } for q in all_questions]
 
         return render(request, "result.html", {
             "results": results,
             "total": total,
+            "percentage": percentage,
             "minutes": minutes,
-            "seconds": seconds,
-            "percentage": round(total / (len(questions)*2) * 100, 1)
+            "seconds": seconds
         })
 
-    return render(request, "reading_test.html", {"form": form, "questions": questions})
+    # 10️⃣ Template uchun data
+    test_data = []
+    for p in all_passages:
+        test_data.append({
+            "passage_text": p.passage_text,
+            "questions": [
+                {"model": q, "field": form[f"q_{q.id}"]}
+                for q in passage_question_map[p.id]
+            ]
+        })
+
+    return render(request, "reading_test.html", {
+        "test_data": test_data,
+        "duration": 60,
+        "user_coins": request.user.profile.coins,
+        "status": "ready",
+        "test_id": reading_test.id
+    })
+
 
 
 @login_required
-def ielts_listening_view(request):
-    questions = IELTSListeningQuestion.objects.all()[:20]
-    if 'listening_start' not in request.session:
-        request.session['listening_start'] = time.time()
-
+def ielts_listening_view(request, test_id):
+    test = get_object_or_404(ListeningTest, pk=test_id)
+    questions = test.questions.all()
     form = IELTSListeningForm(request.POST or None, questions=questions)
+    if request.method == "POST":
 
-    if request.method == "POST" and form.is_valid():
-        total = sum(2 for q in questions if form.cleaned_data.get(f'q_{q.id}') == q.togri_variant)
-        minutes, seconds = get_time_spent(request, 'listening_start')
-        del request.session['listening_start']
-
-        # Save result
-        UserTestResult.objects.create(
-            user=request.user,
-            test_name="IELTS Listening",
-            score=round(total / (len(questions)*2) * 100, 1)
+        allowed, status = check_test_access(
+            request.user,
+            test,
+            category="IELTS_LISTENING"
         )
 
-        results = [{
-            "savol": q.savol,
-            "user_answer": form.cleaned_data.get(f'q_{q.id}'),
-            "correct": q.togri_variant
-        } for q in questions]
+        if not allowed:
+            if status == "not_enough_coins":
+                messages.error(request, "Sizda yetarli coin yo‘q!")
+            return redirect("buy_coins")
 
-        return render(request, "result.html", {
-            "results": results,
-            "total": total,
-            "minutes": minutes,
-            "seconds": seconds,
-            "percentage": round(total / (len(questions)*2) * 100, 1)
-        })
+        if 'listening_start' not in request.session:
+            request.session['listening_start'] = time.time()
 
-    return render(request, "listening_test.html", {"form": form, "questions": questions})
+        if form.is_valid():
+            total = sum(
+                1 for q in questions
+                if form.cleaned_data.get(f'q_{q.id}') == q.togri_variant
+            )
+
+            start_time = request.session.pop('listening_start', time.time())
+            spent = int(time.time() - start_time)
+
+            percentage = round((total / questions.count()) * 100, 1)
+            UserTestResult.objects.create(
+                user=request.user,
+                test_name=test.title,
+                score=percentage
+            )
+
+            results = [{
+                "savol": q.savol,
+                "user_answer": form.cleaned_data.get(f'q_{q.id}'),
+                "correct": q.togri_variant
+            } for q in questions]
+            return render(request, "result.html", {
+                "results": results,
+                "total": total,
+                "percentage": percentage,
+                "minutes": spent // 60,
+                "seconds": spent % 60
+            })
+
+    return render(request, "listening_test.html", {
+        "test": test,
+        "form": form,
+        "questions": questions,
+    })
 
 
-# ======================== Milliy Sertifikat / DTM ========================
+
+@login_required
+def buy_coins(request):
+    if request.method == "POST":
+        amount = int(request.POST.get('amount'))
+        profile = request.user.profile
+        profile.coins += amount
+        profile.save()
+        messages.success(request, f"Muvaffaqiyatli xarid! Hisobingizga {amount} coin qo'shildi.")
+        return redirect('profile')
+
+    return render(request, 'buy_coins.html')
+
 @login_required
 def test_boshlash(request, fan):
     questions = Milliy_Sertifikat.objects.filter(fan=fan)[:50]
@@ -156,27 +304,55 @@ def test_boshlash(request, fan):
 
     return render(request, "test_milliy.html", {"form": form})
 
+def test_list_sat(request):
+    tests = Sat.objects.all()
+    return render(request, "sat.html", {"tests": tests})
 
-# ======================== SAT ========================
+
+
 @login_required
-def sat_test_view(request):
-    questions = SATQuestion.objects.all()[:20]
-    if 'sat_start' not in request.session:
-        request.session['sat_start'] = time.time()
+def sat_test_view(request, test_id):
+    test_obj = get_object_or_404(Sat, pk=test_id)
+    questions = test_obj.questions.all()
 
     form = SATForm(request.POST or None, questions=questions)
 
-    if request.method == "POST" and form.is_valid():
-        total = sum(16.3 for q in questions if form.cleaned_data.get(f'q_{q.id}') == q.togri_variant)
-        minutes, seconds = get_time_spent(request, 'sat_start')
-        del request.session['sat_start']
+    if request.method == "POST":
 
-        # Save result
-        UserTestResult.objects.create(
-            user=request.user,
-            test_name="SAT Test",
-            score=round(total / (len(questions)*16.3) * 100, 1)
+        # 💰 Faqat POST da tekshiramiz
+        allowed, status = check_test_access(
+            request.user,
+            test_obj,
+            category="SAT"
         )
+
+        if not allowed:
+            if status == "not_enough_coins":
+                messages.error(request, "Sizda yetarli coin yo‘q!")
+                return redirect("buy_coins")
+            else:
+                messages.error(request, "Kirish huquqi yo‘q.")
+                return redirect("sat_list")
+
+        if 'sat_start' not in request.session:
+            request.session['sat_start'] = time.time()
+
+        if form.is_valid():
+            total = sum(
+                16.3 for q in questions
+                if form.cleaned_data.get(f'q_{q.id}') == q.togri_variant
+            )
+
+            minutes, seconds = get_time_spent(request, 'sat_start')
+            request.session.pop('sat_start', None)
+
+            percentage = round(total / (len(questions) * 16.3) * 100, 1)
+
+            UserTestResult.objects.create(
+                user=request.user,
+                test_name=test_obj.title,
+                score=percentage
+            )
 
         results = [{
             "savol": q.savol,
@@ -185,17 +361,23 @@ def sat_test_view(request):
         } for q in questions]
 
         return render(request, "result.html", {
-            "results": results,
+            "results": results,  # shunaqa bo‘lishi kerak
             "total": total,
             "minutes": minutes,
             "seconds": seconds,
-            "percentage": round(total / (len(questions)*16.3) * 100, 1)
+            "percentage": percentage
         })
 
-    return render(request, "sat_test.html", {"form": form})
+    return render(request, "sat_test.html", {
+        "form": form,
+        "questions": questions,
+        "test": test_obj,
+        "user_coins": request.user.profile.coins
+    })
 
 
-# ======================== Fan tanlash ========================
+
+
 def fan_tanlash(request):
     if request.method == "POST":
         form = FanTanlashForm(request.POST)
@@ -207,7 +389,6 @@ def fan_tanlash(request):
     return render(request, "fan_tanlash.html", {"form": form})
 
 
-# ======================== Universities ========================
 def univerlar(request):
     davlat = Davlat_Univer.objects.all()
     xususiy = Xususiy_Univer.objects.all()
@@ -227,10 +408,9 @@ def xususiy_univer(request):
 
 def xorijiy_univer(request):
     xorijiy = Xorijiy_Univer.objects.all()
-    return render(request, 'xorijiy.html', {'xorijiy': xorijiy})
+    return render(request, 'leaderboard.html', {'xorijiy': xorijiy})
 
 
-# ======================== DTM Stepwise Test ========================
 @login_required
 def dtm_test_view(request):
     if 'start_time' not in request.session:
@@ -426,20 +606,14 @@ def contact_view(request):
 
     return render(request, 'support.html')
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import UserTestResult
-
 @login_required
 def my_profile_view(request):
     user = request.user
 
-    # Foydalanuvchining barcha test natijalari
     user_results = UserTestResult.objects.filter(user=user)
 
     total_tests_taken = user_results.count()
 
-    # O'rtacha ball va eng yuqori ball
     if total_tests_taken > 0:
         average_score = round(sum(result.score for result in user_results) / total_tests_taken, 1)
         best_score = max(result.score for result in user_results)
@@ -452,7 +626,132 @@ def my_profile_view(request):
         'total_tests_taken': total_tests_taken,
         'average_score': average_score,
         'best_score': best_score,
-        'user_results': user_results,  # agar kerak bo'lsa test nomlari va ballarini ko‘rsatish uchun
+        'user_results': user_results,
     }
 
     return render(request, 'profile.html', context)
+
+
+
+def ielts_main_dashboard(request):
+    category = request.GET.get('category', 'ALL').upper()
+    if category == 'READING':
+        tests = ReadingTest.objects.filter(category='READING')
+    elif category == 'LISTENING':
+        tests = ListeningTest.objects.filter(category='LISTENING')
+    else:
+        tests = ReadingTest.objects.all()
+
+    return render(request, 'ielts.html', {
+        'tests': tests,
+        'current_category': category
+    })
+
+
+import re
+
+from .models import WritingQuestion, WritingSubmission
+from .forms import WritingSubmissionForm
+from .utils import check_ielts_writing
+
+
+def writing_tests(request):
+    testlar = WritingQuestion.objects.all()
+    print(f"BAZADA {testlar.count()} TA TEST BOR")
+
+    return render(request, 'ielts.html', {
+        'tests_writing': testlar,
+        'current_category': 'WRITING'
+    })
+
+
+@login_required
+def writing_detail(request, pk):
+    question = get_object_or_404(WritingQuestion, pk=pk)
+
+    if request.method == "POST":
+
+        allowed, status = check_test_access(
+            request.user,
+            question,
+            category="IELTS_LISTENING"
+        )
+    if request.method == 'POST':
+        form = WritingSubmissionForm(request.POST)
+        if form.is_valid():
+            submission = form.save(commit=False)
+            submission.user = request.user
+            submission.question = question
+
+            ai_result = check_ielts_writing(
+                question.task_type,
+                question.question_text,
+                submission.answer
+            )
+
+            match = re.search(r'Overall Band:\s*([\d\.]+)', ai_result)
+            if match:
+                submission.band_score = float(match.group(1))
+
+            submission.feedback = ai_result
+            submission.save()
+
+            return redirect('writing_result', submission.id)
+    else:
+        form = WritingSubmissionForm()
+
+    return render(request, 'detail.html', {
+        'question': question,
+        'form': form,
+        'status': 'ready'
+    })
+
+
+@login_required
+def writing_result(request, pk):
+    submission = get_object_or_404(WritingSubmission, pk=pk)
+    return render(request, 'writing_result.html', {'submission': submission})
+
+
+def student_analytics(request):
+    submissions = WritingSubmission.objects.filter(user=request.user).order_by('-created_at')
+
+    avg_score = submissions.aggregate(Avg('band_score'))['band_score__avg']
+    max_score = submissions.aggregate(Max('band_score'))['band_score__max']
+
+    context = {
+        'submissions': submissions,
+        'avg_score': round(avg_score, 1) if avg_score else 0,
+        'max_score': max_score
+    }
+    return render(request, 'analytics.html', context)
+
+from django.shortcuts import render
+from django.db.models import Avg, Max
+from .models import UserTestResult
+from django.contrib.auth.models import User
+
+@login_required
+def leaderboard(request):
+    users = User.objects.all()
+
+    leaderboard_data = []
+
+    for user in users:
+        results = UserTestResult.objects.filter(user=user)
+        if results.exists():
+            total_score = sum(r.score for r in results)
+            tests_taken = results.count()
+            avg_score = round(total_score / tests_taken, 1)
+            best_score = results.aggregate(max_score=Max('score'))['max_score'] or 0
+            leaderboard_data.append({
+                'username': user.username,
+                'avg_score': avg_score,
+                'best_score': best_score,
+                'tests_taken': tests_taken
+            })
+    leaderboard_data.sort(key=lambda x: x['avg_score'], reverse=True)
+
+    return render(request, 'leaderboard.html', {
+        'leaderboard': leaderboard_data
+    })

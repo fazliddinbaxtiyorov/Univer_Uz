@@ -28,15 +28,22 @@
 
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="{% url 'home' %}">Tests</a></li>
+                    <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'univers' %}">Universities</a></li>
                     <li><a href="{% url 'home' %}">News</a></li>
                     <li><a href="{% url 'support' %}" class="active">Support</a></li>
 
-                    <li>
-                        <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a>
-                        <a href="{% url 'sign' %}" class="btn btn-primary btn-sm">Register</a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="auth-links">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Profile</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="auth-links">
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>

@@ -1,92 +1,173 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IELTS Listening Test - UniBase</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <style>
+        /* Audio pleyerni yashirish */
+        .hidden-audio { display: none; }
+
+        /* Chalinayotgan savolni ajratib ko'rsatish */
+        .active-question {
+            border-left: 5px solid #1cc8c8 !important;
+            background-color: #f0fdfa !important;
+            transition: all 0.3s ease;
+        }
+
+        .timer {
+            background: #1a3a5a;
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            padding: 0.5rem 1rem;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .question-block {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1cc8c8;
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<header>
-    <div class="container">
-        <div class="header-container">
-                <span class="logo-text">UniBase</span>
-            </a>
+<div class="container" style="max-width:900px; margin: auto;">
+   <button id="start-test-btn" style="padding:15px 25px; font-size:1.2rem; cursor:pointer;">
+    Testni Boshlash
+</button>
 
-            <div class="flex-center" style="flex: 1; justify-content: center;">
-                <div class="timer" id="timer-display" style="min-width: 120px; padding: 0.5rem 1rem; font-size: 1.5rem; margin: 0;">00:00</div>
-            </div>
-
-            <nav>
-                <ul>
-                    <li>
-                        <select id="language-selector" class="language-selector">
-                            <option value="en">English</option>
-                            <option value="ru">Русский</option>
-                            <option value="uz">O'zbekcha</option>
-                        </select>
-                    </li>
-                </ul>
-            </nav>
+<form method="POST" id="listening-form" style="display:none;">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="question-block" id="q-block-{{ forloop.index0 }}">
+            <p><strong>{{ field.label }}</strong></p>
+            {% with question_id=field.name|slice:"2:" %}
+                {% for q in questions %}
+                    {% if q.id|stringformat:"s" == question_id %}
+                        {% if q.audio %}
+                            <audio class="test-audio hidden-audio">
+                                <source src="{{ q.audio.url }}" type="audio/mpeg">
+                            </audio>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+            <div class="input-wrapper">{{ field }}</div>
         </div>
-    </div>
-</header>
+    {% endfor %}
+    <button type="submit" class="submit-btn">Testni Yakunlash</button>
+</form>
 
-<section class="section">
-    <div class="container" style="max-width: 900px;">
-        <div id="alert-container"></div>
-
-        <div class="card mb-3">
-            <div class="flex-between">
-                <div>
-                    <h2>IELTS Listening Test</h2>
-                    <p>Savollar soni: {{ questions|length }}</p>
-                </div>
-            </div>
-        </div>
-
-        <form method="POST">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="question-block" style="margin-bottom: 25px;">
-                    <p><strong>{{ field.label }}</strong></p>
-
-                    {% comment %} Audio faylni chiqarish {% endcomment %}
-                    {% with question_id=field.name|slice:"2:" %}
-                        {% for q in questions %}
-                            {% if q.id|stringformat:"s" == question_id %}
-                                {% if q.audio %}
-                                    <audio controls style="margin-bottom: 10px;">
-                                        <source src="{{ q.audio.url }}" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    {% endwith %}
-
-                    {{ field }}
-                </div>
-            {% endfor %}
-
-            <button type="submit" class="btn btn-primary">Testni Yakunlash</button>
-        </form>
-    </div>
-</section>
+<div class="timer" id="timer-display">40:00</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    let seconds = 3600;
-    const el = document.getElementById("timer-display");
+    const startBtn = document.getElementById("start-test-btn");
+    const form = document.getElementById("listening-form");
+    const timerEl = document.getElementById("timer-display");
+    const audios = Array.from(document.querySelectorAll(".test-audio"));
+    const totalSeconds = 2400; // 40 minut
 
-    setInterval(() => {
-        seconds--;
-        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-        const s = String(seconds % 60).padStart(2, '0');
-        el.textContent = `${m}:${s}`;
-    }, 1000);
+    let seconds = totalSeconds;
+    let timerInterval;
+    let currentIdx = 0;
+    let submitted = false;
+
+    // 🔹 Agar localStorage da saqlangan bo'lsa
+    if(localStorage.getItem("listeningStart")) {
+        const startTime = parseFloat(localStorage.getItem("listeningStart"));
+        const elapsed = Math.floor((Date.now() - startTime)/1000);
+        seconds = totalSeconds - elapsed;
+        if(seconds < 0) seconds = 0;
+
+        currentIdx = parseInt(localStorage.getItem("listeningAudioIdx")) || 0;
+        form.style.display = "block";
+        startBtn.style.display = "none";
+        startTimer();
+        playAudio(currentIdx);
+    }
+
+    startBtn.addEventListener("click", function() {
+        form.style.display = "block";
+        startBtn.style.display = "none";
+
+        localStorage.setItem("listeningStart", Date.now());
+        localStorage.setItem("listeningAudioIdx", 0);
+
+        seconds = totalSeconds;
+        currentIdx = 0;
+
+        startTimer();
+        playAudio(currentIdx);
+    });
+
+    function startTimer() {
+        timerInterval = setInterval(()=>{
+            if(seconds <= 0){
+                clearInterval(timerInterval);
+                form.submit();
+                return;
+            }
+            seconds--;
+            const m = String(Math.floor(seconds/60)).padStart(2,'0');
+            const s = String(seconds % 60).padStart(2,'0');
+            timerEl.textContent = `${m}:${s}`;
+        },1000);
+    }
+
+    function playAudio(idx) {
+        if(idx >= audios.length) return;
+        const audio = audios[idx];
+        const block = audio.closest(".question-block");
+
+        document.querySelectorAll('.question-block').forEach(b=>b.classList.remove('active-question'));
+        block.classList.add('active-question');
+        block.scrollIntoView({behavior:'smooth', block:'center'});
+
+        audio.play().catch(()=>{
+            window.addEventListener('click', ()=>audio.play(), {once:true});
+        });
+
+        audio.onended = function() {
+            idx++;
+            localStorage.setItem("listeningAudioIdx", idx);
+            playAudio(idx);
+        }
+    }
+
+    form.addEventListener("submit", function(e){
+        if(submitted){
+            e.preventDefault();
+            alert("Siz allaqachon testni yubordingiz!");
+        } else {
+            submitted = true;
+            localStorage.removeItem("listeningStart");
+            localStorage.removeItem("listeningAudioIdx");
+        }
+    });
+
+    window.onbeforeunload = function(){
+        if(!submitted) return "Test hali tugamadi. Refresh qilinsa progress yo‘qoladi.";
+    };
 });
 </script>
 

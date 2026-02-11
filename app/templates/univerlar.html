@@ -177,24 +177,35 @@
     <header>
         <div class="container">
             <div class="header-container">
-                <a href="{% url 'home' %}" class="logo">UniBase</a>
+                <a href="/" class="logo">
+                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <span class="logo-text">UniBase</span>
+                </a>
                 <nav>
                     <ul>
                         <li><a href="{% url 'home' %}" data-translate="nav_home">Home</a></li>
-                        <li><a href="universities.html" class="active"
+                        <li><a href="#" class="active"
                                 data-translate="nav_universities">Universities</a></li>
+                         <li><a href="#" data-translate="nav_support">News</a></li>
                         <li><a href="{% url 'support' %}" data-translate="nav_support">Support</a></li>
-                        <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
+<!--                        <li>-->
+<!--                            <select id="language-selector" class="language-selector">-->
+<!--                                <option value="en">English</option>-->
+<!--                                <option value="ru">Русский</option>-->
+<!--                                <option value="uz">O'zbekcha</option>-->
+<!--                            </select>-->
+<!--                        </li>-->
+                        {% if user.is_authenticated %}
+                        <li class="auth-links">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Profile</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
                         </li>
-                        <li><a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
+                    {% else %}
+                        <li class="auth-links">
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
                         </li>
-                        <li><a href="{% url 'sign' %}" class="btn btn-primary btn-sm"
-                                data-translate="nav_register">Register</a>
+                    {% endif %}
                         </li>
                     </ul>
                 </nav>

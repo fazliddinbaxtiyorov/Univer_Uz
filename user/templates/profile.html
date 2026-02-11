@@ -8,255 +8,136 @@
 
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
+
     <style>
+
+        body { background: #f2f3f8; }
+
         .profile-container {
             display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
+            grid-template-columns: 320px 1fr 350px;
+            gap: 1.5rem;
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
         }
 
-        .profile-sidebar {
-            background: var(--color-white);
-            border-radius: var(--radius-xl);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            height: fit-content;
-            position: sticky;
-            top: 100px;
-        }
-
-        .profile-sidebar h3 {
-            font-size: var(--font-size-sm);
-            color: var(--color-gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 0 0 1rem 0.75rem;
-            font-weight: 600;
-        }
-
-        .profile-sidebar nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .profile-sidebar nav li {
-            margin-bottom: 0.25rem;
-        }
-
-        .profile-sidebar nav a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.875rem 1.25rem;
-            color: var(--color-gray-600);
-            text-decoration: none;
-            border-radius: var(--radius-lg);
-            transition: all var(--transition-fast);
-            font-weight: 500;
-            font-size: var(--font-size-base);
-            position: relative;
-        }
-
-        .profile-sidebar nav a:hover {
-            background-color: var(--color-gray-100);
-            color: var(--color-primary);
-            transform: translateX(2px);
-        }
-
-        .profile-sidebar nav a.active {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-            color: var(--color-white);
-            box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
-        }
-
-        .profile-sidebar nav a.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 60%;
-            background: var(--color-white);
-            border-radius: 0 2px 2px 0;
-        }
-
-        .profile-main {
-            display: grid;
-            gap: 2rem;
-        }
-
-        .profile-card {
-            background: var(--color-white);
-            border-radius: var(--radius-xl);
-            padding: 2rem;
-            box-shadow: var(--shadow-md);
-            position: relative;
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             overflow: hidden;
         }
 
-        .profile-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 140, 0, 0.1) 100%);
-            border-radius: 50%;
-            transform: translate(50%, -50%);
-            pointer-events: none;
+        .card-header {
+            padding: 1.5rem;
+            font-weight: 700;
+            color: #578ebe;
+            text-transform: uppercase;
+            font-size: 0.9rem;
         }
 
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .profile-photo-container {
-            position: relative;
-        }
-
+        /* LEFT */
+        .profile-card { text-align: center; padding-bottom: 1.5rem; }
         .profile-photo {
-            width: 150px;
-            height: 150px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
+            margin: 2rem auto 1rem;
             object-fit: cover;
-            border: 4px solid var(--color-white);
-            box-shadow: var(--shadow-lg);
+            border: 5px solid #f9fafb;
         }
 
-        .photo-upload-btn {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 40px;
-            height: 40px;
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .profile-nav a {
+            display: block;
+            padding: 1rem;
+            color: #555;
+            text-decoration: none;
+        }
+
+        .profile-nav a.active {
+            background: #f4f6f9;
+            border-left: 3px solid #5b9bd1;
+        }
+
+        /* MIDDLE */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            color: #666;
+        }
+
+        table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Columnlar bir tekis bo‘ladi */
+}
+
+th, td {
+    padding: 1rem;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+    text-align: left; /* text chapga tekis */
+    vertical-align: middle; /* matn vertical o‘rtada turadi */
+    word-wrap: break-word; /* uzun matn bo‘lsa yangi qatordan davom etadi */
+}
+
+th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #999;
+}
+
+        /* RIGHT */
+        .feed-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .feed-icon {
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
-            border: 3px solid var(--color-white);
+            background: #3b82f6;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: transform var(--transition-fast);
-            color: var(--color-white);
-            font-size: 1.2rem;
         }
 
-        .photo-upload-btn:hover {
-            transform: scale(1.1);
-        }
-
-        #photo-input {
-            display: none;
-        }
-
-        .profile-info h2 {
-            margin: 0 0 0.5rem 0;
-            color: var(--color-gray-900);
-        }
-
-        .profile-info p {
-            margin: 0.25rem 0;
-            color: var(--color-gray-600);
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .info-item {
-            padding: 1rem;
-            background: var(--color-gray-50);
-            border-radius: var(--radius-md);
-            border-left: 4px solid var(--color-accent);
-        }
-
-        .info-label {
-            font-size: var(--font-size-sm);
-            color: var(--color-gray-600);
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .info-value {
-            font-size: var(--font-size-lg);
-            color: var(--color-gray-900);
-            font-weight: 500;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .stat-box {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-            color: var(--color-white);
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            text-align: center;
-        }
-
-        .stat-box h3 {
-            font-size: var(--font-size-3xl);
-            margin: 0 0 0.5rem 0;
-        }
-
-        .stat-box p {
-            margin: 0;
-            opacity: 0.9;
-        }
-
-        .save-btn-container {
-            position: sticky;
-            bottom: 20px;
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .profile-container {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-sidebar {
-                position: static;
-            }
-
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
+        @media(max-width: 1024px) {
+            .profile-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header>
+
+<header>
         <div class="container">
             <div class="header-container">
-                <a href="index.html" class="logo">UniBase</a>
+                <a href="/" class="logo">
+                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <span class="logo-text">UniBase</span>
+                </a>
                 <nav>
                     <ul>
-                        <li><a href="student-dashboard.html" data-translate="nav_dashboard">Dashboard</a></li>
-                        <li><a href="profile.html" class="active" data-translate="nav_profile">Profile</a></li>
-                        <li><a href="universities.html" data-translate="nav_universities">Universities</a></li>
-                        <li><a href="personal-best.html" data-translate="nav_personal_best">Personal Best</a></li>
+                        <li><a href="{% url 'home' %}" data-translate="nav_dashboard">Home</a></li>
+                        <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
+                        <li><a href="{% url 'support' %}" data-translate="nav_personal_best">Support</a></li>
                         <li>
                             <select id="language-selector" class="language-selector">
                                 <option value="en">English</option>
@@ -264,105 +145,231 @@
                                 <option value="uz">O'zbekcha</option>
                             </select>
                         </li>
-                        <li><a href="#" onclick="handleLogout(); return false;" class="btn btn-secondary btn-sm"
-                                data-translate="nav_logout">Logout</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
-    <!-- Profile Container -->
-    <div class="profile-container">
-        <!-- Sidebar -->
-        <aside class="profile-sidebar">
-            <h3>My Dashboard</h3>
-            <nav>
-                <ul>
-                    <li><a href="#" class="active" onclick="showSection('profile'); return false;">👤 My Profile</a>
-                    </li>
-                    <li><a href="student-dashboard.html">📊 Dashboard</a></li>
-                    <li><a href="personal-best.html">🏆 Personal Best</a></li>
-                    <li><a href="support.html">💬 Support</a></li>
-                </ul>
-            </nav>
-        </aside>
 
-        <!-- Main Content -->
-        <main class="profile-main">
-            <!-- Profile Card -->
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="profile-photo-container">
-                        <img id="profile-photo" class="profile-photo"
-                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23ddd' width='150' height='150'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='60' fill='%23999'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E"
-                            alt="Profile Photo">
+<div class="profile-container">
 
-                    </div>
-                    <div class="profile-info">
-                        <h2 id="profile-name">{{ user }}</h2>
-                        <p style="color: var(--color-success); font-weight: 600;">✓ Active Account</p>
-                    </div>
-                </div>
+    <!-- LEFT -->
+    <div class="card profile-card">
+        <img class="profile-photo"
+             src="{% if request.user.profile.photo %}{{ request.user.profile.photo.url }}{% else %}{% static 'default-avatar.png' %}{% endif %}">
+        <h2 class="profile-name">
+            {{ request.user.get_full_name|default:request.user.username }}
+        </h2>
+        <style>
+    .coin-balance-box {
+        background: linear-gradient(135deg, #ffcc33 0%, #ffb347 100%);
+        margin: 10px 20px 20px;
+        padding: 15px;
+        border-radius: 15px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 15px rgba(255, 179, 71, 0.3);
+    }
+    .coin-info h4 { margin: 0; font-size: 0.8rem; text-transform: uppercase; opacity: 0.9; }
+    .coin-info div { font-size: 1.5rem; font-weight: 800; }
+    .btn-plus {
+        background: rgba(255,255,255,0.2);
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .btn-plus:hover { background: white; color: #ffb347; }
+</style>
 
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Full Name</div>
-                        <div class="info-value" id="info-name">{{user}}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Email</div>
-                        <div class="info-value" id="info-email">{{request.user.email}}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Phone Number</div>
-                        <div class="info-value" id="info-student-id">{{ request.user.profile.phone_number}}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Member Since</div>
-                        <div class="info-value" id="info-member-since"> {{ request.user.date_joined|date:"d-m-Y H:i" }}</div>
-                    </div>
-                </div>
-            </div>
-             <!-- Statistics Card -->
-            <div class="profile-card">
-                <h2 style="margin-bottom: 1.5rem;">📊 My Statistics</h2>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <h3>{{ total_tests_taken }}</h3>
-                        <p>Tests Taken</p>
-                    </div>
-                    <div class="stat-box"
-                         style="background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);">
-                        <h3>{{ average_score }}%</h3>
-                        <p>Average Score</p>
-                    </div>
-                    <div class="stat-box"
-                         style="background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);">
-                        <h3>{{ best_score }}%</h3>
-                        <p>Best Score</p>
-                    </div>
-                </div>
-
-        <!-- Results will be loaded dynamically -->
-      </div>
-                <!-- Test Results List -->
-                {% if user_results %}
-
-                <div style="margin-top: 2rem;">
-                    <h3>📌 My Test Results</h3>
-                    <ul style="list-style: none; padding: 0; margin-top: 1rem;">
-                        {% for result in user_results %}
-                        <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-                            <strong>{{ result.test_name }}</strong> - {{ result.score }}%
-                            ({{ result.date_taken|date:"d-m-Y H:i" }})
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-        </main>
+<div class="coin-balance-box">
+    <div class="coin-info">
+        <a href="{% url 'buy_coins' %}"><h4>My Balance</h4>
+        <div>🪙 {{ request.user.profile.coins }}</div>
+        </a>
+    </div>
+</div>
+        <div class="profile-nav">
+            <a class="active">🏠 Overview</a>
+            <a href="{% url 'settings'%}">⚙️ Settings</a>
+            <a href="{% url 'support'%}">❓ Help</a>
+        </div>
     </div>
 
-</body>
+    <!-- MIDDLE -->
+    <div class="card">
+        <div class="card-header">Your Activity</div>
 
+        <div class="stats">
+            <div>
+                <div class="stat-number">{{ total_tests_taken }}</div>
+                <div>Total Tests</div>
+            </div>
+            <div>
+                <div class="stat-number">{{ average_score }}%</div>
+                <div>Average Score</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Test</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in user_results %}
+                <tr>
+                    <td>{{ result.test_name }}</td>
+                    <td>{{ result.score }}%</td>
+                    <td>{{ result.date_taken|date:"d M Y H:i"}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align:center;">No tests yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- RIGHT -->
+    <style>
+    .premium-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+        overflow: hidden;
+    }
+    .feed-header {
+        padding: 20px;
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
+        font-weight: 800;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .feed-body { padding: 15px; }
+
+    .feed-row {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        transition: 0.3s;
+        background: #ffffff;
+    }
+    .feed-row:hover { background: #f1f5f9; }
+
+    .icon-box {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-right: 15px;
+    }
+
+    .bg-soft-blue { background: #e0e7ff; color: #4338ca; }
+    .bg-soft-gold { background: #fef3c7; color: #b45309; }
+    .bg-soft-purple { background: #f5f3ff; color: #6d28d9; }
+
+    .btn-analytics {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 12px;
+        font-weight: 700;
+        width: 100%;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+    .btn-analytics:hover {
+        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+
+<div class="premium-card">
+    <div class="feed-header">
+        <i class="fa-solid fa-bolt-lightning text-warning"></i>
+        <span>Feeds & Activity</span>
+    </div>
+
+    <div class="feed-body">
+        <div class="feed-row">
+            <div class="icon-box bg-soft-blue">📢</div>
+            <div>
+                <div class="small text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: 700;">Progress</div>
+                <div class="fw-bold" style="font-size: 14px; color: #334155;">{{ total_tests_taken }} tests completed</div>
+            </div>
+        </div>
+
+        <div class="feed-row">
+            <div class="icon-box bg-soft-gold">🏆</div>
+            <div>
+                <div class="small text-muted" style="font-size: 11px; text-transform: uppercase; font-weight: 700;">Performance</div>
+                <div class="fw-bold" style="font-size: 14px; color: #334155;">Best: {{ best_score }}%</div>
+            </div>
+        </div>
+
+        <hr style="border-top: 1px dashed #e2e8f0; margin: 15px 5px;">
+
+        <div class="p-2">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-box bg-soft-purple">📊</div>
+                <div>
+                    <div class="fw-bold" style="font-size: 15px; color: #1e293b;">Writing Results</div>
+                    <div class="text-muted" style="font-size: 12px;">Detailed AI analytics</div>
+                </div>
+            </div>
+
+            <a href="{% url 'analytics' %}" class="btn-analytics">
+                <i class="fa-solid fa-chart-line"></i>
+                View Full Analytics
+            </a>
+        </div>
+        <div class="p-2">
+            <div class="d-flex align-items-center mb-3">
+                <div class="icon-box bg-soft-purple">🎉</div>
+                <div>
+                    <div class="fw-bold" style="font-size: 15px; color: #1e293b;">Leaderboard</div>
+                    <div class="text-muted" style="font-size: 12px;">OOOOOOOO</div>
+                </div>
+            </div>
+
+            <a href="{% url 'leaderboard' %}" class="btn-analytics">
+                <i class="fa-solid fa-chart-line"></i>
+                View Full
+            </a>
+        </div>
+    </div>
+</div>
+
+</div>
+
+</body>
 </html>

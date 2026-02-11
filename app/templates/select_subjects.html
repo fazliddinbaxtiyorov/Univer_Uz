@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- STATIC CSS (MUHIM) -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
 
     <style>
         body {
@@ -21,7 +21,6 @@
         }
 
         header {
-            background: #1e293b;
             padding: 1rem 0;
         }
 
@@ -32,9 +31,7 @@
         }
 
         .hero {
-            background:
-              linear-gradient(rgba(15,23,42,.85), rgba(15,23,42,.9)),
-              url("{% static 'images/dtm-background.jpg' %}");
+
             background-size: cover;
             background-position: center;
             color: white;
@@ -54,13 +51,16 @@
         }
 
         .dtm-container {
-            max-width: 900px;
-            background: white;
-            margin: -3rem auto 3rem;
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 20px rgba(0,0,0,.1);
-        }
+    max-width: 900px;
+    background: white;
+    margin: 3rem auto; /* -3rem o‘rniga 3rem qo‘ying */
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0,0,0,.1);
+    position: relative; /* hero ustida chiqishi uchun */
+    z-index: 1;
+}
+
 
         .dtm-form {
             display: grid;
@@ -106,10 +106,34 @@
 <body>
 
 <header>
-    <div class="container">
-        <a href="{% url 'home' %}">UniBase</a>
-    </div>
-</header>
+        <div class="container">
+            <div class="header-container">
+                <a href="/" class="logo">
+                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <span class="logo-text">UniBase</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'home' %}" data-translate="nav_dashboard">Home</a></li>
+                        <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
+                        <li><a href="#">News</a></li>
+                        <li><a href="{% url 'support' %}" data-translate="nav_personal_best">Support</a></li>
+                        {% if user.is_authenticated %}
+                        <li class="auth-links">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Profile</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="auth-links">
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
+                        </li>
+                    {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
 
 <section class="hero">
     <h1 class="hero-title">DTM</h1>

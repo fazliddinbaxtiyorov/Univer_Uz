@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <style>
+        body { background:#f5f7fb; font-family:Arial; }
+        .box {
+            max-width:600px;
+            margin:3rem auto;
+            background:white;
+            padding:2rem;
+            border-radius:10px;
+        }
+        .avatar {
+            text-align:center;
+            margin-bottom:1.5rem;
+        }
+        .avatar img {
+            width:120px;
+            height:120px;
+            border-radius:50%;
+            object-fit:cover;
+            border:3px solid #2563eb;
+        }
+        .form-group { margin-bottom:1rem; }
+        label { display:block; font-weight:600; margin-bottom:5px; }
+        input {
+            width:100%;
+            padding:10px;
+            border:1px solid #ddd;
+            border-radius:6px;
+        }
+        button {
+            background:#2563eb;
+            color:white;
+            padding:10px 20px;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+            margin-top:1rem;
+            width:100%;
+        }
+    </style>
+</head>
+<body>
+<header>
+        <div class="container">
+            <div class="header-container">
+                <a href="/" class="logo">
+                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <span class="logo-text">UniBase</span>
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'home' %}" data-translate="nav_dashboard">Home</a></li>
+                        <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
+                        <li><a href="{% url 'support' %}" data-translate="nav_personal_best">Support</a></li>
+                        <li>
+                            <select id="language-selector" class="language-selector">
+                                <option value="en">English</option>
+                                <option value="ru">Русский</option>
+                                <option value="uz">O'zbekcha</option>
+                            </select>
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li class="auth-links">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="auth-links">
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
+                        </li>
+                    {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+<div class="box">
+    <h2>⚙️ Account Settings</h2>
+
+    {% for message in messages %}
+        <p style="color:green;">{{ message }}</p>
+    {% endfor %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="avatar">
+            {% if profile.photo %}
+                <img src="{{ profile.photo.url }}">
+            {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=2563eb&color=fff">
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Change photo</label>
+            <input type="file" name="photo">
+        </div>
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" value="{{ user.username }}">
+        </div>
+
+        <div class="form-group">
+            <label>First name</label>
+            <input type="text" name="first_name" value="{{ user.first_name }}">
+        </div>
+
+        <div class="form-group">
+            <label>Last name</label>
+            <input type="text" name="last_name" value="{{ user.last_name }}">
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ profile.email }}">
+        </div>
+
+        <div class="form-group">
+            <label>Phone number</label>
+            <input type="text" name="phone_number" value="{{ profile.phone_number }}">
+        </div>
+
+        <button type="submit">Save changes</button>
+    </form>
+</div>
+
+</body>
+</html>

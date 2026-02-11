@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard - UniBase</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>UniBase Leaderboard</h1>
+        <a href="{% url 'profile' %}">Back to Dashboard</a>
+    </header>
+
+    <section class="leaderboard">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>Avg Score</th>
+                    <th>Best Score</th>
+                    <th>Tests Taken</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in leaderboard %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.avg_score }}</td>
+                    <td>{{ user.best_score }}</td>
+                    <td>{{ user.tests_taken }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

@@ -1,365 +1,422 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Practice - UniBase (Demo)</title>
+    <title>IELTS Practice - UniBase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+     <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: #f1f5f9;
+        }
 
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
-    <!-- Google Fonts: Inter for a modern, clean look -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        header {
+            padding: 1rem 0;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hero {
+
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 1rem;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .hero-subtitle {
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .dtm-container {
+    max-width: 900px;
+    background: white;
+    margin: 3rem auto; /* -3rem o‘rniga 3rem qo‘ying */
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0,0,0,.1);
+    position: relative; /* hero ustida chiqishi uchun */
+    z-index: 1;
+}
+
+
+        .dtm-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+            gap: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        select {
+            width: 100%;
+            padding: .75rem;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        button {
+            background: #14b8a6;
+            color: white;
+            border: none;
+            padding: .9rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0d9488;
+        }
+
+        #msg {
+            margin-top: 1rem;
+            color: red;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
     <style>
         :root {
-            --font-main: 'Inter', sans-serif;
-            --color-listening: #8b5cf6;
-            /* Violet */
-            --color-reading: #0ea5e9;
-            /* Sky Blue */
-            --color-writing: #f97316;
-            /* Orange */
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --primary-mint: #1cc8c8;
+            --primary-dark: #1a3a5a;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --text-muted: #7f8c8d;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
             font-family: var(--font-main);
-            background-color: #f8fafc;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            color: var(--primary-dark);
+            line-height: 1.6;
         }
 
-        /* Skill Selection Cards */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--primary-dark);
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 12px;
+        }
+
+        .logo-img { width: 40px; height: 40px; border-radius: 8px; }
+        .logo-text { font-size: 22px; font-weight: 800; color: var(--white); }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        nav a:hover { color: var(--primary-mint); }
+
+        .auth-links { display: flex; gap: 10px; }
+        .btn {
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .btn-secondary { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+        .btn-primary { background: var(--primary-mint); color: var(--white); }
+        .btn-danger { background: #ef4444; color: var(--white); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: var(--primary-dark);
+            padding: 80px 0 160px; /* Pastki paddingni katta qildik (overlap uchun) */
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 0 0 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: rgba(255,255,255,0.7);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- SKILLS GRID (The 3 Cards) --- */
+        .main-content {
+            margin-top: -80px; /* Hero ko'k foniga kirib turadi */
+            padding-bottom: 80px;
+        }
+
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-            padding: 0 1rem;
+            gap: 30px;
+            margin-bottom: 60px;
         }
 
+        .skill-card-link { text-decoration: none; color: inherit; }
+
         .skill-card {
-            background: white;
-            padding: 0;
-            border-radius: 20px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            position: relative;
+            background: var(--white);
+            border-radius: 24px;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            border: 2px solid transparent;
             height: 100%;
         }
 
-        .skill-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        .skill-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .skill-card.active { border-color: var(--primary-mint); }
+
+        .skill-image { width: 100%; height: 200px; object-fit: cover; }
+        .skill-content { padding: 25px; text-align: center; }
+        .skill-content h3 { margin: 0; font-size: 22px; font-weight: 800; }
+        .skill-content p { color: var(--text-muted); font-size: 14px; margin: 10px 0 20px; }
+        .skill-duration {
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-dark);
         }
 
-        .skill-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        /* --- TESTS GRID --- */
+        .tests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
         }
 
-        .skill-content {
-            padding: 2rem;
+        .ielts-card {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 35px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            flex-grow: 1;
-            width: 100%;
-            box-sizing: border-box;
         }
 
-        .skill-duration {
-            font-weight: 500;
-            font-size: 0.95rem;
-            padding: 0.5rem 1.5rem;
-            border-radius: 9999px;
-            background-color: #f3f4f6;
-            color: #374151;
+        .ielts-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 15%; right: 15%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-mint) 50%, var(--primary-dark) 50%);
+            border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;
+        }
+
+        .ielts-card:hover { transform: translateY(-5px); border-color: var(--primary-mint); }
+
+        .card-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .badge-mint { background: #e0fcfc; color: #17a2a2; padding: 6px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; }
+        .coin-price { font-weight: 800; color: #f59e0b; font-size: 15px; }
+
+        .card-title-text { font-size: 24px; font-weight: 800; margin: 0 0 10px; line-height: 1.2; }
+        .card-subtitle-text { color: var(--text-muted); font-size: 15px; margin-bottom: 30px; display: block; }
+
+        .info-detail { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-weight: 600; color: #475569; }
+
+        .btn-mint {
             margin-top: auto;
-        }
-
-        .skill-icon-wrapper {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 2.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .skill-card:hover .skill-icon-wrapper {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .skill-title {
-            font-size: 1.5rem;
+            background: var(--primary-mint);
+            color: var(--white);
+            text-align: center;
+            padding: 16px;
+            border-radius: 18px;
+            text-decoration: none;
             font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.75rem;
+            font-size: 17px;
+            transition: var(--transition);
         }
 
-        .skill-desc {
-            color: #64748b;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            flex-grow: 1;
-        }
+        .btn-mint:hover { background: var(--primary-dark); }
 
-        .skill-action {
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            transition: all 0.2s;
-            opacity: 0;
-            transform: translateY(10px);
-            background-color: #f1f5f9;
-        }
-
-        .skill-card:hover .skill-action {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .skill-card.active .skill-action {
-            opacity: 1;
-            transform: translateY(0);
-            color: white;
-        }
-
-        /* Specific Themes */
-        /* Listening */
-        .skill-card[data-skill="LISTENING"] .skill-icon-wrapper {
-            background-color: #f5f3ff;
-            color: var(--color-listening);
-        }
-
-        .skill-card[data-skill="LISTENING"]:hover {
-            border-color: var(--color-listening);
-        }
-
-        .skill-card[data-skill="LISTENING"].active {
-            border-color: var(--color-listening);
-            background-color: #fdfcff;
-        }
-
-        .skill-card[data-skill="LISTENING"].active .skill-icon-wrapper {
-            background-color: var(--color-listening);
-            color: white;
-        }
-
-        .skill-card[data-skill="LISTENING"].active .skill-action {
-            background-color: var(--color-listening);
-        }
-
-        /* Reading */
-        .skill-card[data-skill="READING"] .skill-icon-wrapper {
-            background-color: #f0f9ff;
-            color: var(--color-reading);
-        }
-
-        .skill-card[data-skill="READING"]:hover {
-            border-color: var(--color-reading);
-        }
-
-        .skill-card[data-skill="READING"].active {
-            border-color: var(--color-reading);
-            background-color: #f8fcff;
-        }
-
-        .skill-card[data-skill="READING"].active .skill-icon-wrapper {
-            background-color: var(--color-reading);
-            color: white;
-        }
-
-        .skill-card[data-skill="READING"].active .skill-action {
-            background-color: var(--color-reading);
-        }
-
-        /* Writing */
-        .skill-card[data-skill="WRITING"] .skill-icon-wrapper {
-            background-color: #fff7ed;
-            color: var(--color-writing);
-        }
-
-        .skill-card[data-skill="WRITING"]:hover {
-            border-color: var(--color-writing);
-        }
-
-        .skill-card[data-skill="WRITING"].active {
-            border-color: var(--color-writing);
-            background-color: #fffaf5;
-        }
-
-        .skill-card[data-skill="WRITING"].active .skill-icon-wrapper {
-            background-color: var(--color-writing);
-            color: white;
-        }
-
-        .skill-card[data-skill="WRITING"].active .skill-action {
-            background-color: var(--color-writing);
+        @media (max-width: 768px) {
+            .hero-title { font-size: 32px; }
+            nav ul { display: none; }
+            .main-content { margin-top: -50px; }
         }
     </style>
 </head>
-
 <body>
-    <!-- Header -->
+
     <header>
         <div class="container">
             <div class="header-container">
-                <a href="index.html" class="logo">
-                    <img src="images/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <a href="/" class="logo">
+                    <img src="/media/media/logo.jpg" alt="Logo" class="logo-img">
                     <span class="logo-text">UniBase</span>
                 </a>
                 <nav>
                     <ul>
-                        <li><a href="#" class="active">Demo Dashboard</a></li>
-                        <li><a href="#">Demo Profile</a></li>
-                        <li><a href="#" id="user-name-display" style="font-weight: 600;">Demo User</a></li>
-                        <li>
-                            <button class="btn btn-secondary btn-sm">Logout</button>
-                        </li>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'univers' %}">Universities</a></li>
+                        <li><a href="{% url 'support' %}">Support</a></li>
+                        {% if user.is_authenticated %}
+                            <li class="auth-links">
+                                <a href="{% url 'profile' %}" class="btn btn-secondary">Profile</a>
+                                <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="auth-links">
+                                <a href="{% url 'login' %}" class="btn btn-secondary">Login</a>
+                                <a href="{% url 'sign' %}" class="btn btn-primary">Register</a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" style="min-height: 40vh; display: flex; align-items: center;">
-        <div class="container text-center">
-            <h1 class="hero-title" data-translate="test_ielts_title">IELTS Practice</h1>
-            <p class="hero-subtitle" data-translate="test_ielts_desc">Comprehensive IELTS practice across all sections
-                with realistic exam conditions.</p>
-        </div>
-    </section>
-
-    <!-- Tests Section -->
-    <section class="section">
+    <section class="hero">
         <div class="container">
-            <!-- Skill Selection -->
-            <!-- Skill Selection -->
-            <div class="skills-grid">
-                <div class="skill-card" onclick="filterTests('LISTENING')" data-skill="LISTENING">
-                    <img src="images/ielts-listening.png" alt="Listening Practice" class="skill-image">
-                    <div class="skill-content">
-                        <h3 class="skill-title">Listening</h3>
-                        <p class="skill-desc">Test your ability to understand spoken English</p>
-                        <span class="skill-duration">30 minutes</span>
-                    </div>
-                </div>
-                <div class="skill-card" onclick="filterTests('READING')" data-skill="READING">
-                    <img src="images/ielts-reading.png" alt="Reading Practice" class="skill-image">
-                    <div class="skill-content">
-                        <h3 class="skill-title">Reading</h3>
-                        <p class="skill-desc">Assess your reading comprehension skills</p>
-                        <span class="skill-duration">60 minutes</span>
-                    </div>
-                </div>
-                <div class="skill-card" onclick="filterTests('WRITING')" data-skill="WRITING">
-                    <img src="images/ielts-writing.png" alt="Writing Practice" class="skill-image">
-                    <div class="skill-content">
-                        <h3 class="skill-title">Writing</h3>
-                        <p class="skill-desc">Evaluate your written English proficiency</p>
-                        <span class="skill-duration">60 minutes</span>
-                    </div>
-                </div>
-            </div>
-
-            <h2 class="mb-4" id="tests-header">Available Tests</h2>
-            <div class="grid grid-3" id="tests-container">
-                <!-- Tests will be loaded here -->
-            </div>
+            <h1 class="hero-title">IELTS Practice</h1>
+            <p class="hero-subtitle">Comprehensive IELTS practice across all sections with realistic exam conditions.</p>
         </div>
     </section>
 
-    <script>
-        // Mock Data for Demo
-        const MOCK_TESTS = [
-            { id: 'ielts_list_1', category: 'ENGLISH', name: 'IELTS Listening Practice 1', description: 'Section 1-4 full listening practice.', duration: 40, questions: new Array(40) },
-            { id: 'ielts_read_1', category: 'ENGLISH', name: 'IELTS Reading Academic 1', description: 'Academic reading passages with questions.', duration: 60, questions: new Array(40) },
-            { id: 'ielts_write_1', category: 'ENGLISH', name: 'IELTS Writing Task 1', description: 'Identify trends in charts and graphs.', duration: 20, questions: new Array(1) },
-            { id: 'ielts_write_2', category: 'ENGLISH', name: 'IELTS Writing Task 2', description: 'Essay writing practice.', duration: 40, questions: new Array(1) },
-            { id: 'ielts_list_2', category: 'ENGLISH', name: 'IELTS Listening Practice 2', description: 'Advanced listening exercises.', duration: 40, questions: new Array(40) }
-        ];
-
-        let currentFilter = 'ALL';
-
-        function loadIELTSTests(filter = 'ALL') {
-            let ieltsTests = MOCK_TESTS; // Use mock data
-
-            // Filter logic
-            if (filter !== 'ALL') {
-                ieltsTests = ieltsTests.filter(test => {
-                    const name = test.name.toLowerCase();
-                    const desc = (test.description || '').toLowerCase();
-                    return name.includes(filter.toLowerCase()) || desc.includes(filter.toLowerCase());
-                });
-            }
-
-            const container = document.getElementById('tests-container');
-            const header = document.getElementById('tests-header');
-
-            // Update active state of cards
-            document.querySelectorAll('.skill-card').forEach(card => {
-                if (card.dataset.skill === filter) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
-            });
-
-            if (filter === 'ALL') {
-                header.textContent = 'All Available Practice Tests';
-            } else {
-                header.textContent = `Available ${filter.charAt(0).toUpperCase() + filter.slice(1).toLowerCase()} Tests`;
-            }
-
-            if (ieltsTests.length === 0) {
-                container.innerHTML = `
-                    <div class="card" style="grid-column: 1 / -1;">
-                        <div class="card-body text-center">
-                            <h3>No tests found for ${filter.toLowerCase()}</h3>
-                            <p>Try selecting a different section.</p>
+    <div class="main-content">
+        <div class="container">
+            <div class="skills-grid">
+                <a href="{% url 'ielts_listening_view' %}" class="skill-card-link">
+                    <div class="skill-card {% if current_category == 'LISTENING' %}active{% endif %}">
+                        <img src="https://willyrenandya.com/wp-content/uploads/2024/01/Screenshot-2024-01-12-112050.png" class="skill-image">
+                        <div class="skill-content">
+                            <h3>Listening</h3>
+                            <p>Fokus va tushunish qobiliyatingizni oshiring.</p>
+                            <span class="skill-duration">⏱️ 40 mins</span>
                         </div>
                     </div>
-                `;
-                return;
-            }
+                </a>
 
-            container.innerHTML = ieltsTests.map(test => `
-                <div class="test-card" onclick="alert('Starting demo test: ${test.name}')">
-                    <span class="test-card-badge">IELTS</span>
-                    <h3 class="card-title">${test.name}</h3>
-                    <p class="card-description">${test.description}</p>
-                    <p style="margin-top: 1rem; color: var(--color-gray-600);">
-                        <strong>⏱️ Duration:</strong> ${test.duration} minutes<br>
-                        <strong>📝 Questions:</strong> ${test.questions.length}
-                    </p>
-                    <button class="btn btn-primary mt-3" style="width: 100%;">Start Demo</button>
-                </div>
-            `).join('');
-        }
+                <a href="{% url 'ielts_reading' %}" class="skill-card-link">
+                    <div class="skill-card {% if current_category == 'READING' %}active{% endif %}">
+                        <img src="https://cdn.prod.website-files.com/67ebfc7b58672c4b06d22c48/67fd8020c23fdc1ee04808ca_O2oqSWC1rJ2JPHrRd1sJZ_aef3e940e89948f8946eaa2843952d18.jpeg" class="skill-image">
+                        <div class="skill-content">
+                            <h3>Reading</h3>
+                            <p>Matnlar bilan tez va aniq ishlashni o'rganing.</p>
+                            <span class="skill-duration">⏱️ 60 mins</span>
+                        </div>
+                    </div>
+                </a>
 
-        function filterTests(skill) {
-            currentFilter = skill;
-            loadIELTSTests(skill);
-        }
+                <a href="{% url 'writing_tests' %}" class="skill-card-link">
+                    <div class="skill-card {% if current_category == 'WRITING' %}active{% endif %}">
+                        <img src="https://img.freepik.com/free-photo/young-writer-taking-notes_23-2148854508.jpg?w=740" class="skill-image">
+                        <div class="skill-content">
+                            <h3>Writing</h3>
+                            <p>Insho yozishda akademik darajaga chiqing.</p>
+                            <span class="skill-duration">⏱️ 60 mins</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
 
-        document.addEventListener('DOMContentLoaded', () => loadIELTSTests('ALL'));
-    </script>
+            <div class="tests-grid">
+                {% if current_category == 'LISTENING' %}
+                    {% for test in tests_listening %}
+                    <div class="ielts-card">
+                        <div class="card-header-top">
+                            <span class="badge-mint">IELTS ACADEMIC</span>
+                            <span class="coin-price">🪙 {{ test.price|default:"25" }} coins</span>
+                        </div>
+                        <h3 class="card-title-text">{{ test.title }}</h3>
+                        <span class="card-subtitle-text">Listening Practice Test</span>
+                        <div class="card-info-row">
+                            <div class="info-detail"><span>⏱️</span> Duration: 40 min</div>
+                            <div class="info-detail"><span>🎧</span> 4 Audio Sections</div>
+                        </div>
+                        <a href="{% url 'ielts_listening' test.id %}" class="btn-mint">Start Listening</a>
+                    </div>
+                    {% empty %}
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="60" style="opacity: 0.3;">
+                        <p style="color: var(--text-muted); margin-top: 15px;">Hozircha testlar yuklanmagan.</p>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if current_category == 'WRITING' %}
+                    {% for test in tests_writing %}
+                    <div class="ielts-card">
+                        <div class="card-header-top">
+                            <span class="badge-mint">IELTS WRITING</span>
+                            <span class="coin-price">🪙 {{ test.price|default:"25" }} coins</span>
+                        </div>
+                        <h3 class="card-title-text">{{ test.title }}</h3>
+                        <span class="card-subtitle-text">Academic Writing Practice</span>
+                        <div class="card-info-row">
+                            <div class="info-detail"><span>⏱️</span> Duration: 60 min</div>
+                            <div class="info-detail"><span>📝</span> Task 1 & Task 2</div>
+                        </div>
+                        <a href="{% url 'writing_detail' test.id %}" class="btn-mint">Start Writing</a>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
 </body>
-
 </html>

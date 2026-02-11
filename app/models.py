@@ -3,6 +3,12 @@ from django.db import models
 
 # Create your models here.
 
+class PaidTestMixin(models.Model):
+    is_paid = models.BooleanField(default=False)
+    price = models.PositiveIntegerField(default=25)
+
+    class Meta:
+        abstract = True
 
 class Fanlar(models.Model):
     Fan_CHOICES = (
@@ -48,26 +54,78 @@ class IELTS_writing(models.Model):
     text = models.TextField()
 
 
-class IELTS_Reading(models.Model):
-    savol = models.TextField()
 
-    variant_a = models.CharField(max_length=255, default='')
-    variant_b = models.CharField(max_length=255, default='')
-    variant_c = models.CharField(max_length=255,default='')
-    variant_d = models.CharField(max_length=255,default='')
+class ReadingTest(PaidTestMixin):
+    passage_text = models.TextField(verbose_name="Test matni (Passage)")
+    category = models.CharField(
+        max_length=15,
+        choices=[('READING', 'Reading')],
+        default='READING'
+    )
+
+class IELTS_Reading(models.Model):
+
+    QUESTION_TYPES = [
+        ('ABCD', 'Multiple Choice'),
+        ('TFNG', 'True / False / Not Given'),
+    ]
+
+    ANSWER_CHOICES = [
+        ("A", "A"),
+        ("B", "B"),
+        ("C", "C"),
+        ("D", "D"),
+    ]
+
+    test_group = models.ForeignKey(
+        ReadingTest,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+    savol = models.TextField()
+    question_image = models.ImageField(
+        upload_to='reading/questions/',
+        blank=True,
+        null=True
+    )
+
+    question_type = models.CharField(
+        max_length=10,
+        choices=QUESTION_TYPES,
+        default='ABCD'
+    )
+
+    variant_a = models.CharField(max_length=255, blank=True)
+    variant_b = models.CharField(max_length=255, blank=True)
+    variant_c = models.CharField(max_length=255, blank=True)
+    variant_d = models.CharField(max_length=255, blank=True)
+
+    image_a = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
+    image_b = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
+    image_c = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
+    image_d = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
 
     togri_variant = models.CharField(
         max_length=1,
-        choices=[("A", "A"), ("B", "B"), ("C", "C"), ("D", "D")]
+        choices=ANSWER_CHOICES
     )
 
     def __str__(self):
-        return self.savol[:40]
+        return f"{self.question_type} | {self.savol[:40]}"
 
+class ListeningTest(PaidTestMixin):
+    title = models.CharField(max_length=200)
+    description = models.TextField(default="Practice your reading skills.")
+    duration = models.IntegerField(default=60)
+    category = models.CharField(max_length=20, choices=[('READING', 'Reading'), ('LISTENING', 'Listening')])
+
+    def __str__(self):
+        return self.title
 
 class IELTSListeningQuestion(models.Model):
+    test_group = models.ForeignKey(ListeningTest, on_delete=models.CASCADE, related_name='questions')
     savol = models.TextField()
-
     variant_a = models.CharField(max_length=255,default='')
     variant_b = models.CharField(max_length=255,default='')
     variant_c = models.CharField(max_length=255,default='')
@@ -89,7 +147,7 @@ class IELTSListeningQuestion(models.Model):
 
 
 
-class Milliy_Sertifikat(models.Model):
+class Milliy_Sertifikat(PaidTestMixin):
     FAN_CHOICES = (
         ('Matematika', 'Matematika'),
         ('Ona Tili', 'Ona Tili'),
@@ -117,21 +175,66 @@ class Milliy_Sertifikat(models.Model):
     def __str__(self):
         return f"{self.fan} | {self.savol[:30]}"
 
+class Sat(PaidTestMixin):
+    title = models.CharField(max_length=200)
+    description = models.TextField(default="Practice your sat skills.")
+    duration = models.IntegerField(default=60)
+    category = models.CharField(max_length=20, choices=[('SAT', 'SAT')])
 
 class SATQuestion(models.Model):
-    savol = models.TextField()
-    variant_a = models.CharField(max_length=255)
-    variant_b = models.CharField(max_length=255)
-    variant_c = models.CharField(max_length=255)
-    variant_d = models.CharField(max_length=255)
+    test_group = models.ForeignKey(Sat, on_delete=models.CASCADE, related_name='questions')
+    QUESTION_TYPES = [
+        ('ABCD', 'Multiple Choice'),
+        ('TFNG', 'True / False / Not Given'),
+    ]
 
+    ANSWER_CHOICES = [
+        ("A", "A"),
+        ("B", "B"),
+        ("C", "C"),
+        ("D", "D"),
+    ]
+
+    test_group = models.ForeignKey(
+        Sat,
+        on_delete=models.CASCADE,
+        related_name='questions'
+    )
+
+    savol = models.TextField(verbose_name="Question text")
+    question_image = models.ImageField(
+        upload_to='sat/questions/',
+        blank=True,
+        null=True
+    )
+
+    question_type = models.CharField(
+        max_length=10,
+        choices=QUESTION_TYPES,
+        default='ABCD'
+    )
+
+    # Variantlar matni
+    variant_a = models.CharField(max_length=255, blank=True)
+    variant_b = models.CharField(max_length=255, blank=True)
+    variant_c = models.CharField(max_length=255, blank=True)
+    variant_d = models.CharField(max_length=255, blank=True)
+
+    # Variantlar rasm ko‘rinishida ham bo‘lishi mumkin
+    image_a = models.ImageField(upload_to='sat/variants/', blank=True, null=True)
+    image_b = models.ImageField(upload_to='sat/variants/', blank=True, null=True)
+    image_c = models.ImageField(upload_to='sat/variants/', blank=True, null=True)
+    image_d = models.ImageField(upload_to='sat/variants/', blank=True, null=True)
+
+    # Tog'ri javob
     togri_variant = models.CharField(
         max_length=1,
-        choices=[("A","A"),("B","B"),("C","C"),("D","D")]
+        choices=ANSWER_CHOICES
     )
 
     def __str__(self):
-        return self.savol[:40]
+        return f"{self.test_group.title} | {self.savol[:40]}"
+
 
 
 class Davlat_Univer(models.Model):
@@ -169,3 +272,57 @@ class UserTestResult(models.Model):
 
     def __str__(self):
         return f"{self.user.username} | {self.test_name} | {self.score}%"
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class WritingQuestion(PaidTestMixin):
+    TASK_CHOICES = (
+        ('task1', 'Task 1'),
+        ('task2', 'Task 2'),
+    )
+
+    title = models.CharField(max_length=255)
+    task_type = models.CharField(max_length=10, choices=TASK_CHOICES)
+    question_text = models.TextField()
+    question_image = models.ImageField(upload_to='writing/question/', blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+
+class WritingSubmission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(WritingQuestion, on_delete=models.CASCADE)
+
+    answer = models.TextField()
+
+    band_score = models.FloatField(null=True, blank=True)
+    feedback = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.question.title}"
+
+class TestAccess(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    category = models.CharField(
+        max_length=30,
+        choices=[
+            ('IELTS_LISTENING', 'IELTS Listening'),
+            ('IELTS_READING', 'IELTS Reading'),
+            ('IELTS_WRITING', 'IELTS Writing'),
+
+            ('SAT', 'SAT'),
+            ('DTM', 'DTM'),
+            ('MILLIY', 'Milliy'),
+        ]
+    )
+
+    test_id = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'category', 'test_id')
