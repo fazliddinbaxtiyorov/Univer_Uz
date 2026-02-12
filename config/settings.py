@@ -24,8 +24,12 @@ SECRET_KEY = 'django-insecure-#*-f4=$4l(q)gis2-e7!j312k8+4(jc9*29^@yt=7586ke*j0r
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+import os
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app']
+ALLOWED_HOSTS = ['*', '.railway.app', 'localhost', '127.0.0.1']
+
+# CSRF xavfsizligi uchun (bu Railway-da juda muhim)
+CSRF_TRUSTED_ORIGINS = ['https://*.railway.app']
 
 # Application definition
 
@@ -77,11 +81,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3', # Agar Railway'da bo'lmasa sqlite ishlataveradi
+        conn_max_age=600
+    )
 }
 
 
