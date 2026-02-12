@@ -1,0 +1,95 @@
+/* ===================================
+   UniBase - Dark Mode Styles
+   =================================== */
+
+/* Dark mode color overrides */
+body.dark-mode {
+    --color-gray-50: #1f2937;
+    --color-gray-100: #1f2937;
+    --color-gray-200: #374151;
+    --color-gray-300: #4b5563;
+    --color-gray-400: #6b7280;
+    --color-gray-500: #9ca3af;
+    --color-gray-600: #d1d5db;
+    --color-gray-700: #e5e7eb;
+    --color-gray-800: #f3f4f6;
+    --color-gray-900: #f9fafb;
+
+    background-color: #111827;
+    color: var(--color-gray-800);
+}
+
+/* Dark mode specific overrides */
+body.dark-mode .card {
+    background-color: #1f2937;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .test-card {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    border-color: #374151;
+}
+
+body.dark-mode .form-input,
+body.dark-mode .form-select,
+body.dark-mode .form-textarea {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: var(--color-gray-800);
+}
+
+body.dark-mode .question-container {
+    background-color: #1f2937;
+}
+
+body.dark-mode .answer-option {
+    background-color: #1f2937;
+    border-color: #374151;
+}
+
+body.dark-mode footer {
+    background-color: #000000;
+}
+
+/* Ensure text visibility in specific areas */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: var(--color-gray-900);
+}
+
+body.dark-mode p {
+    color: var(--color-gray-800);
+}
+
+body.dark-mode .text-muted {
+    color: var(--color-gray-500);
+}
+
+/* Button visibility in dark mode */
+body.dark-mode .btn-outline {
+    background-color: transparent;
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+body.dark-mode .btn-outline:hover {
+    background-color: var(--color-accent);
+    color: #111827;
+}
+
+body.dark-mode .card-title {
+    color: var(--color-gray-900);
+}
+
+body.dark-mode .card-description {
+    color: var(--color-gray-700);
+}
+
+body.dark-mode .test-card-badge {
+    background-color: var(--color-accent);
+    color: #111827;
+}

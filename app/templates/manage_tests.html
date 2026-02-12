@@ -1,134 +1,200 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Tests - UniBase Admin</title>
-  <link rel="stylesheet" href="{% static 'styles.css' %}">
-  <link rel="stylesheet" href="{% static 'responsive.css' %}">
-  <style>
-    .hidden { display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniBase | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1; --primary-hover: #4f46e5; --secondary: #10b981;
+            --danger: #ef4444; --bg: #f8fafc; --card: #ffffff;
+            --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 30px 15px; }
+        .container { max-width: 950px; margin: 0 auto; }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-fill-color: transparent; margin: 0; }
+
+        .card { background: var(--card); border-radius: 20px; padding: 30px; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .step-badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: inline-block; }
+
+        h2 { font-size: 20px; font-weight: 700; margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+
+        input, select, textarea { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+
+        /* Mixin styling */
+        .mixin-box { background: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 25px; border: 1px dashed var(--border); }
+        .toggle-container { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); margin: 0; }
+
+        .btn { padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; font-size: 14px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--secondary); color: white; width: 100%; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .alert { padding: 15px; background: #dcfce7; color: #166534; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid var(--secondary); font-weight: 600; }
+        .hidden { display: none; }
+        .variant-grid { background: #fafafa; padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <div class="header-container">
-        <a href="{% url 'home'%}" class="logo">UniBase</a>
-        <nav>
-          <ul>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-  </header>
 
-  <section class="section">
-    <div class="container">
-      <h1>Manage Tests</h1>
-
-      {% if messages %}
-        <ul>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-
-      <!-- Test Creation Form -->
-      <div class="card mb-4">
-        <div class="card-header">
-          <h2>Create New Test</h2>
+<div class="container">
+    {% if user.is_superuser %}
+        <div class="header">
+            <h1>UniBase Control Center</h1>
+            <p>Salom, {{ user.username }}. Testlar va narxlarni boshqarish paneli.</p>
         </div>
-        <div class="card-body">
-          <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
 
-            <div class="form-group">
-              <label for="category">Category *</label>
-              <select name="category" id="category" class="form-select" required>
-                <option value="">Select category...</option>
-                <option value="IELTS_READING">IELTS Reading</option>
-                <option value="IELTS_LISTENING">IELTS Listening</option>
-                <option value="SAT">SAT</option>
-                <option value="MILL_NATIONAL">Milliy Sertifikat</option>
-              </select>
-            </div>
+        {% if messages %}
+            {% for m in messages %}<div class="alert">{{ m }}</div>{% endfor %}
+        {% endif %}
 
-            <!-- Milliy Sertifikat fan select -->
-            <div class="form-group hidden" id="fan-group">
-              <label for="fan">Fan (Milliy Sertifikat only)</label>
-              <select name="fan" id="fan" class="form-select">
-                <option value="">Select fan...</option>
-                {% for key, value in milliy_fan_choices %}
-                  <option value="{{ key }}">{{ value }}</option>
-                {% endfor %}
-              </select>
-            </div>
+        <div class="card">
+            <span class="step-badge">Step 1</span>
+            <h2>Test Guruhi va Narxni belgilash</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create_group">
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Kategoriya</label>
+                        <select name="group_category" required>
+                            <option value="READING">IELTS Reading (Passage)</option>
+                            <option value="LISTENING">IELTS Listening (Audio Pack)</option>
+                            <option value="SAT">SAT Test</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sarlavha (Title)</label>
+                        <input type="text" name="group_title" placeholder="Masalan: Cambridge 18 Test 1" required>
+                    </div>
+                </div>
 
-            <!-- IELTS Listening audio upload -->
-            <div class="form-group hidden" id="audio-group">
-              <label>Audio (IELTS Listening only)</label>
-              <input type="file" name="audio">
-            </div>
+                <div class="mixin-box">
+                    <label class="toggle-container">
+                        <input type="checkbox" name="is_paid" id="is_paid_check"> Pullik testmi?
+                    </label>
+                    <div id="price_field" style="flex-grow: 1; opacity: 0.5;">
+                        <label>Narxi (UZS/USD)</label>
+                        <input type="number" name="price" value="25" min="0">
+                    </div>
+                </div>
 
-            <div class="form-group">
-              <label for="savol">Question *</label>
-              <textarea name="savol" id="savol" class="form-input" rows="3" required></textarea>
-            </div>
-
-            <div class="form-group">
-              <label>Variant A *</label>
-              <input type="text" name="variant_a" class="form-input" required>
-            </div>
-            <div class="form-group">
-              <label>Variant B *</label>
-              <input type="text" name="variant_b" class="form-input" required>
-            </div>
-            <div class="form-group">
-              <label>Variant C *</label>
-              <input type="text" name="variant_c" class="form-input" required>
-            </div>
-            <div class="form-group">
-              <label>Variant D *</label>
-              <input type="text" name="variant_d" class="form-input" required>
-            </div>
-
-            <div class="form-group">
-              <label>Correct Answer *</label>
-              <select name="togri_variant" class="form-select" required>
-                <option value="">Select correct answer</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
-              </select>
-            </div>
-
-            <button type="submit" class="btn btn-success">Save Test</button>
-          </form>
+                <div class="form-group">
+                    <label>Matn / Tavsif</label>
+                    <textarea name="passage_content" rows="3" placeholder="Reading matnini shu yerga kiriting..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Guruhni Saqlash</button>
+            </form>
         </div>
-      </div>
 
+        <div class="card">
+            <span class="step-badge">Step 2</span>
+            <h2>Savollarni biriktirish</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_question">
 
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Kategoriya</label>
+                        <select name="category" id="main_cat" required>
+                            <option value="">-- Tanlang --</option>
+                            <option value="IELTS_READING">IELTS Reading</option>
+                            <option value="IELTS_LISTENING">IELTS Listening</option>
+                            <option value="SAT">SAT</option>
+                            <option value="MILL_NATIONAL">Milliy Sertifikat</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="group_wrapper">
+                        <label>Guruhni Tanlang</label>
+                        <select name="test_group" id="test_group_select">
+                            <option value="">-- Tanlang --</option>
+                            {% for r in reading_tests %}<option value="{{r.id}}" class="g rd">Reading: {{r.passage_text|truncatechars:40}}</option>{% endfor %}
+                            {% for l in listening_tests %}<option value="{{l.id}}" class="g ls">Listening: {{l.title}}</option>{% endfor %}
+                            {% for s in sat_tests %}<option value="{{s.id}}" class="g st">SAT: {{s.title}}</option>{% endfor %}
+                        </select>
+                    </div>
+                </div>
 
-  <script>
-    const categorySelect = document.getElementById("category");
-    const fanGroup = document.getElementById("fan-group");
-    const audioGroup = document.getElementById("audio-group");
+                <div id="ls_extra" class="hidden mixin-box">
+                    <div class="grid" style="width: 100%;">
+                        <div class="form-group"><label>Part (1-4)</label><select name="part"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                        <div class="form-group"><label>Audio</label><input type="file" name="audio" accept="audio/*"></div>
+                    </div>
+                </div>
 
-    function updateFields() {
-      const value = categorySelect.value;
-      // Milliy Sertifikat -> show fan
-      fanGroup.classList.toggle("hidden", value !== "MILL_NATIONAL");
-      // IELTS Listening -> show audio
-      audioGroup.classList.toggle("hidden", value !== "IELTS_LISTENING");
-    }
+                <div class="form-group">
+                    <label>Savol Matni</label>
+                    <textarea name="savol" required></textarea>
+                    <label style="font-size: 11px; margin-top: 5px;">Savol rasmi: <input type="file" name="question_image"></label>
+                </div>
 
-    categorySelect.addEventListener("change", updateFields);
-    window.addEventListener("DOMContentLoaded", updateFields);
-  </script>
+                <div class="variant-grid">
+                    <div class="grid">
+                        <div class="form-group"><label>Variant A</label><input type="text" name="variant_a" required><input type="file" name="image_a" style="font-size:10px;"></div>
+                        <div class="form-group"><label>Variant B</label><input type="text" name="variant_b" required><input type="file" name="image_b" style="font-size:10px;"></div>
+                        <div class="form-group"><label>Variant C</label><input type="text" name="variant_c" required><input type="file" name="image_c" style="font-size:10px;"></div>
+                        <div class="form-group"><label>Variant D</label><input type="text" name="variant_d" required><input type="file" name="image_d" style="font-size:10px;"></div>
+                    </div>
+                </div>
+
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="form-group" style="width: 150px;">
+                        <label>To'g'ri Javob</label>
+                        <select name="togri_variant" required>
+                            <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success">Savolni Bazaga Saqlash</button>
+            </form>
+        </div>
+
+    {% else %}
+        <div class="card" style="text-align: center; padding: 100px 20px;">
+            <h1 style="color: var(--danger); font-size: 60px; margin: 0;">403</h1>
+            <h2>Ruxsat Yo'q</h2>
+            <p>Ushbu panelga faqat superuserlar kira oladi.</p>
+            <a href="/" class="btn btn-primary">Bosh sahifaga qaytish</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Narx fieldini ochish/yopish
+    document.getElementById('is_paid_check').addEventListener('change', function() {
+        document.getElementById('price_field').style.opacity = this.checked ? "1" : "0.5";
+    });
+
+    // Kategoriya bo'yicha filtrlash
+    const mainCat = document.getElementById('main_cat');
+    const groupSelect = document.getElementById('test_group_select');
+    const opts = document.querySelectorAll('.g');
+
+    mainCat.addEventListener('change', function() {
+        const val = this.value;
+        document.getElementById('ls_extra').classList.toggle('hidden', val !== 'IELTS_LISTENING');
+        document.getElementById('group_wrapper').classList.toggle('hidden', val === 'MILL_NATIONAL');
+
+        opts.forEach(o => {
+            o.style.display = 'none';
+            if(val === 'IELTS_READING' && o.classList.contains('rd')) o.style.display = 'block';
+            if(val === 'IELTS_LISTENING' && o.classList.contains('ls')) o.style.display = 'block';
+            if(val === 'SAT' && o.classList.contains('st')) o.style.display = 'block';
+        });
+        groupSelect.value = "";
+    });
+</script>
 </body>
 </html>

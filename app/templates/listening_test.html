@@ -1,87 +1,253 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Listening Test - UniBase</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <title>IELTS Listening - Dizayn va Funksiya</title>
     <style>
-        /* Audio pleyerni yashirish */
-        .hidden-audio { display: none; }
+        :root {
+            --primary-color: #1cc8c8;
+            --bg-gray: #f4f7f9;
+            --text-dark: #334e68;
+            --border-color: #dbe3eb;
+        }
 
-        /* Chalinayotgan savolni ajratib ko'rsatish */
-        .active-question {
-            border-left: 5px solid #1cc8c8 !important;
-            background-color: #f0fdfa !important;
-            transition: all 0.3s ease;
+        body {
+            background-color: var(--bg-gray);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0; padding: 20px;
+        }
+
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Taymer va Sarlavha */
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
         }
 
         .timer {
             background: #1a3a5a;
             color: white;
-            border-radius: 10px;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 1.2rem;
             font-weight: bold;
-            text-align: center;
-            padding: 0.5rem 1rem;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
         }
 
-        .question-block {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 25px;
+        /* Savol bloklari */
+        .instruction-box { margin-bottom: 30px; }
+        .instruction-box h3 { color: var(--primary-color); }
+        .limit-text { color: #d9534f; font-weight: bold; font-style: italic; }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f4f8;
+            transition: 0.3s;
         }
 
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: #1cc8c8;
-            border: none;
+        /* Sizning JS'dagi active-question klassingiz */
+        .active-question {
+            background-color: #f0fdfa !important;
+            border-left: 5px solid var(--primary-color) !important;
+            padding-left: 10px;
+        }
+
+        .form-label { width: 180px; font-weight: 500; color: #486581; }
+
+        .input-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .q-number {
+            background: var(--primary-color);
             color: white;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1.1rem;
+            min-width: 25px; height: 25px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            max-width: 350px;
+            padding: 10px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .hidden-audio { display: none; }
+
+        /* Pagination */
+        .pagination-area {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .nav-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            background: #fff;
+        }
+
+        .nav-card.active { border: 2px solid var(--primary-color); }
+
+        .q-dots { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 8px; }
+        .dot {
+            width: 20px; height: 20px;
+            border: 1px solid var(--primary-color);
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #start-test-btn {
+            display: block; margin: 50px auto;
+            padding: 20px 40px; background: var(--primary-color);
+            color: white; border: none; border-radius: 10px;
+            font-size: 1.5rem; cursor: pointer;
         }
     </style>
 </head>
 <body>
-<div class="container" style="max-width:900px; margin: auto;">
-   <button id="start-test-btn" style="padding:15px 25px; font-size:1.2rem; cursor:pointer;">
-    Testni Boshlash
-</button>
 
-<form method="POST" id="listening-form" style="display:none;">
+<button id="start-test-btn">Testni Boshlash</button>
+
+<div class="test-container" id="main-test-area" style="display:none;">
+    <div class="header-flex">
+        <h2 style="color: #1e3a8a;">Part 1</h2>
+        <div class="timer" id="timer-display">40:00</div>
+    </div>
+
+    <div class="instruction-box">
+        <h3>Questions 1-5</h3>
+        <p><i>The housing officer takes some details from the girl.</i></p>
+        <p>Complete the following form with <span class="limit-text">NO MORE THAN THREE WORDS AND/OR A NUMBER</span> for each answer.</p>
+    </div>
+    <form method="POST" id="listening-form">
     {% csrf_token %}
-    {% for field in form %}
-        <div class="question-block" id="q-block-{{ forloop.index0 }}">
-            <p><strong>{{ field.label }}</strong></p>
-            {% with question_id=field.name|slice:"2:" %}
-                {% for q in questions %}
-                    {% if q.id|stringformat:"s" == question_id %}
-                        {% if q.audio %}
-                            <audio class="test-audio hidden-audio">
-                                <source src="{{ q.audio.url }}" type="audio/mpeg">
-                            </audio>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% endwith %}
-            <div class="input-wrapper">{{ field }}</div>
-        </div>
-    {% endfor %}
-    <button type="submit" class="submit-btn">Testni Yakunlash</button>
+
+    {# 1. Navigatsiya tugmalari (Part 1, Part 2...) #}
+    <div class="pagination-area" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button type="button" class="nav-btn active" onclick="showPart(1)">Part 1</button>
+        <button type="button" class="nav-btn" onclick="showPart(2)">Part 2</button>
+        <button type="button" class="nav-btn" onclick="showPart(3)">Part 3</button>
+        <button type="button" class="nav-btn" onclick="showPart(4)">Part 4</button>
+    </div>
+
+    {# 2. Savollar ro'yxati #}
+    <div class="questions-list">
+        {% for field in form %}
+            {# Har bir field qaysi partga tegishli ekanini aniqlash uchun questions'dan qidiramiz #}
+            {% for q in questions %}
+                {% if q.id|stringformat:"s" == field.name|slice:"2:" %}
+
+                    <div class="part-section" id="part-section-{{ q.part }}" style="{% if q.part != 1 %}display: none;{% endif %}">
+                        <div class="form-row" id="q-block-{{ forloop.parentloop.index0 }}">
+                            <div class="form-label">{{ field.label }}</div>
+                            <div class="input-container">
+                                <span class="q-number">{{ forloop.parentloop.counter }}</span>
+                                {{ field }}
+                            </div>
+
+                            {# Audio qismi #}
+                            {% if q.audio %}
+                                <audio class="test-audio hidden-audio">
+                                    <source src="{{ q.audio.url }}" type="audio/mpeg">
+                                </audio>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="submit-btn" style="margin-top: 30px;">Testni Yakunlash</button>
 </form>
 
-<div class="timer" id="timer-display">40:00</div>
+<style>
+    .nav-btn {
+        padding: 10px 20px;
+        border: 1px solid #1cc8c8;
+        background: white;
+        color: #1cc8c8;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .nav-btn.active {
+        background: #1cc8c8;
+        color: white;
+    }
+    .part-section {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+    }
+</style>
+
+<script>
+function showPart(partNum) {
+    // Hamma partlarni yashirish
+    document.querySelectorAll('.part-section').forEach(section => {
+        section.style.display = 'none';
+    });
+
+    // Tanlangan partni ko'rsatish
+    // Diqqat: Bu yerda q.part qiymati bo'yicha filter qilinadi
+    const selectedParts = document.querySelectorAll('#part-section-' + partNum);
+    selectedParts.forEach(sp => {
+        sp.style.display = 'block';
+    });
+
+    // Tugmalar rangini yangilash
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.innerText.includes(partNum)) {
+            btn.classList.add('active');
+        }
+    });
+}
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const startBtn = document.getElementById("start-test-btn");
+    const testArea = document.getElementById("main-test-area");
     const form = document.getElementById("listening-form");
     const timerEl = document.getElementById("timer-display");
     const audios = Array.from(document.querySelectorAll(".test-audio"));
@@ -92,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentIdx = 0;
     let submitted = false;
 
-    // 🔹 Agar localStorage da saqlangan bo'lsa
+    // --- SIZNING LOGIKANGIZ ---
     if(localStorage.getItem("listeningStart")) {
         const startTime = parseFloat(localStorage.getItem("listeningStart"));
         const elapsed = Math.floor((Date.now() - startTime)/1000);
@@ -100,22 +266,17 @@ document.addEventListener("DOMContentLoaded", function () {
         if(seconds < 0) seconds = 0;
 
         currentIdx = parseInt(localStorage.getItem("listeningAudioIdx")) || 0;
-        form.style.display = "block";
+        testArea.style.display = "block";
         startBtn.style.display = "none";
         startTimer();
         playAudio(currentIdx);
     }
 
     startBtn.addEventListener("click", function() {
-        form.style.display = "block";
+        testArea.style.display = "block";
         startBtn.style.display = "none";
-
         localStorage.setItem("listeningStart", Date.now());
         localStorage.setItem("listeningAudioIdx", 0);
-
-        seconds = totalSeconds;
-        currentIdx = 0;
-
         startTimer();
         playAudio(currentIdx);
     });
@@ -137,9 +298,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function playAudio(idx) {
         if(idx >= audios.length) return;
         const audio = audios[idx];
-        const block = audio.closest(".question-block");
+        const block = audio.closest(".form-row");
 
-        document.querySelectorAll('.question-block').forEach(b=>b.classList.remove('active-question'));
+        document.querySelectorAll('.form-row').forEach(b=>b.classList.remove('active-question'));
         block.classList.add('active-question');
         block.scrollIntoView({behavior:'smooth', block:'center'});
 
@@ -157,19 +318,13 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", function(e){
         if(submitted){
             e.preventDefault();
-            alert("Siz allaqachon testni yubordingiz!");
         } else {
             submitted = true;
             localStorage.removeItem("listeningStart");
             localStorage.removeItem("listeningAudioIdx");
         }
     });
-
-    window.onbeforeunload = function(){
-        if(!submitted) return "Test hali tugamadi. Refresh qilinsa progress yo‘qoladi.";
-    };
 });
 </script>
-
 </body>
 </html>

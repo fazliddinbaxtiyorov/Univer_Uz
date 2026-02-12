@@ -142,7 +142,8 @@
                     <ul>
                         <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="{% url 'univers' %}">Universities</a></li>
-                        <li><a href="{% url 'support' %}">Support</a></li>
+                        <li><a href="{% url 'support' %}" data-translate="nav_personal_best">Support</a></li>
+
                         {% if user.is_authenticated %}
                             <li class="auth-links">
                                 <a href="{% url 'profile' %}" class="btn btn-secondary">Profile</a>

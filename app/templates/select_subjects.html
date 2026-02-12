@@ -117,7 +117,8 @@
                         <li><a href="{% url 'home' %}" data-translate="nav_dashboard">Home</a></li>
                         <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
                         <li><a href="#">News</a></li>
-                        <li><a href="{% url 'support' %}" data-translate="nav_personal_best">Support</a></li>
+                        <li><a href="https://t.me/unibase_support_bot" data-translate="footer_contact">Support</a></li>
+
                         {% if user.is_authenticated %}
                         <li class="auth-links">
                             <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Profile</a>

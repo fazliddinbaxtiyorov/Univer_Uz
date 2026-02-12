@@ -125,6 +125,13 @@ class ListeningTest(PaidTestMixin):
 
 class IELTSListeningQuestion(models.Model):
     test_group = models.ForeignKey(ListeningTest, on_delete=models.CASCADE, related_name='questions')
+    PART_CHOICES = [
+        (1, 'Part 1'),
+        (2, 'Part 2'),
+        (3, 'Part 3'),
+        (4, 'Part 4'),
+    ]
+    part = models.IntegerField(choices=PART_CHOICES, default=1)
     savol = models.TextField()
     variant_a = models.CharField(max_length=255,default='')
     variant_b = models.CharField(max_length=255,default='')

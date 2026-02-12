@@ -1,87 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test - UniBase</title>
-     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    let seconds = 3600;
-    const el = document.getElementById("timer-display");
+    <title>{{ test.title }} - UniBase</title>
+    <style>
+        /* ================= GLOBAL ================= */
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f8; color: #333; }
 
-    setInterval(() => {
+        /* ================= TOP BAR ================= */
+        .topbar {
+            position: sticky; top: 0; z-index: 1000;
+            background: #0f2742; color: #fff;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: #fff; text-decoration: none; }
+        .progress-container { width: 300px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: #4cc9f0; transition: 0.3s; }
+        .timer-box { font-size: 1.2rem; font-weight: 700; background: #1a3a5a; padding: 6px 15px; border-radius: 8px; border: 1px solid #4cc9f0; }
+
+        /* ================= LAYOUT ================= */
+        .layout {
+            display: grid; grid-template-columns: 1fr 320px;
+            gap: 25px; max-width: 1200px; margin: 30px auto; padding: 0 20px;
+        }
+
+        /* ================= QUESTION CARD ================= */
+        .question-card {
+            background: #fff; border-radius: 16px; padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e0e6ed;
+        }
+        .q-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .q-num { width: 40px; height: 40px; background: #0f2742; color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; }
+        .q-text { font-size: 1.25rem; font-weight: 600; color: #1a202c; }
+
+        /* Django form style override */
+        .question-card p { margin-bottom: 15px; }
+        .question-card label {
+            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+            border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: 0.2s;
+        }
+        .question-card label:hover { background: #f7fafc; border-color: #0f2742; }
+        .question-card input[type="radio"] { width: 18px; height: 18px; accent-color: #0f2742; }
+
+        /* ================= NAVIGATOR ================= */
+        .navigator { position: sticky; top: 90px; background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #e3e8f1; height: fit-content; }
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
+        .nav-item {
+            width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid #d1d5db; border-radius: 10px; font-weight: 600; cursor: pointer; text-decoration: none; color: #4a5568; transition: 0.2s;
+        }
+        .nav-item.active { background: #0f2742; color: #fff; border-color: #0f2742; }
+        .nav-item.answered { background: #e8fff1; border-color: #38b000; color: #38b000; }
+
+        .submit-btn {
+            width: 100%; padding: 12px; margin-top: 20px; border-radius: 10px;
+            border: none; background: #4cc9f0; color: #0f2742; font-weight: 700; cursor: pointer;
+        }
+
+        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .navigator { position: relative; top: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <a href="/" class="logo">UniBase</a>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="p-bar" style="width: 0%;"></div>
+    </div>
+
+    <div class="timer-box" id="timer-display">60:00</div>
+
+    <button type="button" onclick="document.getElementById('main-form').submit()" style="background:#4cc9f0; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">Submit</button>
+</div>
+
+<div class="layout">
+    <main>
+        <form method="post" id="main-form">
+            {% csrf_token %}
+
+            {# Savollarni birin-ketin chiqarish #}
+            {% for field in form %}
+            <div class="question-card" id="q-card-{{ forloop.counter }}">
+                <div class="q-header">
+                    <div class="q-num">{{ forloop.counter }}</div>
+                    <div class="q-text">{{ field.label }}</div>
+                </div>
+
+                <div class="options-area">
+                    {{ field }}
+                </div>
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="submit-btn" style="background: #0f2742; color: #fff; font-size: 1.1rem;">Testni Yakunlash</button>
+        </form>
+    </main>
+
+    <aside class="navigator">
+        <h3 style="margin:0 0 15px 0; color:#0f2742;">Savollar Paneli</h3>
+        <div class="nav-grid">
+            {% for field in form %}
+                <a href="#q-card-{{ forloop.counter }}" class="nav-item" id="nav-{{ forloop.counter }}">
+                    {{ forloop.counter }}
+                </a>
+            {% endfor %}
+        </div>
+
+    </aside>
+</div>
+
+<script>
+    // 1. Timer logic
+    let seconds = 3600; // 1 soat
+    const timerEl = document.getElementById("timer-display");
+
+    const timerInterval = setInterval(() => {
         seconds--;
         const m = String(Math.floor(seconds / 60)).padStart(2, '0');
         const s = String(seconds % 60).padStart(2, '0');
-        el.textContent = `${m}:${s}`;
+        timerEl.textContent = `${m}:${s}`;
+
+        if (seconds <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('main-form').submit();
+        }
     }, 1000);
-});
+
+    // 2. Navigation & Progress logic
+    const form = document.getElementById('main-form');
+    const inputs = form.querySelectorAll('input[type="radio"]');
+    const totalQuestions = {{ form.fields|length }};
+    const pBar = document.getElementById('p-bar');
+
+    inputs.forEach(input => {
+        input.addEventListener('change', () => {
+            // Qaysi savolga javob berilganini aniqlash (field name orqali)
+            const qNum = input.name.split('_')[1] || input.name;
+            // Navigatordagi rangni o'zgartirish
+            // Eslatma: qNum bazadagi ID bo'lishi mumkin, forloop counter bilan mosligini tekshiring
+
+            updateProgress();
+        });
+    });
+
+    function updateProgress() {
+        const answeredCount = new Set([...inputs].filter(i => i.checked).map(i => i.name)).size;
+        const percent = (answeredCount / totalQuestions) * 100;
+        pBar.style.width = percent + '%';
+
+        // Navigatordagi answered klassini yangilash logicini shu yerga yozish mumkin
+    }
 </script>
-    <style>
-        ul.errorlist {
-    display: none;  /* error matnini yashirish */
-}
-    </style>
-</head>
 
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-container">
-                <a href="student-dashboard.html" class="logo">
-                    <span class="logo-text">UniBase</span>
-                </a>
-
-                <div class="flex-center" style="flex: 1; justify-content: center;">
-<div style="min-width: 120px; padding: 0.5rem 1rem; font-size: 1.5rem; margin: 0"; class="timer" id="timer-display">00:00</div>
-
-<script>
-let seconds = 3600;
-const el = document.getElementById("timer-display");
-
-setInterval(() => {
-    seconds--;
-    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const s = String(seconds % 60).padStart(2, '0');
-    el.textContent = `${m}:${s}`;
-}, 1000);
-</script>
-</body>
-
-                </div>
-
-                <nav>
-                    <ul>
-                        <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
-                        </li>
-
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <!-- Test Content -->
-    <section class="section">
-        <div class="container" style="max-width: 900px;">
-            <div id="alert-container"></div>
-
-            <div class="question-container" id="question-container">
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Keyingi →</button>
-</form>
-
-    </section>
 </body>
 </html>

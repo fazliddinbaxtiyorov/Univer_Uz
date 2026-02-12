@@ -9,7 +9,16 @@ from .models import (
     ContactMessage, UserTestResult, ReadingTest, ListeningTest, Sat, TestAccess
 )
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+import random, time
+from .models import ReadingTest, IELTS_Reading, UserTestResult
+from .forms import IELTSReadingForm
 
+import random
+import time
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db import transaction
 
 def check_test_access(user, test, category):
@@ -81,31 +90,10 @@ def test_list_view(request):
 
 
 
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-import random, time
-from .models import ReadingTest, IELTS_Reading, UserTestResult
-from .forms import IELTSReadingForm
 
-import random
-import time
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-
-import random
-import time
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 
 @login_required
 def ielts_reading_view(request, test_id=None):
-    """
-    IELTS Reading test view
-    - test_id berilsa o'sha test ishlatiladi
-    - yo'q bo'lsa, birinchi test ishlatiladi
-    """
     if test_id:
         reading_test = get_object_or_404(ReadingTest, pk=test_id)
     else:
@@ -197,14 +185,15 @@ def ielts_reading_view(request, test_id=None):
     })
 
 
-
 @login_required
 def ielts_listening_view(request, test_id):
     test = get_object_or_404(ListeningTest, pk=test_id)
-    questions = test.questions.all()
-    form = IELTSListeningForm(request.POST or None, questions=questions)
-    if request.method == "POST":
 
+    questions = test.questions.all().order_by('part', 'id')
+
+    form = IELTSListeningForm(request.POST or None, questions=questions)
+
+    if request.method == "POST":
         allowed, status = check_test_access(
             request.user,
             test,
@@ -216,19 +205,18 @@ def ielts_listening_view(request, test_id):
                 messages.error(request, "Sizda yetarli coin yo‘q!")
             return redirect("buy_coins")
 
-        if 'listening_start' not in request.session:
-            request.session['listening_start'] = time.time()
-
         if form.is_valid():
             total = sum(
                 1 for q in questions
                 if form.cleaned_data.get(f'q_{q.id}') == q.togri_variant
             )
 
+            # Taymer mantiqi (Frontenddan kelgan vaqtni ishlatish ham mumkin)
             start_time = request.session.pop('listening_start', time.time())
             spent = int(time.time() - start_time)
 
-            percentage = round((total / questions.count()) * 100, 1)
+            percentage = round((total / questions.count()) * 100, 1) if questions.count() > 0 else 0
+
             UserTestResult.objects.create(
                 user=request.user,
                 test_name=test.title,
@@ -240,6 +228,7 @@ def ielts_listening_view(request, test_id):
                 "user_answer": form.cleaned_data.get(f'q_{q.id}'),
                 "correct": q.togri_variant
             } for q in questions]
+
             return render(request, "result.html", {
                 "results": results,
                 "total": total,
@@ -248,12 +237,14 @@ def ielts_listening_view(request, test_id):
                 "seconds": spent % 60
             })
 
+    if 'listening_start' not in request.session:
+        request.session['listening_start'] = time.time()
+
     return render(request, "listening_test.html", {
         "test": test,
         "form": form,
         "questions": questions,
     })
-
 
 
 @login_required
@@ -376,8 +367,6 @@ def sat_test_view(request, test_id):
     })
 
 
-
-
 def fan_tanlash(request):
     if request.method == "POST":
         form = FanTanlashForm(request.POST)
@@ -395,48 +384,44 @@ def univerlar(request):
     xorijiy = Xorijiy_Univer.objects.all()
     return render(request, 'univerlar.html', {'davlat': davlat, 'xususiy': xususiy, 'xorijiy': xorijiy})
 
+@login_required
+def dtm_select_view(request):
 
-def davlat_univer(request):
-    davlat = Davlat_Univer.objects.all()
-    return render(request, 'davlat_univer.html', {'davlat': davlat})
+    # Eski test sessionlarini tozalash
+    request.session.pop('selected_subjects', None)
+    request.session.pop('start_time', None)
 
+    if request.method == "POST":
+        birinchi_fan = request.POST.get('birinchi_fan')
+        ikkinchi_fan = request.POST.get('ikkinchi_fan')
 
-def xususiy_univer(request):
-    xususiy = Xususiy_Univer.objects.all()
-    return render(request, 'xususiy.html', {'xususiy': xususiy})
+        if birinchi_fan and ikkinchi_fan and birinchi_fan != ikkinchi_fan:
 
+            tanlangan = [birinchi_fan, ikkinchi_fan]
+            fanlar = [
+                birinchi_fan,
+                ikkinchi_fan,
+                'Ona Tili' if 'Ona Tili' not in tanlangan else 'Ingliz Tili',
+                'Matematika' if 'Matematika' not in tanlangan else 'Fizika',
+                'Tarix'
+            ]
 
-def xorijiy_univer(request):
-    xorijiy = Xorijiy_Univer.objects.all()
-    return render(request, 'leaderboard.html', {'xorijiy': xorijiy})
+            request.session['selected_subjects'] = fanlar
+            request.session['start_time'] = time.time()
 
+            return redirect('dtm_test')
+
+        return render(request, 'select_subjects.html', {
+            "xato": "Fanlar bir xil bo‘lishi mumkin emas!"
+        })
+
+    return render(request, 'select_subjects.html')
 
 @login_required
 def dtm_test_view(request):
-    if 'start_time' not in request.session:
-        request.session['start_time'] = time.time()
 
     if 'selected_subjects' not in request.session:
-        if request.method == "POST":
-            birinchi_fan = request.POST.get('birinchi_fan')
-            ikkinchi_fan = request.POST.get('ikkinchi_fan')
-
-            if birinchi_fan and ikkinchi_fan and birinchi_fan != ikkinchi_fan:
-                tanlangan = [birinchi_fan, ikkinchi_fan]
-                fanlar = [
-                    birinchi_fan,
-                    ikkinchi_fan,
-                    'Ona Tili' if 'Ona Tili' not in tanlangan else 'Ingliz Tili',
-                    'Matematika' if 'Matematika' not in tanlangan else 'Fizika',
-                    'Tarix'
-                ]
-                request.session['selected_subjects'] = fanlar
-                return redirect('dtm_test')
-            else:
-                return render(request, 'select_subjects.html', {
-                    'xato': 'Ikkala fan ham tanlanishi va bir xil bo\'lmasligi kerak!'
-                })
-        return render(request, 'select_subjects.html')
+        return redirect('selected_subjects')
 
     fanlar = request.session['selected_subjects']
 
@@ -447,12 +432,17 @@ def dtm_test_view(request):
             q.step = step
         all_questions.extend(questions)
 
+    total_questions = len(all_questions)
+
     if request.method == "POST":
         form = TestFanForm(request.POST, questions=all_questions)
+
         if form.is_valid():
             total_score = 0
+
             for q in all_questions:
                 user_javob = form.cleaned_data.get(f'q_{q.id}')
+
                 if user_javob == q.togri_variant:
                     if q.step == 1:
                         total_score += 3.1
@@ -462,16 +452,15 @@ def dtm_test_view(request):
                         total_score += 1.1
 
             start_time = request.session.get('start_time', time.time())
-            end_time = time.time()
-            spent_seconds = int(end_time - start_time)
+            spent_seconds = int(time.time() - start_time)
             minutes = spent_seconds // 60
             seconds = spent_seconds % 60
+            percentage = round(total_score / (total_questions * 3.1) * 100, 1)
 
-            # Save DTM result
             UserTestResult.objects.create(
                 user=request.user,
                 test_name="DTM Test",
-                score=round(total_score / (len(all_questions)*3.1) * 100, 1)
+                score=percentage
             )
 
             results = [{
@@ -481,12 +470,13 @@ def dtm_test_view(request):
             } for q in all_questions]
 
             request.session.flush()
+
             return render(request, 'result.html', {
                 "results": results,
-                'total': round(total_score, 1),
-                'minutes': minutes,
-                'seconds': seconds,
-                "percentage": round(total_score / (len(all_questions) * 3.1) * 100, 1)
+                "total": round(total_score, 1),
+                "minutes": minutes,
+                "seconds": seconds,
+                "percentage": percentage
             })
     else:
         form = TestFanForm(questions=all_questions)
@@ -498,7 +488,7 @@ def dtm_test_view(request):
     })
 
 
-# ======================== User Statistics ========================
+
 @login_required
 def my_statistics(request):
     results = UserTestResult.objects.filter(user=request.user)
@@ -515,84 +505,94 @@ def my_statistics(request):
     return render(request, 'my_statistics.html', context)
 
 
-# ======================== Manage Tests (Admin) ========================
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
+from .models import (
+    IELTS_Reading, ReadingTest,
+    IELTSListeningQuestion, ListeningTest,
+    SATQuestion, Sat,
+    Milliy_Sertifikat
+)
+
+
+def is_admin(user):
+    return user.is_superuser
+
+
+@user_passes_test(is_admin, login_url='login')
 def manage_tests(request):
-    milliy_fan_choices = Milliy_Sertifikat.FAN_CHOICES
-
     if request.method == "POST":
-        category = request.POST.get("category")
-        savol = request.POST.get("savol")
-        variant_a = request.POST.get("variant_a")
-        variant_b = request.POST.get("variant_b")
-        variant_c = request.POST.get("variant_c")
-        variant_d = request.POST.get("variant_d")
-        togri_variant = request.POST.get("togri_variant")
-        audio_file = request.FILES.get("audio")
-        fan = request.POST.get("fan")  # Milliy Sertifikat uchun
+        action = request.POST.get("action")
 
-        if category == "IELTS_READING":
-            IELTS_Reading.objects.create(
-                savol=savol,
-                variant_a=variant_a,
-                variant_b=variant_b,
-                variant_c=variant_c,
-                variant_d=variant_d,
-                togri_variant=togri_variant
-            )
-            messages.success(request, "IELTS Reading question added successfully.")
+        # --- 1. GURUH YARATISH (Narx va Is_Paid bilan) ---
+        if action == "create_group":
+            g_type = request.POST.get("group_category")
+            title = request.POST.get("group_title")
+            content = request.POST.get("passage_content", "")
+            is_paid = request.POST.get("is_paid") == "on"
+            price = request.POST.get("price", 25)
 
-        elif category == "IELTS_LISTENING":
-            IELTSListeningQuestion.objects.create(
-                savol=savol,
-                variant_a=variant_a,
-                variant_b=variant_b,
-                variant_c=variant_c,
-                variant_d=variant_d,
-                togri_variant=togri_variant,
-                audio=audio_file
-            )
-            messages.success(request, "IELTS Listening question added successfully.")
+            try:
+                if g_type == "READING":
+                    ReadingTest.objects.create(passage_text=content, category='READING', is_paid=is_paid, price=price)
+                elif g_type == "LISTENING":
+                    ListeningTest.objects.create(title=title, category='LISTENING', is_paid=is_paid, price=price)
+                elif g_type == "SAT":
+                    Sat.objects.create(title=title, category='SAT', is_paid=is_paid, price=price)
+                messages.success(request, f"Guruh yaratildi! (Pullik: {is_paid}, Narxi: {price})")
+            except Exception as e:
+                messages.error(request, f"Xatolik: {e}")
 
-        elif category == "SAT":
-            SATQuestion.objects.create(
-                savol=savol,
-                variant_a=variant_a,
-                variant_b=variant_b,
-                variant_c=variant_c,
-                variant_d=variant_d,
-                togri_variant=togri_variant
-            )
-            messages.success(request, "SAT question added successfully.")
+        # --- 2. SAVOL QO'SHISH ---
+        elif action == "add_question":
+            cat = request.POST.get("category")
+            group_id = request.POST.get("test_group")
+            savol_matni = request.POST.get("savol")
 
-        elif category == "MILL_NATIONAL":
-            if not fan:
-                messages.error(request, "Please select a fan for Milliy Sertifikat!")
-                return redirect("manage_tests")
-            Milliy_Sertifikat.objects.create(
-                fan=fan,
-                savol=savol,
-                variant_a=variant_a,
-                variant_b=variant_b,
-                variant_c=variant_c,
-                variant_d=variant_d,
-                togri_variant=togri_variant
-            )
-            messages.success(request, f"{fan} faniga Milliy Sertifikat savol qo‘shildi!")
+            try:
+                data = {
+                    "savol": savol_matni,
+                    "variant_a": request.POST.get("variant_a"),
+                    "variant_b": request.POST.get("variant_b"),
+                    "variant_c": request.POST.get("variant_c"),
+                    "variant_d": request.POST.get("variant_d"),
+                    "togri_variant": request.POST.get("togri_variant"),
+                    "question_image": request.FILES.get("question_image"),
+                }
+
+                if cat == "IELTS_READING":
+                    IELTS_Reading.objects.create(test_group_id=group_id, **data,
+                                                 image_a=request.FILES.get("image_a"),
+                                                 image_b=request.FILES.get("image_b"),
+                                                 image_c=request.FILES.get("image_c"),
+                                                 image_d=request.FILES.get("image_d"))
+                elif cat == "IELTS_LISTENING":
+                    IELTSListeningQuestion.objects.create(test_group_id=group_id, **data,
+                                                          audio=request.FILES.get("audio"),
+                                                          part=request.POST.get("part", 1))
+                elif cat == "SAT":
+                    SATQuestion.objects.create(test_group_id=group_id, **data,
+                                               image_a=request.FILES.get("image_a"),
+                                               image_b=request.FILES.get("image_b"),
+                                               image_c=request.FILES.get("image_c"),
+                                               image_d=request.FILES.get("image_d"))
+                elif cat == "MILL_NATIONAL":
+                    Milliy_Sertifikat.objects.create(fan=request.POST.get("fan"), **data)
+
+                messages.success(request, "Savol muvaffaqiyatli saqlandi!")
+            except Exception as e:
+                messages.error(request, f"Xatolik: {e}")
 
         return redirect("manage_tests")
 
-    all_tests = list(IELTS_Reading.objects.all()) + \
-                list(IELTSListeningQuestion.objects.all()) + \
-                list(SATQuestion.objects.all()) + \
-                list(Milliy_Sertifikat.objects.all())
-
     context = {
-        "all_tests": all_tests,
-        "milliy_fan_choices": milliy_fan_choices
+        "reading_tests": ReadingTest.objects.all().order_by('-id'),
+        "listening_tests": ListeningTest.objects.all().order_by('-id'),
+        "sat_tests": Sat.objects.all().order_by('-id'),
+        "milliy_fan_choices": Milliy_Sertifikat.FAN_CHOICES,
     }
     return render(request, "manage_tests.html", context)
-
-
 # ======================== Contact Form ========================
 def contact_view(request):
     if request.method == 'POST':
