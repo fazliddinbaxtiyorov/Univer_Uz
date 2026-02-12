@@ -85,11 +85,9 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3', # Agar Railway'da bo'lmasa sqlite ishlataveradi
-        conn_max_age=600
+        default='sqlite:///db.sqlite3'
     )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
