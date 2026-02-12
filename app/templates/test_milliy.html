@@ -137,6 +137,58 @@
     </aside>
 </div>
 
+<script>
+    // 1. Timer (Vaqt hisoblagich)
+    let totalSeconds = 60 * 60; // 60 daqiqa
+    const timerDisplay = document.getElementById('timer-display');
 
+    const timerInterval = setInterval(() => {
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+
+        // Vaqtni formatlash (00:00)
+        timerDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (totalSeconds <= 0) {
+            clearInterval(timerInterval);
+            alert("Vaqt tugadi! Test avtomatik topshiriladi.");
+            document.getElementById('test-form').submit();
+        }
+        totalSeconds--;
+    }, 1000);
+
+    // 2. Navigator va Progress Bar-ni yangilash funksiyasi
+    const totalQuestions = {{ form|length }};
+    const radioGroups = document.querySelectorAll('.question-card');
+
+    function updateProgress() {
+        let answeredCount = 0;
+
+        radioGroups.forEach((card, index) => {
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const navItem = document.getElementById(`nav-${index + 1}`);
+
+            // Guruhda belgilangan radio borligini tekshirish
+            const isAnswered = Array.from(radios).some(r => r.checked);
+
+            if (isAnswered) {
+                answeredCount++;
+                navItem.classList.add('answered'); // Navigatorni yashil qilish
+            }
+        });
+
+        // Progress bar-ni yangilash
+        const progressPercent = (answeredCount / totalQuestions) * 100;
+        document.getElementById('p-bar').style.width = progressPercent + "%";
+    }
+
+    // Har bir radio tugmachaga bosilganda progressni yangilashni ulaymiz
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', updateProgress);
+    });
+
+    // Sahifa yuklanganda bir marta hisoblab qo'yish
+    updateProgress();
+</script>
 </body>
 </html>
