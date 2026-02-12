@@ -23,7 +23,7 @@ TEMPLATES_DIR = BASE_DIR / 'templates'
 SECRET_KEY = 'django-insecure-#*-f4=$4l(q)gis2-e7!j312k8+4(jc9*29^@yt=7586ke*j0r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 import os
 
 ALLOWED_HOSTS = ['*', '.railway.app', 'localhost', '127.0.0.1']
