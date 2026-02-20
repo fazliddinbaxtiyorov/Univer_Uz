@@ -1,12 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IELTS Practice - UniBase</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
      <style>
+
+        :root {
+            --color-primary: #274766;
+            --color-teal: #14b8a6;
+            --color-teal-dark: #0d9488;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* HEADER & NAVIGATION */
+        header {
+            background: var(--color-primary);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { display: flex; align-items: center; text-decoration: none; color: white; }
+        .logo-img { width: 40px; border-radius: 50%; margin-right: 10px; }
+        .logo-text { font-weight: 700; font-size: 1.2rem; }
+
+        /* NAV MENU (DESKTOP) */
+        .nav-menu ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-menu ul li a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu ul li a:hover { color: var(--color-teal); }
+
+        /* MOBILE MENU BUTTON (BURGER) */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 2101; /* Menyudan ustun turishi uchun */
+            padding: 5px;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            display: block;
+            transition: 0.4s ease;
+            border-radius: 2px;
+        }
+
+        /* BURGER ANIMATION TO 'X' */
+        .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
+        .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        /* MOBILE STYLES */
+        @media (max-width: 991px) {
+            .mobile-menu-btn { display: flex; }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%; /* O'ngda yashirin */
+                width: 75%;
+                max-width: 300px;
+                height: 100vh;
+                background-color: var(--color-primary);
+                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                padding: 100px 30px;
+                z-index: 2100;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+            }
+
+            .nav-menu.active { right: 0; }
+
+            .nav-menu ul {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+            }
+
+            .nav-menu ul li a {
+                font-size: 1.2rem;
+                display: block;
+                width: 100%;
+            }
+
+            .auth-links {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                margin-top: 20px;
+            }
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%);
+            color: white;
+            padding: 5rem 1rem;
+            text-align: center;
+        }
+
+        .hero-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+        .hero-subtitle { color: #cbd5e1; max-width: 600px; margin: auto; }
+
+        /* FORM CONTAINER */
+        .dtm-container {
+            max-width: 800px;
+            background: white;
+            margin: -3rem auto 4rem; /* Hero ustiga chiqib turishi uchun minus ishlatildi */
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .dtm-container h2 {
+            margin-top: 0;
+            color: var(--color-primary);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* FORM STYLING */
+        form p {
+            margin-bottom: 1.5rem;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        form select, form input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        form select:focus {
+            border-color: var(--color-teal);
+        }
+
+        .btn-start {
+            background: var(--color-teal);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .btn-start:hover {
+            background: var(--color-teal-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-sm { padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; }
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -300,35 +496,43 @@
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <div class="header-container">
-                <a href="/" class="logo">
-                    <img src="/media/media/logo.jpg" alt="Logo" class="logo-img">
-                    <span class="logo-text">UniBase</span>
-                </a>
-                <nav>
-                    <ul>
-                        <li><a href="{% url 'home' %}">Home</a></li>
-                        <li><a href="{% url 'univers' %}">Universities</a></li>
-                        <li><a href="https://t.me/unibase_support_bot" data-translate="footer_contact">Support</a></li>
+  <header>
+    <div class="container">
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <span class="logo-text">UniBase</span>
+            </a>
 
-                        {% if user.is_authenticated %}
-                            <li class="auth-links">
-                                <a href="{% url 'profile' %}" class="btn btn-secondary">Profile</a>
-                                <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
-                            </li>
-                        {% else %}
-                            <li class="auth-links">
-                                <a href="{% url 'login' %}" class="btn btn-secondary">Login</a>
-                                <a href="{% url 'sign' %}" class="btn btn-primary">Register</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            </div>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="{% url 'home' %}#tests" data-translate="nav_tests">Home</a></li>
+                    <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
+                    <li><a href="{% url 'home' %}#news" data-translate="nav_news">News</a></li>
+                    <li><a href="{% url 'home' %}#features" data-translate="nav_features">Features</a></li>
+                    <li><a href="https://t.me/unibase_support_bot" data-translate="nav_support">Support</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="auth-links">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="auth-links">
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
-    </header>
+    </div>
+</header>
 
     <section class="hero">
         <div class="container">
@@ -418,6 +622,15 @@
             </div>
         </div>
     </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".mobile-menu-btn");
+    const navMenu = document.querySelector(".nav-menu");
 
+    menuBtn.addEventListener("click", function () {
+        navMenu.classList.toggle("active");
+    });
+});
+</script>
 </body>
 </html>

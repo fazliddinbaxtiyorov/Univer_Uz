@@ -5,6 +5,12 @@
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="stylesheet" href="{% static 'dark-mode.css' %}">
 <style>
+     html, body {
+    max-width: 100%;
+    overflow-x: hidden; /* Gorizontal suzishni butunlay taqiqlaydi */
+    margin: 0;
+    padding: 0;
+}
     /* --- MOBIL SIDEBAR DIZAYNI (Rasm f2ceb9 ga asosan) --- */
 @media (max-width: 768px) {
     .nav-menu {
@@ -168,12 +174,6 @@
                             <option value="uz">O'zbekcha</option>
                         </select>
                     </li>
-                    <li>
-                            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
-                                🌙
-                            </button>
-                        </li>
-
                     {% if user.is_authenticated %}
                         <li class="auth-links">
                             <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>

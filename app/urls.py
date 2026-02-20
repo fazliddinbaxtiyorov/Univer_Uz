@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import fanlar_view, ielts_listening_view, ielts_reading_view, test_boshlash, fan_tanlash, sat_test_view, ielts, writing, univerlar, dtm_test_view, manage_tests, support, contact_view, my_profile_view, test_list_view, ielts_main_dashboard, test_list_sat
 from django.conf.urls.static import static
-from .views import writing_tests, writing_detail, writing_result, student_analytics, test_list_listening, buy_coins, leaderboard, dtm_select_view
+from .views import writing_tests, writing_detail, writing_result, student_analytics, test_list_listening, buy_coins, leaderboard, dtm_select_view, explain_error_view
 from django.conf import settings
 
 urlpatterns = [
@@ -25,5 +25,6 @@ urlpatterns = [
   path('writing/<int:pk>/', writing_detail, name='writing_detail'),
   path('result/<int:pk>/', writing_result, name='writing_result'),
   path('analytics/', student_analytics, name='analytics'),
-path('buy_coins/', buy_coins, name='buy_coins'),
+    path('buy_coins/', buy_coins, name='buy_coins'),
+    path('explain-error/<int:submission_id>/', explain_error_view, name='explain_error'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

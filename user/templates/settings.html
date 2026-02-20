@@ -1,139 +1,316 @@
-<!DOCTYPE html>
+V<!DOCTYPE html>
 <html lang="en">
 {% load static %}
-
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
 <head>
     <meta charset="UTF-8">
-    <title>Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - UniBase</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        body { background:#f5f7fb; font-family:Arial; }
-        .box {
-            max-width:600px;
-            margin:3rem auto;
-            background:white;
-            padding:2rem;
-            border-radius:10px;
+        :root {
+            --color-primary: #274766;
+            --color-teal: #14b8a6;
+            --color-blue: #2563eb;
+            --bg-light: #f1f5f9;
         }
-        .avatar {
-            text-align:center;
-            margin-bottom:1.5rem;
+
+        body {
+            background: var(--bg-light);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            color: #334155;
+            overflow-x: hidden;
         }
-        .avatar img {
-            width:120px;
-            height:120px;
-            border-radius:50%;
-            object-fit:cover;
-            border:3px solid #2563eb;
+
+        /* HEADER */
+        header {
+            background: var(--color-primary);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
         }
-        .form-group { margin-bottom:1rem; }
-        label { display:block; font-weight:600; margin-bottom:5px; }
-        input {
-            width:100%;
-            padding:10px;
-            border:1px solid #ddd;
-            border-radius:6px;
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-        button {
-            background:#2563eb;
-            color:white;
-            padding:10px 20px;
-            border:none;
-            border-radius:6px;
-            cursor:pointer;
-            margin-top:1rem;
-            width:100%;
+
+        .logo { display: flex; align-items: center; text-decoration: none; color: white; gap: 10px; }
+        .logo-img { width: 40px; border-radius: 50%; }
+        .logo-text { font-weight: 800; font-size: 1.2rem; }
+
+        /* NAV MENU */
+        .nav-menu ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-menu ul li a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .btn-sm { padding: 8px 15px; border-radius: 8px; font-size: 13px; text-decoration: none; font-weight: 600; }
+        .btn-secondary { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-danger { background: #ef4444; color: white; }
+
+        /* MOBILE BURGER */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 2101;
+        }
+        .mobile-menu-btn span { width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s; }
+
+        @media (max-width: 991px) {
+            .mobile-menu-btn { display: flex; }
+            .nav-menu {
+                position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
+                background: var(--color-primary); transition: 0.4s; padding: 80px 30px; z-index: 2100;
+            }
+            .nav-menu.active { right: 0; }
+            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 25px; }
+            .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+            .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
+            .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+        }
+
+        /* SETTINGS BOX */
+        .settings-box {
+            max-width: 700px;
+            margin: 3rem auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .settings-box h2 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .avatar-section img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--color-blue);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        input[type="file"] {
+            font-size: 0.8rem;
+            padding: 10px;
+            background: #f8fafc;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            background: var(--color-blue);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-save:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-<header>
-        <div class="container">
-            <div class="header-container">
-                <a href="/" class="logo">
-                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
-                <span class="logo-text">UniBase</span>
-                </a>
-                <nav>
-                    <ul>
-                        <li><a href="{% url 'home' %}" data-translate="nav_dashboard">Home</a></li>
-                        <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
-                        <li><a href="{% url 'support' %}" data-translate="nav_personal_best">Support</a></li>
-                        <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
-                        </li>
-                        {% if user.is_authenticated %}
-                        <li class="auth-links">
-                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>
-                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="auth-links">
-                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
-                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
-                        </li>
-                    {% endif %}
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
-<div class="box">
-    <h2>⚙️ Account Settings</h2>
 
-    {% for message in messages %}
-        <p style="color:green;">{{ message }}</p>
-    {% endfor %}
+<header>
+    <div class="header-container">
+        <a href="/" class="logo">
+            <img src="/media/media/logo.jpg" alt="Logo" class="logo-img">
+            <span class="logo-text">UniBase</span>
+        </a>
+
+        <button class="mobile-menu-btn">
+            <span></span><span></span><span></span>
+        </button>
+
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'univers' %}">Universities</a></li>
+                <li><a href="https://t.me/unibase_support_bot">Support</a></li>
+                {% if user.is_authenticated %}
+                <li class="auth-links">
+                    <a href="{% url 'profile' %}" class="btn-sm btn-secondary">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="btn-sm btn-danger">Logout</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="settings-box">
+    <h2><i class="fa-solid fa-sliders"></i> Account Settings</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <div class="avatar">
+        <div class="avatar-section">
             {% if profile.photo %}
-                <img src="{{ profile.photo.url }}">
+                <img src="{{ profile.photo.url }}" alt="Profile Photo">
             {% else %}
-                <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=2563eb&color=fff">
+                <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=2563eb&color=fff&size=128" alt="Default Avatar">
             {% endif %}
         </div>
 
         <div class="form-group">
-            <label>Change photo</label>
+            <label><i class="fa-solid fa-camera"></i> Change Profile Photo</label>
             <input type="file" name="photo">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="Your name">
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="Your surname">
+            </div>
         </div>
 
         <div class="form-group">
             <label>Username</label>
-            <input type="text" name="username" value="{{ user.username }}">
+            <input type="text" name="username" value="{{ user.username }}" readonly style="background: #f1f5f9; cursor: not-allowed;">
+            <small style="color: #94a3b8; font-size: 0.75rem;">Username cannot be changed.</small>
         </div>
 
         <div class="form-group">
-            <label>First name</label>
-            <input type="text" name="first_name" value="{{ user.first_name }}">
+            <label>Email Address</label>
+            <input type="email" name="email" value="{{ profile.email|default:user.email }}" placeholder="example@mail.com">
         </div>
 
         <div class="form-group">
-            <label>Last name</label>
-            <input type="text" name="last_name" value="{{ user.last_name }}">
+            <label>Phone Number</label>
+            <input type="text" name="phone_number" value="{{ profile.phone_number }}" placeholder="+998 90 ...">
         </div>
 
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" name="email" value="{{ profile.email }}">
-        </div>
-
-        <div class="form-group">
-            <label>Phone number</label>
-            <input type="text" name="phone_number" value="{{ profile.phone_number }}">
-        </div>
-
-        <button type="submit">Save changes</button>
+        <button type="submit" class="btn-save">Save Changes</button>
     </form>
+
+    <a href="{% url 'profile' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuBtn = document.querySelector(".mobile-menu-btn");
+        const navMenu = document.querySelector(".nav-menu");
+
+        menuBtn.addEventListener("click", function () {
+            this.classList.toggle("open");
+            navMenu.classList.toggle("active");
+        });
+
+        // Click outside to close
+        document.addEventListener("click", function (e) {
+            if (!navMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                menuBtn.classList.remove("open");
+                navMenu.classList.remove("active");
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

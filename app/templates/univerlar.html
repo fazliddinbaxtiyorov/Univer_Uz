@@ -9,6 +9,223 @@
    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <style>
+        html, body {
+    max-width: 100%;
+    overflow-x: hidden; /* Gorizontal suzishni butunlay taqiqlaydi */
+    margin: 0;
+    padding: 0;
+}
+       /* Mobil menyu uchun asosiy uslublar */
+@media (max-width: 991px) {
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Menyu o'ng tarafda berkingan holda turadi */
+        width: 75%;    /* Ekran kengligining 75% qismini egallaydi */
+        height: 100vh;
+        background-color: #274766;
+        transition: 0.4s ease-in-out; /* Animatsiya tezligi */
+        padding: 100px 40px;
+        z-index: 2100;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.3); /* Chap tarafga soya beradi */
+    }
+
+    /* Menyu faollashganda o'ng tarafdan nolga keladi */
+    .nav-menu.active {
+        right: 0;
+    }
+}
+
+.mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 3001; /* Menyudan tepada turishi uchun */
+            padding: 5px;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            display: block;
+            transition: 0.4s;
+            border-radius: 2px;
+        }
+
+        /* MOBILE STYLES */
+        @media (max-width: 991px) {
+            .mobile-menu-btn { display: flex; }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Dastlab yashirin */
+                width: 75%;
+                height: 100vh;
+                background-color: var(--nav-dark);
+                transition: 0.4s ease-in-out;
+                padding: 100px 40px;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+                z-index: 3000;
+            }
+            @media (max-width: 991px) {
+            .mobile-menu-btn { display: flex; }
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--color-primary);
+                transition: 0.4s;
+                padding: 100px 30px;
+            }
+            .nav-menu.active { right: 0; }
+            .nav-menu ul { flex-direction: column; align-items: flex-start; }
+            .search-row { grid-template-columns: 1fr; }
+        }
+
+        .loading-spinner {
+            width: 40px; height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+
+            .nav-menu.active { right: 0; }
+
+            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; }
+            .nav-menu ul li a { font-size: 1.3rem; }
+
+            /* Burger X animatsiyasi */
+            .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+            .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
+            .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+        }
+/* HEADER */
+        header {
+            background: #274766;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+        }
+        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; color: white; }
+        .logo-img { width: 40px; border-radius: 50%; margin-right: 10px; }
+        .logo-text { font-weight: 700; font-size: 1.2rem; }
+
+        /* BURGER MENU ANIMATSIYASI */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 2101;
+            padding: 5px;
+        }
+        .mobile-menu-btn span {
+            width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s;
+        }
+
+        /* Burger bosilganda X shakli */
+        .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+        .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
+        .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+        /* NAV MENU */
+        .nav-menu ul { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
+        .nav-menu ul li a { color: rgba(255,255,255,0.9); text-decoration: none; transition: 0.3s; }
+
+        @media (max-width: 991px) {
+            .mobile-menu-btn { display: flex; }
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                height: 100vh;
+                background-color: #274766;
+                transition: 0.4s ease-in-out;
+                padding: 100px 40px;
+                z-index: 2100;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            }
+            .nav-menu.active { right: 0; }
+            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; }
+            .nav-menu ul li a { font-size: 1.3rem; }
+        }
+
+        /* HERO & SEARCH */
+        .universities-hero {
+            background: linear-gradient(135deg, #1e293b 0%, #274766 100%);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .search-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin: -2rem auto 2rem;
+            max-width: 900px;
+            width: 92%;
+            position: relative;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr 200px auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .search-row input, .search-row select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* CARD GRID */
+        .uni-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            padding-bottom: 3rem;
+        }
+
+        .uni-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s;
+        }
+        .uni-card:hover { transform: translateY(-5px); }
+
+        /* MOBIL MOSLASHUV */
+        @media (max-width: 768px) {
+            .search-row { grid-template-columns: 1fr; }
+            .search-section { padding: 1rem; }
+            .uni-grid { grid-template-columns: 1fr; }
+        }
+
         .universities-hero {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
             color: var(--color-white);
@@ -174,31 +391,31 @@
 
 <body>
     <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-container">
-                <a href="/" class="logo">
+     <header>
+    <div class="container">
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="logo">
                 <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
                 <span class="logo-text">UniBase</span>
-                </a>
-                <nav>
-                    <ul>
-                        <li><a href="{% url 'home' %}" data-translate="nav_home">Home</a></li>
-                        <li><a href="#" class="active"
-                                data-translate="nav_universities">Universities</a></li>
-                         <li><a href="#" data-translate="nav_support">News</a></li>
-                        <li><a href="https://t.me/unibase_support_bot" data-translate="footer_contact">Support</a></li>
+            </a>
 
-<!--                        <li>-->
-<!--                            <select id="language-selector" class="language-selector">-->
-<!--                                <option value="en">English</option>-->
-<!--                                <option value="ru">Русский</option>-->
-<!--                                <option value="uz">O'zbekcha</option>-->
-<!--                            </select>-->
-<!--                        </li>-->
-                        {% if user.is_authenticated %}
+            <button class="mobile-menu-btn" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="{% url 'home' %}#tests" data-translate="nav_tests">Tests</a></li>
+                    <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
+                    <li><a href="{% url 'home' %}#news" data-translate="nav_news">News</a></li>
+                    <li><a href="{% url 'home' %}#features" data-translate="nav_features">Features</a></li>
+                    <li><a href="https://t.me/unibase_support_bot" data-translate="nav_support">Support</a></li>
+
+                    {% if user.is_authenticated %}
                         <li class="auth-links">
-                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Profile</a>
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>
                             <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
                         </li>
                     {% else %}
@@ -207,12 +424,21 @@
                             <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
                         </li>
                     {% endif %}
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+                </ul>
+            </nav>
         </div>
-    </header>
+    </div>
+</header>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.querySelector(".mobile-menu-btn");
+    const navMenu = document.querySelector(".nav-menu");
+
+    menuBtn.addEventListener("click", function () {
+        navMenu.classList.toggle("active");
+    });
+});
+</script>
 
     <!-- Hero Section -->
     <section class="universities-hero">

@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import (
     FanlarForm, IELTSReadingForm, TestForm, FanTanlashForm,
@@ -150,11 +151,12 @@ def ielts_reading_view(request, test_id=None):
             score=percentage
         )
 
-
         results = [{
             "savol": q.savol,
             "user_answer": form.cleaned_data.get(f'q_{q.id}'),
-            "correct": q.togri_variant
+            "correct": q.togri_variant,
+            "question_id": q.id,  # ← qo'shildi
+            "category": "IELTS"  # ← qo'shildi
         } for q in all_questions]
 
         return render(request, "result.html", {
@@ -226,7 +228,9 @@ def ielts_listening_view(request, test_id):
             results = [{
                 "savol": q.savol,
                 "user_answer": form.cleaned_data.get(f'q_{q.id}'),
-                "correct": q.togri_variant
+                "correct": q.togri_variant,
+                "question_id": q.id,  # ← qo'shildi
+                "category": "IELTS"  # ← qo'shildi
             } for q in questions]
 
             return render(request, "result.html", {
@@ -282,7 +286,9 @@ def test_boshlash(request, fan):
         results = [{
             "savol": q.savol,
             "user_answer": form.cleaned_data.get(f'q_{q.id}'),
-            "correct": q.togri_variant
+            "correct": q.togri_variant,
+            "question_id": q.id,
+            "category": "MILLIY"
         } for q in questions]
 
         return render(request, "result.html", {
@@ -348,7 +354,9 @@ def sat_test_view(request, test_id):
         results = [{
             "savol": q.savol,
             "user_answer": form.cleaned_data.get(f'q_{q.id}'),
-            "correct": q.togri_variant
+            "correct": q.togri_variant,
+            "question_id": q.id,  # ← qo'shildi
+            "category": "SAT"  # ← qo'shildi
         } for q in questions]
 
         return render(request, "result.html", {
@@ -466,7 +474,9 @@ def dtm_test_view(request):
             results = [{
                 "savol": q.savol,
                 "user_answer": form.cleaned_data.get(f'q_{q.id}'),
-                "correct": q.togri_variant
+                "correct": q.togri_variant,
+                "question_id": q.id,
+                "category": "MILLIY"  # ← DTM ham Milliy_Sertifikat modelidan
             } for q in all_questions]
 
             request.session.flush()
@@ -713,18 +723,45 @@ def writing_result(request, pk):
     return render(request, 'writing_result.html', {'submission': submission})
 
 
+@login_required
 def student_analytics(request):
-    submissions = WritingSubmission.objects.filter(user=request.user).order_by('-created_at')
+    user = request.user
 
-    avg_score = submissions.aggregate(Avg('band_score'))['band_score__avg']
-    max_score = submissions.aggregate(Max('band_score'))['band_score__max']
+    # Writing ma'lumotlari
+    writing_subs = WritingSubmission.objects.filter(user=user).order_by('created_at')
+    writing_avg = writing_subs.aggregate(Avg('band_score'))['band_score__avg'] or 0
+    writing_max = writing_subs.aggregate(Max('band_score'))['band_score__max'] or 0
+
+    # Umumiy test natijalari (Reading, Listening, SAT, DTM, Milliy)
+    results = UserTestResult.objects.filter(user=user).order_by('date_taken')
+
+    def get_category_data(category_name):
+        data = results.filter(test_name__icontains=category_name)
+        return {
+            'avg': round(data.aggregate(Avg('score'))['score__avg'] or 0, 1),
+            'max': data.aggregate(Max('score'))['score__max'] or 0,
+            'count': data.count(),
+            'scores': list(data.values_list('score', flat=True)),
+            'dates': [d.strftime('%d %b') for d in data.values_list('date_taken', flat=True)]
+        }
 
     context = {
-        'submissions': submissions,
-        'avg_score': round(avg_score, 1) if avg_score else 0,
-        'max_score': max_score
+        'writing': {
+            'avg': round(writing_avg, 1),
+            'max': writing_max,
+            'count': writing_subs.count(),
+            'scores': list(writing_subs.values_list('band_score', flat=True)),
+            'dates': [d.strftime('%d %b') for d in writing_subs.values_list('created_at', flat=True)]
+        },
+        'reading': get_category_data('Reading'),
+        'listening': get_category_data('Listening'),
+        'sat': get_category_data('SAT'),
+        'dtm': get_category_data('DTM'),
+        'recent_results': results.order_by('-date_taken')[:10]
     }
+
     return render(request, 'analytics.html', context)
+
 
 from django.shortcuts import render
 from django.db.models import Avg, Max
@@ -755,3 +792,69 @@ def leaderboard(request):
     return render(request, 'leaderboard.html', {
         'leaderboard': leaderboard_data
     })
+
+from .hi import get_ai_explanation
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import SATQuestion, IELTS_Reading, IELTSListeningQuestion, Milliy_Sertifikat
+from .hi import get_ai_explanation
+import json
+
+@csrf_exempt
+def explain_error_view(request, submission_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+        except Exception:
+            data = request.POST
+    else:
+        data = request.GET
+
+    category = data.get('category', 'IELTS')
+    user_answer = data.get('user_answer', '')
+
+    try:
+        if category == 'SAT':
+            q_obj = SATQuestion.objects.get(id=submission_id)
+            passage = q_obj.test_group.description
+            question_text = q_obj.savol
+            correct_answer = q_obj.togri_variant
+            test_type = "SAT"
+
+        elif category == 'IELTS_LISTENING':
+            q_obj = IELTSListeningQuestion.objects.get(id=submission_id)
+            passage = f"Part {q_obj.part} listening question."
+            question_text = q_obj.savol
+            correct_answer = q_obj.togri_variant
+            test_type = "IELTS Listening"
+
+        elif category == 'MILLIY':
+            q_obj = Milliy_Sertifikat.objects.get(id=submission_id)
+            passage = f"Fan: {q_obj.fan}"
+            question_text = q_obj.savol
+            correct_answer = q_obj.togri_variant
+            test_type = "Milliy Sertifikat"
+
+        else:
+            # Default: IELTS Reading
+            q_obj = IELTS_Reading.objects.get(id=submission_id)
+            passage = q_obj.test_group.passage_text
+            question_text = q_obj.savol
+            correct_answer = q_obj.togri_variant
+            test_type = "IELTS Reading"
+
+        explanation = get_ai_explanation(
+            test_type=test_type,
+            passage=passage,
+            question=question_text,
+            correct_answer=correct_answer,
+            user_answer=user_answer
+        )
+        return JsonResponse({'explanation': explanation})
+
+    except Exception as e:
+        return JsonResponse({'explanation': f"Savol topilmadi: {str(e)}"}, status=200)

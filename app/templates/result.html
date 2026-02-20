@@ -1,123 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Results - UniBase</title>
-
-     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <title>Test Natijalari — UniBase</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
-</head>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; background: #ffffff; color: #111; }
 
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <div class="header-container">
-                <a href="{% url 'home'%}" class="logo">UniBase</a>
-                <nav>
-                    <ul>
-                        <li><a href="{% url 'profile' %}" data-translate="nav_dashboard">Profile</a></li>
-                        <li>
-                            <select id="language-selector" class="language-selector">
-                                <option value="en">English</option>
-                                <option value="ru">Русский</option>
-                                <option value="uz">O'zbekcha</option>
-                            </select>
-                        </li>
+        .page { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
 
-                        <li><a href="{% url 'logout'%}"  data-translate="nav_logout">Logout</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+        .page-top { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+        .page-top h1 { font-size: 1.6rem; font-weight: 800; color: #111; margin: 0; }
+        .page-top .back-link { font-size: 0.85rem; color: #888; text-decoration: none; display: flex; align-items: center; gap: 4px; margin-left: auto; transition: color 0.15s; }
+        .page-top .back-link:hover { color: #333; }
 
-    <!-- Results Content -->
-    <section class="section">
-        <div class="container" style="max-width: 800px;">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h1 class="card-title" data-translate="results_title">Test Results</h1>
-                </div>
+        .score-banner { background: #f5f5f5; border-radius: 20px; padding: 32px 28px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 20px; }
+        .score-main .big { font-size: 4rem; font-weight: 800; line-height: 1; color: #111; letter-spacing: -2px; }
+        .score-main .sub { font-size: 0.9rem; color: #888; font-weight: 500; margin-top: 4px; }
 
-                <div class="card-body">
-                    <!-- Score Display -->
-                    <div class="stats-grid" style="margin-bottom: 2rem;">
-                        <div class="stat-card">
-                            <div class="stat-value" id="score-display">{{ total }}</div>
-                            <div class="stat-label" data-translate="results_your_score">Your Score</div>
-                        </div>
-<!--                        <div class="stat-card">-->
-<!--                            <div class="stat-value" id="percentage-display">-</div>-->
-<!--                            <div class="stat-label" data-translate="results_percentage">Percentage</div>-->
-<!--                        </div>-->
-                        <div class="stat-card">
-                            <div class="stat-value" id="time-display"><p><p>{{ minutes }} m {{ seconds }} s</p>
-</p></div>
-                            <div class="stat-label" data-translate="results_time_taken">Time Taken</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                            <div class="stat-value" id="percentage-display">{{percentage}} %</div>
-                            <div class="stat-label" data-translate="results_percentage">Percentage</div>
-                        </div>
+        .score-ring { width: 100px; height: 100px; flex-shrink: 0; }
+        .score-ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+        .score-ring .bg { stroke: #e5e5e5; }
+        .score-ring .fg { stroke: #111; stroke-dasharray: 283; stroke-dashoffset: calc(283 - (283 * var(--pct)) / 100); transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1s ease; }
+        .score-ring text { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; fill: #111; }
 
-                    <!-- Performance Message -->
-                    <div id="performance-message" class="alert text-center"></div>
+        .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px; }
+        .mini-stat { background: #f5f5f5; border-radius: 14px; padding: 18px 20px; }
+        .mini-stat .val { font-size: 1.5rem; font-weight: 700; color: #111; line-height: 1; margin-bottom: 4px; }
+        .mini-stat .lbl { font-size: 0.82rem; color: #888; font-weight: 500; }
 
-                    <!-- Answer Review -->
-                    <h3 class="mb-3" data-translate="results_answer_review">Answer Review</h3>
-                    <div id="answer-review">
-                        {% for r in results %}
-    <div>
-        <p><b>Savol:</b> {{ r.savol }}</p>
-        <p>Siz: {{ r.user_answer }}</p>
-        <p>To‘g‘ri: {{ r.correct }}</p>
-        <hr>
-    </div>
-{% endfor %}
+        .perf-tag { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; margin-bottom: 32px; }
+        .perf-tag.great { background: #dcfce7; color: #15803d; }
+        .perf-tag.good  { background: #fef9c3; color: #854d0e; }
+        .perf-tag.low   { background: #fee2e2; color: #991b1b; }
 
-                        <!-- Answers will be displayed here -->
-                    </div>
+        .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .divider span { font-size: 0.9rem; font-weight: 700; color: #111; white-space: nowrap; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e5e5e5; }
 
-                    <!-- Actions -->
-                    <div class="flex-center mt-4" style="gap: 1rem;">
-                        <a href="{% url 'profile' %}" class="btn btn-primary"
-                            data-translate="results_back_dashboard">Back to Dashboard</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    // 🔹 Prevent duplicate form submission
-    const forms = document.querySelectorAll("form"); // agar result sahifasida form bo'lsa
-    forms.forEach(form => {
-        let submitted = false;
-        form.addEventListener("submit", function(e){
-            if(submitted){
-                e.preventDefault();
-                alert("Siz allaqachon testni yubordingiz!");
-            } else {
-                submitted = true;
-            }
-        });
-    });
+        .answer-item { border: 1.5px solid #e5e5e5; border-radius: 14px; padding: 16px 18px; margin-bottom: 10px; transition: border-color 0.15s, box-shadow 0.15s; animation: up 0.3s ease both; }
+        .answer-item:hover { border-color: #ccc; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .answer-item.correct { border-color: #bbf7d0; background: #f0fdf4; }
+        .answer-item.wrong   { border-color: #fecaca; background: #fff5f5; }
 
-    // 🔹 Alert on page reload/refresh
-    let resultDisplayed = true; // result sahifasida natija allaqachon ko'rsatildi
-    window.onbeforeunload = function() {
-        if(resultDisplayed){
-            return "Natija sahifasida chiqdingiz. Refresh qilinsa testga coin yana yechilmaydi.";
+        .ai-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+        .q-num { font-size: 0.72rem; font-weight: 700; color: #aaa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+        .q-txt { font-size: 0.92rem; font-weight: 600; color: #222; line-height: 1.45; }
+
+        .status-dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+        .status-dot.ok  { background: #22c55e; color: white; }
+        .status-dot.bad { background: #ef4444; color: white; }
+
+        .ans-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+        .chip.you   { background: #fee2e2; color: #b91c1c; }
+        .chip.right { background: #dcfce7; color: #15803d; }
+        .chip.same  { background: #dcfce7; color: #15803d; }
+
+        .ai-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 14px; border-radius: 999px; border: 1.5px solid #d1d5db; background: white; color: #555; font-size: 0.8rem; font-weight: 600; font-family: 'Outfit', sans-serif; cursor: pointer; transition: all 0.15s; }
+        .ai-btn:hover { border-color: #111; color: #111; }
+        .ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .ai-result { display: none; margin-top: 12px; padding: 14px 16px; background: #fafafa; border: 1.5px solid #e5e5e5; border-radius: 12px; font-size: 0.85rem; line-height: 1.75; color: #333; white-space: pre-wrap; }
+
+        .sp { width: 12px; height: 12px; border: 2px solid #ccc; border-top-color: #555; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .bottom { text-align: center; margin-top: 40px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; background: #111; color: white; border-radius: 14px; font-size: 0.95rem; font-weight: 700; text-decoration: none; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
+        .back-btn:hover { background: #333; color: white; transform: translateY(-2px); }
+
+        @keyframes up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .answer-item:nth-child(1)  { animation-delay: 0.04s; }
+        .answer-item:nth-child(2)  { animation-delay: 0.08s; }
+        .answer-item:nth-child(3)  { animation-delay: 0.12s; }
+        .answer-item:nth-child(4)  { animation-delay: 0.16s; }
+        .answer-item:nth-child(5)  { animation-delay: 0.20s; }
+        .answer-item:nth-child(6)  { animation-delay: 0.24s; }
+        .answer-item:nth-child(7)  { animation-delay: 0.28s; }
+        .answer-item:nth-child(8)  { animation-delay: 0.32s; }
+        .answer-item:nth-child(9)  { animation-delay: 0.36s; }
+        .answer-item:nth-child(10) { animation-delay: 0.40s; }
+
+        @media (max-width: 480px) {
+            .score-banner { flex-direction: column; align-items: flex-start; }
+            .mini-stats { grid-template-columns: 1fr; }
         }
-    };
-});
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="logo">UniBase</a>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="page">
+
+    <div class="page-top">
+        <h1>Natijalar</h1>
+        <a href="{% url 'profile' %}" class="back-link">← Profilga qaytish</a>
+    </div>
+
+    <div class="score-banner">
+        <div class="score-main">
+            <div class="big">{{ percentage }}<span style="font-size:2rem">%</span></div>
+            <div class="sub">Ball: {{ total }} &nbsp;·&nbsp; {{ results|length }} ta savol</div>
+        </div>
+        <svg class="score-ring" viewBox="0 0 100 100" style="--pct:{{ percentage }}">
+            <circle class="bg" cx="50" cy="50" r="45"/>
+            <circle class="fg" cx="50" cy="50" r="45"/>
+            <text x="50" y="55" text-anchor="middle">{{ percentage }}%</text>
+        </svg>
+    </div>
+
+    <div class="mini-stats">
+        <div class="mini-stat">
+            <div class="val">{{ minutes }}m {{ seconds }}s</div>
+            <div class="lbl">Sarflangan vaqt</div>
+        </div>
+        <div class="mini-stat">
+            <div class="val">{{ total }}</div>
+            <div class="lbl">To'plangan ball</div>
+        </div>
+    </div>
+
+    {% if percentage >= 80 %}
+        <div class="perf-tag great">🎉 Ajoyib natija! Davom eting.</div>
+    {% elif percentage >= 50 %}
+        <div class="perf-tag good">💪 Yaxshi! Yana mashq qiling.</div>
+    {% else %}
+        <div class="perf-tag low">📚 Ko'proq o'qish kerak.</div>
+    {% endif %}
+
+    <div class="divider"><span>Javoblarni ko'rib chiqish</span></div>
+
+    {% for r in results %}
+        <div class="answer-item {% if r.user_answer == r.correct %}correct{% else %}wrong{% endif %}">
+            <div class="ai-top">
+                <div>
+                    <div class="q-num">Savol {{ forloop.counter }}</div>
+                    <div class="q-txt">{{ r.savol }}</div>
+                </div>
+                {% if r.user_answer == r.correct %}
+                    <div class="status-dot ok">✓</div>
+                {% else %}
+                    <div class="status-dot bad">✗</div>
+                {% endif %}
+            </div>
+            <div class="ans-chips">
+                {% if r.user_answer == r.correct %}
+                    <span class="chip same">✓ {{ r.correct }}</span>
+                {% else %}
+                    <span class="chip you">✗ Siz: {{ r.user_answer }}</span>
+                    <span class="chip right">✓ To'g'ri: {{ r.correct }}</span>
+                {% endif %}
+            </div>
+            {% if r.user_answer != r.correct %}
+                <button class="ai-btn"
+                    data-question-id="{{ r.question_id }}"
+                    data-category="{{ r.category }}"
+                    data-user-answer="{{ r.user_answer }}"
+                    onclick="explain(this)">
+                    🤖 AI tushuntirsin
+                </button>
+                <div class="ai-result" id="exp-{{ r.question_id }}"></div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <div class="bottom">
+        <a href="{% url 'profile' %}" class="back-btn">← Bosh sahifaga qaytish</a>
+    </div>
+
+</div>
+
+<script>
+function explain(btn) {
+    const id  = btn.dataset.questionId;
+    const cat = btn.dataset.category;
+    const ua  = btn.dataset.userAnswer;
+    const box = document.getElementById('exp-' + id);
+    if (box.style.display === 'block') {
+        box.style.display = 'none';
+        btn.innerHTML = '🤖 AI tushuntirsin';
+        return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '<span class="sp"></span> Yuklanmoqda...';
+    fetch('/explain-error/' + id + '/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify({ category: cat, user_answer: ua })
+    })
+    .then(r => r.json())
+    .then(d => {
+        box.textContent = d.explanation || 'Xatolik yuz berdi.';
+        box.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '▲ Yopish';
+    })
+    .catch(() => {
+        box.textContent = "Server bilan bog'lanishda xatolik.";
+        box.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '↺ Qayta';
+    });
+}
+function getCookie(n) {
+    let v = null;
+    document.cookie.split(';').forEach(c => {
+        c = c.trim();
+        if (c.startsWith(n + '=')) v = decodeURIComponent(c.slice(n.length + 1));
+    });
+    return v;
+}
+window.onbeforeunload = () => '';
+document.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { window.onbeforeunload = null; }));
 </script>
-
 </body>
-
 </html>

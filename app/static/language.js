@@ -19,7 +19,7 @@ const TRANSLATIONS = {
 
         // Hero Section
         hero_title: 'Preparation Like a Real Exam',
-        hero_subtitle: 'IELTS, SAT, Milliy certificate, IQ, DTM — timed practice tests in a realistic exam environment',
+        hero_subtitle: 'IELTS, SAT, Milliy certificate, DTM — timed practice tests in a realistic exam environment',
         hero_btn_start: 'Start Free',
         hero_btn_view: 'View Tests',
 
@@ -41,8 +41,6 @@ const TRANSLATIONS = {
         test_milliy_desc: 'National certification exam practice with comprehensive question bank.',
         test_dtm_title: 'DTM',
         test_dtm_desc: 'Prepare for university entrance exams with realistic test simulations.',
-        test_iq_title: 'IQ',
-        test_iq_desc: 'Test your cognitive abilities with timed IQ assessment questions.',
 
         // Features
         features_title: 'Why Choose UniBase?',
@@ -89,7 +87,7 @@ const TRANSLATIONS = {
         questions: 'Questions',
         minutes: 'minutes',
         footer_rights: 'All rights reserved.',
-        footer_copyright: '© 2023 UniBase. All rights reserved.',
+        footer_copyright: '© 2026 UniBase. All rights reserved.',
         footer_tests: 'Tests',
         footer_features: 'Features',
         footer_privacy: 'Privacy Policy',
@@ -203,7 +201,7 @@ const TRANSLATIONS = {
 
         // Hero Section
         hero_title: 'Подготовка как на реальном экзамене',
-        hero_subtitle: 'IELTS, SAT, Milliy certificate, IQ, DTM — тесты с таймером в реалистичной экзаменационной среде',
+        hero_subtitle: 'IELTS, SAT, Milliy certificate, DTM — тесты с таймером в реалистичной экзаменационной среде',
         hero_btn_start: 'Начать бесплатно',
         hero_btn_view: 'Смотреть тесты',
 
@@ -225,8 +223,6 @@ const TRANSLATIONS = {
         test_milliy_desc: 'Практика национального сертификационного экзамена с полным банком вопросов.',
         test_dtm_title: 'DTM',
         test_dtm_desc: 'Подготовьтесь к вступительным экзаменам в университет с реалистичными симуляциями тестов.',
-        test_iq_title: 'IQ',
-        test_iq_desc: 'Проверьте свои когнитивные способности с помощью тестовых вопросов на IQ с ограничением времени.',
 
         // Features
         features_title: 'Почему выбирают UniBase?',
@@ -273,7 +269,7 @@ const TRANSLATIONS = {
         questions: 'Вопросы',
         minutes: 'минут',
         footer_rights: 'Все права защищены.',
-        footer_copyright: '© 2023 UniBase. Все права защищены.',
+        footer_copyright: '© 2026 UniBase. Все права защищены.',
         footer_tests: 'Тесты',
         footer_features: 'Возможности',
         footer_privacy: 'Политика конфиденциальности',
@@ -387,7 +383,7 @@ const TRANSLATIONS = {
 
         // Hero Section
         hero_title: 'Haqiqiy imtihonga tayyorgarlik',
-        hero_subtitle: "IELTS, SAT, Milliy sertifikat, IQ, DTM — real imtihon muhitida vaqt bilan cheklangan mashq testlari",
+        hero_subtitle: "IELTS, SAT, Milliy sertifikat, DTM — real imtihon muhitida vaqt bilan cheklangan mashq testlari",
         hero_btn_start: 'Bepul boshlash',
         hero_btn_view: "Testlarni ko'rish",
 
@@ -409,8 +405,6 @@ const TRANSLATIONS = {
         test_milliy_desc: "Keng qamrovli savol bankasi bilan milliy sertifikatlash imtihoni amaliyoti.",
         test_dtm_title: 'DTM',
         test_dtm_desc: "Haqiqiy test simulyatsiyalari bilan universitet kirish imtihonlariga tayyorlaning.",
-        test_iq_title: 'IQ',
-        test_iq_desc: "Vaqt bilan cheklangan IQ baholash savollari bilan kognitiv qobiliyatingizni sinab ko'ring.",
 
         // Features
         features_title: 'Nega UniBase?',
@@ -457,7 +451,7 @@ const TRANSLATIONS = {
         questions: 'Savollar',
         minutes: 'daqiqa',
         footer_rights: "Barcha huquqlar himoyalangan.",
-        footer_copyright: '© 2023 UniBase. Barcha huquqlar himoyalangan.',
+        footer_copyright: '© 2026 UniBase. Barcha huquqlar himoyalangan.',
         footer_tests: 'Testlar',
         footer_features: 'Xususiyatlar',
         footer_privacy: 'Maxfiylik siyosati',
