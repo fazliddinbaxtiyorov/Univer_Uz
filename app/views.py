@@ -221,10 +221,9 @@ def ielts_listening_view(request, test_id):
 
             UserTestResult.objects.create(
                 user=request.user,
-                test_name=test.title,
+                test_name=f"Listening - {test.title}",
                 score=percentage
             )
-
             results = [{
                 "savol": q.savol,
                 "user_answer": form.cleaned_data.get(f'q_{q.id}'),
@@ -347,7 +346,7 @@ def sat_test_view(request, test_id):
 
             UserTestResult.objects.create(
                 user=request.user,
-                test_name=test_obj.title,
+                test_name=f"SAT - {test_obj.title}",
                 score=percentage
             )
 
