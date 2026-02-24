@@ -4,12 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ test.title }} - UniBase</title>
+    <title>DTM Test - UniBase</title>
     <style>
-        /* ================= GLOBAL ================= */
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f8; color: #333; }
 
-        /* ================= TOP BAR ================= */
         .topbar {
             position: sticky; top: 0; z-index: 1000;
             background: #0f2742; color: #fff;
@@ -21,44 +19,62 @@
         .progress-bar { height: 100%; background: #4cc9f0; transition: 0.3s; }
         .timer-box { font-size: 1.2rem; font-weight: 700; background: #1a3a5a; padding: 6px 15px; border-radius: 8px; border: 1px solid #4cc9f0; }
 
-        /* ================= LAYOUT ================= */
         .layout {
             display: grid; grid-template-columns: 1fr 320px;
             gap: 25px; max-width: 1200px; margin: 30px auto; padding: 0 20px;
         }
 
-        /* ================= QUESTION CARD ================= */
         .question-card {
             background: #fff; border-radius: 16px; padding: 30px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e0e6ed;
+            margin-bottom: 20px;
         }
-        .q-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
-        .q-num { width: 40px; height: 40px; background: #0f2742; color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; }
-        .q-text { font-size: 1.25rem; font-weight: 600; color: #1a202c; }
+        .q-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .q-num { width: 40px; height: 40px; background: #0f2742; color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; flex-shrink: 0; }
+        .q-text { font-size: 1.1rem; font-weight: 600; color: #1a202c; }
 
-        /* Django form style override */
-        .question-card p { margin-bottom: 15px; }
-        .question-card label {
-            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
-            border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: 0.2s;
+        /* Savol rasmi */
+        .savol-rasm { max-width: 100%; max-height: 300px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e0e6ed; object-fit: contain; display: block; }
+
+        /* Variantlar */
+        .options-list { list-style: none; padding: 0; margin: 0; }
+        .option-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border: 1px solid #e2e8f0;
+            border-radius: 12px; margin-bottom: 10px;
+            cursor: pointer; transition: 0.2s;
         }
-        .question-card label:hover { background: #f7fafc; border-color: #0f2742; }
-        .question-card input[type="radio"] { width: 18px; height: 18px; accent-color: #0f2742; }
+        .option-item:hover { background: #f7fafc; border-color: #0f2742; }
+        .option-item input[type="radio"] { width: 18px; height: 18px; accent-color: #0f2742; flex-shrink: 0; }
+        .option-item label { cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
 
-        /* ================= NAVIGATOR ================= */
+        /* Variant harfi (A, B, C, D) */
+        .option-letter {
+            width: 28px; height: 28px; background: #eef2f8;
+            border-radius: 6px; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 13px;
+            color: #0f2742; flex-shrink: 0;
+        }
+
+        /* Variant rasmi */
+        .variant-rasm { max-width: 180px; max-height: 130px; border-radius: 8px; border: 1px solid #e0e6ed; object-fit: contain; }
+
         .navigator { position: sticky; top: 90px; background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #e3e8f1; height: fit-content; }
-        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 15px; }
         .nav-item {
-            width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
-            border: 1px solid #d1d5db; border-radius: 10px; font-weight: 600; cursor: pointer; text-decoration: none; color: #4a5568; transition: 0.2s;
+            width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid #d1d5db; border-radius: 10px; font-weight: 600;
+            cursor: pointer; text-decoration: none; color: #4a5568; transition: 0.2s; font-size: 13px;
         }
-        .nav-item.active { background: #0f2742; color: #fff; border-color: #0f2742; }
         .nav-item.answered { background: #e8fff1; border-color: #38b000; color: #38b000; }
+        .nav-item:hover { background: #f0f4f8; }
 
         .submit-btn {
-            width: 100%; padding: 12px; margin-top: 20px; border-radius: 10px;
-            border: none; background: #4cc9f0; color: #0f2742; font-weight: 700; cursor: pointer;
+            width: 100%; padding: 13px; margin-top: 20px; border-radius: 10px;
+            border: none; background: #0f2742; color: #fff; font-weight: 700;
+            font-size: 1rem; cursor: pointer; transition: 0.2s;
         }
+        .submit-btn:hover { background: #1a3a5a; }
 
         @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .navigator { position: relative; top: 0; } }
     </style>
@@ -67,14 +83,14 @@
 
 <div class="topbar">
     <a href="/" class="logo">UniBase</a>
-
     <div class="progress-container">
         <div class="progress-bar" id="p-bar" style="width: 0%;"></div>
     </div>
-
     <div class="timer-box" id="timer-display">60:00</div>
-
-    <button type="button" onclick="document.getElementById('main-form').submit()" style="background:#4cc9f0; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">Submit</button>
+    <button type="button" onclick="document.getElementById('main-form').submit()"
+        style="background:#4cc9f0; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">
+        Submit
+    </button>
 </div>
 
 <div class="layout">
@@ -82,40 +98,105 @@
         <form method="post" id="main-form">
             {% csrf_token %}
 
-            {# Savollarni birin-ketin chiqarish #}
-            {% for field in form %}
+            {% for q in all_questions %}
             <div class="question-card" id="q-card-{{ forloop.counter }}">
+
+                <!-- Savol nomeri + matni -->
                 <div class="q-header">
                     <div class="q-num">{{ forloop.counter }}</div>
-                    <div class="q-text">{{ field.label }}</div>
+                    <div class="q-text">{{ q.savol }}</div>
                 </div>
 
-                <div class="options-area">
-                    {{ field }}
-                </div>
+                <!-- Savol rasmi (agar bo'lsa) -->
+                {% if q.savol_rasm %}
+                    <img src="{{ q.savol_rasm.url }}" alt="Savol rasmi" class="savol-rasm">
+                {% endif %}
+
+                <!-- Variantlar -->
+                <ul class="options-list">
+                    <!-- A varianti -->
+                    <li class="option-item">
+                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_a" value="A">
+                        <label for="q{{ q.id }}_a">
+                            <span class="option-letter">A</span>
+                            {% if q.image_a %}
+                                <img src="{{ q.image_a.url }}" alt="A" class="variant-rasm">
+                            {% else %}
+                                {{ q.variant_a }}
+                            {% endif %}
+                        </label>
+                    </li>
+
+                    <!-- B varianti -->
+                    <li class="option-item">
+                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_b" value="B">
+                        <label for="q{{ q.id }}_b">
+                            <span class="option-letter">B</span>
+                            {% if q.image_b %}
+                                <img src="{{ q.image_b.url }}" alt="B" class="variant-rasm">
+                            {% else %}
+                                {{ q.variant_b }}
+                            {% endif %}
+                        </label>
+                    </li>
+
+                    <!-- C varianti -->
+                    <li class="option-item">
+                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_c" value="C">
+                        <label for="q{{ q.id }}_c">
+                            <span class="option-letter">C</span>
+                            {% if q.image_c %}
+                                <img src="{{ q.image_c.url }}" alt="C" class="variant-rasm">
+                            {% else %}
+                                {{ q.variant_c }}
+                            {% endif %}
+                        </label>
+                    </li>
+
+                    <!-- D varianti -->
+                    <li class="option-item">
+                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_d" value="D">
+                        <label for="q{{ q.id }}_d">
+                            <span class="option-letter">D</span>
+                            {% if q.image_d %}
+                                <img src="{{ q.image_d.url }}" alt="D" class="variant-rasm">
+                            {% else %}
+                                {{ q.variant_d }}
+                            {% endif %}
+                        </label>
+                    </li>
+                </ul>
             </div>
             {% endfor %}
 
-            <button type="submit" class="submit-btn" style="background: #0f2742; color: #fff; font-size: 1.1rem;">Testni Yakunlash</button>
+            <button type="submit" class="submit-btn">✅ Testni Yakunlash</button>
         </form>
     </main>
 
     <aside class="navigator">
-        <h3 style="margin:0 0 15px 0; color:#0f2742;">Savollar Paneli</h3>
+        <h3 style="margin:0; color:#0f2742;">Savollar Paneli</h3>
         <div class="nav-grid">
-            {% for field in form %}
-                <a href="#q-card-{{ forloop.counter }}" class="nav-item" id="nav-{{ forloop.counter }}">
+            {% for q in all_questions %}
+                <a href="#q-card-{{ forloop.counter }}" class="nav-item" id="nav-{{ q.id }}">
                     {{ forloop.counter }}
                 </a>
             {% endfor %}
         </div>
 
+        <div style="margin-top: 15px; font-size: 12px; color: #666;">
+            <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+                <span style="width:12px; height:12px; background:#e8fff1; border:1px solid #38b000; border-radius:3px; display:inline-block;"></span>
+                Javob berilgan
+            </div>
+        </div>
+
+        <button class="submit-btn" onclick="document.getElementById('main-form').submit()">Yakunlash →</button>
     </aside>
 </div>
 
 <script>
-    // 1. Timer logic
-    let seconds = 3600; // 1 soat
+    // Timer
+    let seconds = {{ timer_seconds }};
     const timerEl = document.getElementById("timer-display");
 
     const timerInterval = setInterval(() => {
@@ -123,37 +204,29 @@
         const m = String(Math.floor(seconds / 60)).padStart(2, '0');
         const s = String(seconds % 60).padStart(2, '0');
         timerEl.textContent = `${m}:${s}`;
-
         if (seconds <= 0) {
             clearInterval(timerInterval);
             document.getElementById('main-form').submit();
         }
     }, 1000);
 
-    // 2. Navigation & Progress logic
-    const form = document.getElementById('main-form');
-    const inputs = form.querySelectorAll('input[type="radio"]');
-    const totalQuestions = {{ form.fields|length }};
+    // Progress bar + Navigator
+    const allRadios = document.querySelectorAll('input[type="radio"]');
     const pBar = document.getElementById('p-bar');
+    const totalQuestions = {{ all_questions|length }};
 
-    inputs.forEach(input => {
-        input.addEventListener('change', () => {
-            // Qaysi savolga javob berilganini aniqlash (field name orqali)
-            const qNum = input.name.split('_')[1] || input.name;
-            // Navigatordagi rangni o'zgartirish
-            // Eslatma: qNum bazadagi ID bo'lishi mumkin, forloop counter bilan mosligini tekshiring
+    allRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            // Navigator itemni yashil qil
+            const qId = radio.name.replace('q_', '');
+            const navItem = document.getElementById(`nav-${qId}`);
+            if (navItem) navItem.classList.add('answered');
 
-            updateProgress();
+            // Progress bar yangilash
+            const answered = new Set([...allRadios].filter(r => r.checked).map(r => r.name)).size;
+            pBar.style.width = (answered / totalQuestions * 100) + '%';
         });
     });
-
-    function updateProgress() {
-        const answeredCount = new Set([...inputs].filter(i => i.checked).map(i => i.name)).size;
-        const percent = (answeredCount / totalQuestions) * 100;
-        pBar.style.width = percent + '%';
-
-        // Navigatordagi answered klassini yangilash logicini shu yerga yozish mumkin
-    }
 </script>
 
 </body>

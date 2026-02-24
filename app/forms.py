@@ -1,145 +1,14 @@
+# forms.py
 from django import forms
-from .models import DTM_Practise, Fanlar, IELTS_Reading, IELTSListeningQuestion, Milliy_Sertifikat, IELTS_writing
+from .models import (
+    Fanlar, IELTS_writing, WritingSubmission, Milliy_Sertifikat
+)
 
-
-class DTMForm(forms.ModelForm):
-    class Meta:
-        model = DTM_Practise
-        fields = '__all__'
-
-
-class TestFanForm(forms.Form):
-    def __init__(self, *args, questions=None, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if questions:
-            for q in questions:
-                self.fields[f"q_{q.id}"] = forms.ChoiceField(
-                    label=q.savol,
-                    choices=[
-                        ("A", q.variant_a),
-                        ("B", q.variant_b),
-                        ("C", q.variant_c),
-                        ("D", q.variant_d)
-                    ],
-                    widget=forms.RadioSelect,
-                    required=True
-                )
 
 class FanlarForm(forms.ModelForm):
     class Meta:
         model = Fanlar
-        fields = ['birinchi_fan', 'ikkinchi_fan']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        birinchi = self.initial.get("birinchi_fan") or self.data.get("birinchi_fan")
-
-        if birinchi:
-            self.fields['ikkinchi_fan'].choices = [
-                (k, v) for k, v in self.fields['ikkinchi_fan'].choices if k != birinchi
-            ]
-
-
-
-
-class IELTSReadingForm(forms.Form):
-    def __init__(self, *args, questions=None, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if not questions:
-            return
-
-        for q in questions:
-
-            # 🔹 Variantlar savol turiga qarab
-            if q.question_type == 'TFNG':
-                choices = [
-                    ('A', 'True'),
-                    ('B', 'False'),
-                    ('C', 'Not Given'),
-                ]
-            else:  # ABCD
-                choices = []
-
-                if q.variant_a:
-                    choices.append(('A', q.variant_a))
-                if q.variant_b:
-                    choices.append(('B', q.variant_b))
-                if q.variant_c:
-                    choices.append(('C', q.variant_c))
-                if q.variant_d:
-                    choices.append(('D', q.variant_d))
-
-            # 🔹 Field yaratish
-            self.fields[f"q_{q.id}"] = forms.ChoiceField(
-                label=q.savol,
-                choices=choices,
-                widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
-                required=True
-            )
-
-
-
-class IELTSListeningForm(forms.Form):
-    def __init__(self, *args, questions=None, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if questions:
-            for q in questions:
-                self.fields[f"q_{q.id}"] = forms.ChoiceField(
-                    label=q.savol,
-                    choices=[
-                        ("A", q.variant_a),
-                        ("B", q.variant_b),
-                        ("C", q.variant_c),
-                        ("D", q.variant_d)
-                    ],
-                    widget=forms.RadioSelect,
-                    required=True
-                )
-
-
-class TestForm(forms.Form):
-    def __init__(self, *args, questions=None, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if questions:
-            for q in questions:
-                self.fields[f"q_{q.id}"] = forms.ChoiceField(
-                    label=q.savol,
-                    choices=[
-                        ("A", q.variant_a),
-                        ("B", q.variant_b),
-                        ("C", q.variant_c),
-                        ("D", q.variant_d)
-                    ],
-                    widget=forms.RadioSelect,
-                    required=True
-                )
-
-
-class FanTanlashForm(forms.Form):
-    fan = forms.ChoiceField(choices=Milliy_Sertifikat.FAN_CHOICES)
-
-
-class SATForm(forms.Form):
-    def __init__(self, *args, questions=None, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if questions:
-            for q in questions:
-                self.fields[f"q_{q.id}"] = forms.ChoiceField(
-                    label=q.savol,
-                    choices=[
-                        ("A", q.variant_a),
-                        ("B", q.variant_b),
-                        ("C", q.variant_c),
-                        ("D", q.variant_d)
-                    ],
-                    widget=forms.RadioSelect,
-                    required=True
-                )
+        fields = '__all__'
 
 
 class Writing(forms.ModelForm):
@@ -147,18 +16,182 @@ class Writing(forms.ModelForm):
         model = IELTS_writing
         fields = '__all__'
 
-from django import forms
-from .models import ContactMessage
 
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = ContactMessage
-        fields = ['name', 'email', 'subject', 'message']
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Ismingiz'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+    subject = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'placeholder': 'Mavzu'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Xabar', 'rows': 5}))
 
 
-# forms.py
-from django import forms
-from .models import WritingSubmission
+class FanTanlashForm(forms.Form):
+    fan = forms.ChoiceField(choices=Milliy_Sertifikat.FAN_CHOICES)
+
+
+class TestForm(forms.Form):
+    """Milliy Sertifikat uchun - faqat ABCD"""
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if questions:
+            for q in questions:
+                choices = [
+                    ('A', q.variant_a),
+                    ('B', q.variant_b),
+                    ('C', q.variant_c),
+                    ('D', q.variant_d),
+                ]
+                self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                    choices=choices,
+                    widget=forms.RadioSelect,
+                    label=q.savol,
+                    required=False
+                )
+
+
+class TestFanForm(forms.Form):
+    """DTM uchun - faqat ABCD"""
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if questions:
+            for q in questions:
+                choices = [
+                    ('A', q.variant_a),
+                    ('B', q.variant_b),
+                    ('C', q.variant_c),
+                    ('D', q.variant_d),
+                ]
+                self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                    choices=choices,
+                    widget=forms.RadioSelect,
+                    label=q.savol,
+                    required=False
+                )
+
+
+class IELTSReadingForm(forms.Form):
+    """IELTS Reading: ABCD, TFNG, MATCH, FILL"""
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if questions:
+            for q in questions:
+                if q.question_type == 'ABCD':
+                    choices = [
+                        ('A', q.variant_a or 'A'),
+                        ('B', q.variant_b or 'B'),
+                        ('C', q.variant_c or 'C'),
+                        ('D', q.variant_d or 'D'),
+                    ]
+                    self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                        choices=choices,
+                        widget=forms.RadioSelect,
+                        label=q.savol,
+                        required=False
+                    )
+
+                elif q.question_type == 'TFNG':
+                    choices = [
+                        ('TRUE', 'True'),
+                        ('FALSE', 'False'),
+                        ('NOT GIVEN', 'Not Given'),
+                    ]
+                    self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                        choices=choices,
+                        widget=forms.RadioSelect,
+                        label=q.savol,
+                        required=False
+                    )
+
+                elif q.question_type == 'MATCH':
+                    choices = [
+                        ('A', q.variant_a or 'A'),
+                        ('B', q.variant_b or 'B'),
+                        ('C', q.variant_c or 'C'),
+                        ('D', q.variant_d or 'D'),
+                    ]
+                    self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                        choices=choices,
+                        widget=forms.RadioSelect,
+                        label=q.savol,
+                        required=False
+                    )
+
+                elif q.question_type == 'FILL':
+                    self.fields[f'q_{q.id}'] = forms.CharField(
+                        label=q.savol,
+                        required=False,
+                        widget=forms.TextInput(attrs={
+                            'placeholder': 'Javobingizni kiriting...',
+                            'class': 'fill-input',
+                            'autocomplete': 'off',
+                        })
+                    )
+
+
+class IELTSListeningForm(forms.Form):
+    """IELTS Listening: ABCD, FILL, MATCH, MAP"""
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if questions:
+            for q in questions:
+                if q.question_type == 'ABCD':
+                    choices = [
+                        ('A', q.variant_a or 'A'),
+                        ('B', q.variant_b or 'B'),
+                        ('C', q.variant_c or 'C'),
+                        ('D', q.variant_d or 'D'),
+                    ]
+                    self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                        choices=choices,
+                        widget=forms.RadioSelect,
+                        label=q.savol,
+                        required=False
+                    )
+
+                elif q.question_type == 'MATCH':
+                    choices = [
+                        ('A', q.variant_a or 'A'),
+                        ('B', q.variant_b or 'B'),
+                        ('C', q.variant_c or 'C'),
+                        ('D', q.variant_d or 'D'),
+                    ]
+                    self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                        choices=choices,
+                        widget=forms.RadioSelect,
+                        label=q.savol,
+                        required=False
+                    )
+
+                elif q.question_type in ('FILL', 'MAP'):
+                    self.fields[f'q_{q.id}'] = forms.CharField(
+                        label=q.savol,
+                        required=False,
+                        widget=forms.TextInput(attrs={
+                            'placeholder': 'Javobingizni kiriting...',
+                            'class': 'fill-input',
+                            'autocomplete': 'off',
+                        })
+                    )
+
+
+class SATForm(forms.Form):
+    """SAT uchun - faqat ABCD"""
+    def __init__(self, *args, questions=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if questions:
+            for q in questions:
+                choices = [
+                    ('A', q.variant_a or 'A'),
+                    ('B', q.variant_b or 'B'),
+                    ('C', q.variant_c or 'C'),
+                    ('D', q.variant_d or 'D'),
+                ]
+                self.fields[f'q_{q.id}'] = forms.ChoiceField(
+                    choices=choices,
+                    widget=forms.RadioSelect,
+                    label=q.savol,
+                    required=False
+                )
+
 
 class WritingSubmissionForm(forms.ModelForm):
     class Meta:
@@ -166,7 +199,8 @@ class WritingSubmissionForm(forms.ModelForm):
         fields = ['answer']
         widgets = {
             'answer': forms.Textarea(attrs={
-                'rows': 14,
-                'placeholder': 'Write your IELTS answer here...'
+                'rows': 15,
+                'placeholder': 'Javobingizni shu yerga yozing...',
+                'class': 'writing-textarea'
             })
         }

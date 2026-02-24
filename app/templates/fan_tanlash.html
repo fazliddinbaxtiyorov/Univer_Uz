@@ -1,247 +1,146 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
+{% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>DTM Practice - UniBase</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
-
+    <title>Milliy Sertifikat - UniBase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-primary: #274766;
-            --color-teal: #14b8a6;
-            --color-teal-dark: #0d9488;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --primary-mint: #1cc8c8;
+            --primary-dark: #1a3a5a;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --text-muted: #7f8c8d;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        body { font-family: var(--font-main); background: var(--bg-light); margin: 0; padding: 0; color: var(--primary-dark); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background: #f1f5f9;
-            overflow-x: hidden;
-        }
+        /* HEADER */
+        header { background: var(--primary-dark); padding: 15px 0; position: sticky; top: 0; z-index: 2000; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .logo-img { width: 40px; height: 40px; border-radius: 8px; }
+        .logo-text { font-size: 22px; font-weight: 800; color: #fff; }
+        nav ul { list-style: none; display: flex; align-items: center; gap: 25px; margin: 0; padding: 0; }
+        nav a { text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; transition: var(--transition); }
+        nav a:hover { color: var(--primary-mint); }
+        .btn { padding: 8px 18px; border-radius: 10px; font-weight: 600; text-decoration: none; font-size: 14px; transition: var(--transition); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-primary { background: var(--primary-mint); color: #fff; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-sm { padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; }
 
-        /* HEADER & NAVIGATION */
-        header {
-            background: var(--color-primary);
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo { display: flex; align-items: center; text-decoration: none; color: white; }
-        .logo-img { width: 40px; border-radius: 50%; margin-right: 10px; }
-        .logo-text { font-weight: 700; font-size: 1.2rem; }
-
-        /* NAV MENU (DESKTOP) */
-        .nav-menu ul {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-menu ul li a {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu ul li a:hover { color: var(--color-teal); }
-
-        /* MOBILE MENU BUTTON (BURGER) */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 2101; /* Menyudan ustun turishi uchun */
-            padding: 5px;
-        }
-
-        .mobile-menu-btn span {
-            width: 25px;
-            height: 3px;
-            background: #fff;
-            display: block;
-            transition: 0.4s ease;
-            border-radius: 2px;
-        }
-
-        /* BURGER ANIMATION TO 'X' */
+        /* MOBILE */
+        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; z-index: 2101; padding: 5px; }
+        .mobile-menu-btn span { width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s; border-radius: 2px; }
         .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
         .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
         .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-
-        /* MOBILE STYLES */
-        @media (max-width: 991px) {
+        @media(max-width:991px) {
             .mobile-menu-btn { display: flex; }
-
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%; /* O'ngda yashirin */
-                width: 75%;
-                max-width: 300px;
-                height: 100vh;
-                background-color: var(--color-primary);
-                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                padding: 100px 30px;
-                z-index: 2100;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-            }
-
+            .nav-menu { position: fixed; top: 0; right: -100%; width: 75%; max-width: 300px; height: 100vh; background: var(--primary-dark); transition: 0.4s; padding: 100px 30px; z-index: 2100; }
             .nav-menu.active { right: 0; }
-
-            .nav-menu ul {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 30px;
-            }
-
-            .nav-menu ul li a {
-                font-size: 1.2rem;
-                display: block;
-                width: 100%;
-            }
-
-            .auth-links {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                margin-top: 20px;
-            }
+            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; }
         }
 
-        /* HERO SECTION */
-        .hero {
-            background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%);
-            color: white;
-            padding: 5rem 1rem;
-            text-align: center;
+        /* HERO */
+        .hero { background: var(--primary-dark); padding: 80px 0 160px; text-align: center; color: #fff; }
+        .hero-title { font-size: 48px; font-weight: 800; margin: 0 0 15px; }
+        .hero-subtitle { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto; }
+
+        /* MAIN */
+        .main-content { margin-top: -80px; padding-bottom: 80px; }
+
+        /* FAN CARDS (yuqori skill cardlar) */
+        .fans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
         }
-
-        .hero-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
-        .hero-subtitle { color: #cbd5e1; max-width: 600px; margin: auto; }
-
-        /* FORM CONTAINER */
-        .dtm-container {
-            max-width: 800px;
-            background: white;
-            margin: -3rem auto 4rem; /* Hero ustiga chiqib turishi uchun minus ishlatildi */
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,.1);
-            position: relative;
-            z-index: 10;
+        .fan-card-link { text-decoration: none; color: inherit; }
+        .fan-card {
+            background: #fff; border-radius: 20px; padding: 25px 20px;
+            text-align: center; border: 2px solid transparent;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+            transition: var(--transition); cursor: pointer;
         }
+        .fan-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-color: var(--primary-mint); }
+        .fan-card.active { border-color: var(--primary-mint); background: #f0fffe; box-shadow: 0 0 0 4px rgba(28,200,200,0.15); }
+        .fan-icon { font-size: 40px; margin-bottom: 12px; }
+        .fan-name { font-size: 16px; font-weight: 800; color: var(--primary-dark); margin-bottom: 6px; }
+        .fan-count { font-size: 13px; color: var(--text-muted); }
 
-        .dtm-container h2 {
-            margin-top: 0;
-            color: var(--color-primary);
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
+        /* SECTION TITLE */
+        .section-title {
+            font-size: 22px; font-weight: 800; color: var(--primary-dark);
+            margin-bottom: 25px; display: flex; align-items: center; gap: 10px;
         }
+        .section-title::after { content: ''; flex: 1; height: 2px; background: #e2e8f0; }
 
-        /* FORM STYLING */
-        form p {
-            margin-bottom: 1.5rem;
+        /* TEST CARDS */
+        .tests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .test-card {
+            background: #fff; border-radius: 28px; padding: 30px;
+            border: 1.5px solid #e2e8f0; position: relative;
+            transition: var(--transition); display: flex; flex-direction: column;
         }
-
-        form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #475569;
+        .test-card::before {
+            content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 4px;
+            background: linear-gradient(90deg, var(--primary-mint) 50%, var(--primary-dark) 50%);
+            border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;
         }
-
-        form select, form input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
+        .test-card:hover { transform: translateY(-5px); border-color: var(--primary-mint); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .card-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .badge-milliy { background: #e8f4ff; color: #0f2742; padding: 5px 14px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .coin-price { font-weight: 800; color: #f59e0b; font-size: 14px; }
+        .card-title { font-size: 22px; font-weight: 800; margin: 0 0 8px; }
+        .card-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; display: block; }
+        .card-info { margin-bottom: 20px; }
+        .info-detail { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: 600; color: #475569; font-size: 14px; }
+        .btn-mint {
+            margin-top: auto; background: var(--primary-mint); color: #fff;
+            text-align: center; padding: 15px; border-radius: 16px; text-decoration: none;
+            font-weight: 700; font-size: 16px; transition: var(--transition); display: block;
         }
+        .btn-mint:hover { background: var(--primary-dark); color: #fff; }
 
-        form select:focus {
-            border-color: var(--color-teal);
+        /* Empty */
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-muted); font-size: 16px; }
+
+        @media(max-width:768px) {
+            .hero-title { font-size: 32px; }
+            .main-content { margin-top: -50px; }
+            .fans-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            nav ul { display: none; }
         }
-
-        .btn-start {
-            background: var(--color-teal);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1rem;
-            transition: 0.3s;
-        }
-
-        .btn-start:hover {
-            background: var(--color-teal-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-sm { padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; }
     </style>
 </head>
-
 <body>
 
 <header>
     <div class="container">
         <div class="header-container">
             <a href="{% url 'home' %}" class="logo">
-                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
+                <img src="/media/media/logo.jpg" alt="Logo" class="logo-img">
                 <span class="logo-text">UniBase</span>
             </a>
-
-            <button class="mobile-menu-btn" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
+            <button class="mobile-menu-btn"><span></span><span></span><span></span></button>
             <nav class="nav-menu">
                 <ul>
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'univers' %}">Universities</a></li>
-                    <li><a href="{% url 'home' %}#news">News</a></li>
                     <li><a href="https://t.me/unibase_support_bot">Support</a></li>
-
                     {% if user.is_authenticated %}
-                        <li class="auth-links">
-                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">Dashboard</a>
-                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
-                        </li>
+                        <li><a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">Dashboard</a></li>
+                        <li><a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a></li>
                     {% else %}
-                        <li class="auth-links">
-                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a>
-                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm">Register</a>
-                        </li>
+                        <li><a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a></li>
+                        <li><a href="{% url 'sign' %}" class="btn btn-primary btn-sm">Register</a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -250,44 +149,75 @@
 </header>
 
 <section class="hero">
-    <h1 class="hero-title">Milliy Sertifikat</h1>
-    <p class="hero-subtitle">
-        Tayyorgarlik darajangizni tekshirish uchun real imtihon simulyatsiyasidan foydalaning.
-    </p>
+    <div class="container">
+        <h1 class="hero-title">Milliy Sertifikat</h1>
+        <p class="hero-subtitle">Fanlardan birini tanlang va testni boshlang</p>
+    </div>
 </section>
 
-<section class="dtm-container">
-    <h2>Mavjud Testlar</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
+<div class="main-content">
+    <div class="container">
 
-        <div style="margin-top: 2rem;">
-            <button class="btn-start" type="submit">Testni Boshlash</button>
+        <!-- Fan cardlari -->
+        <div class="fans-grid">
+            {% for fan in fans_with_count %}
+<a href="?fan={{ fan.code }}" class="fan-card-link">
+    <div class="fan-card {% if selected_fan == fan.code %}active{% endif %}">
+        <div class="fan-icon">
+            {% if fan.code == 'Matematika' %}🔢
+            {% elif fan.code == 'Ona Tili' %}📝
+            {% elif fan.code == 'Tarix' %}📜
+            {% elif fan.code == 'Kimyo' %}⚗️
+            {% elif fan.code == 'Biologiya' %}🧬
+            {% elif fan.code == 'Fizika' %}⚡
+            {% elif fan.code == 'Ingliz Tili' %}🌍
+            {% else %}📚{% endif %}
         </div>
-    </form>
-</section>
+        <div class="fan-name">{{ fan.name }}</div>
+        <div class="fan-count">{{ fan.count }} ta savol</div>
+    </div>
+</a>
+{% endfor %}
+        </div>
+
+        <!-- Tanlangan fan testlari -->
+        {% if selected_fan %}
+        <div class="section-title">📋 {{ selected_fan }} — Testlar</div>
+        <div class="tests-grid">
+            <div class="test-card">
+                <div class="card-header-top">
+                    <span class="badge-milliy">Milliy Sertifikat</span>
+                    <span class="coin-price">🪙 Bepul</span>
+                </div>
+                <h3 class="card-title">{{ selected_fan }}</h3>
+                <span class="card-subtitle">Milliy Sertifikat tayyorgarlik testi</span>
+                <div class="card-info">
+                    <div class="info-detail">⏱️ Davomiyligi: 90 min</div>
+                    <div class="info-detail">📝 40 ta savol</div>
+                    <div class="info-detail">🏆 Har to'g'ri javob: 2 ball</div>
+                </div>
+                <a href="{% url 'milliy' fan=selected_fan %}" class="btn-mint">Testni Boshlash →</a>
+            </div>
+        </div>
+        {% else %}
+        <div style="text-align:center; padding:40px; color:var(--text-muted);">
+            <div style="font-size:48px; margin-bottom:15px;">☝️</div>
+            <p style="font-size:18px; font-weight:600;">Yuqoridan fan tanlang</p>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
     const menuBtn = document.querySelector(".mobile-menu-btn");
     const navMenu = document.querySelector(".nav-menu");
-
-    menuBtn.addEventListener("click", function (e) {
-        e.stopPropagation(); // Click hodisasi tarqalishini to'xtatadi
-        this.classList.toggle("open");
-        navMenu.classList.toggle("active");
-    });
-
-    // Ekran bo'sh joyi bosilganda menyuni yopish
-    document.addEventListener("click", function (e) {
-        if (!navMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-            menuBtn.classList.remove("open");
-            navMenu.classList.remove("active");
-        }
-    });
-});
+    if (menuBtn) {
+        menuBtn.addEventListener("click", () => {
+            navMenu.classList.toggle("active");
+            menuBtn.classList.toggle("open");
+        });
+    }
 </script>
-
 </body>
 </html>

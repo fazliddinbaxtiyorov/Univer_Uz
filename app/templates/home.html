@@ -253,7 +253,7 @@
                 <h3 class="card-title" data-translate="test_dtm_title">DTM</h3>
                 <p class="card-description" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic test simulations.</p>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'selected_subjects' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    <a href="{% url 'dtm_select' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
                 {% endif %}
