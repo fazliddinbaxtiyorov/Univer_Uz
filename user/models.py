@@ -7,12 +7,31 @@ class Profile(models.Model):
     email = models.EmailField(max_length=254, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     photo = models.ImageField(upload_to='profiles/', blank=True, null=True)
-    # Tanga tizimi
-    coins = models.PositiveIntegerField(default=0)
+    coins = models.PositiveIntegerField(default=1000)
     free_trial_used = models.BooleanField(default=False)
+
+    # ✅ YANGI FIELDLAR:
+    viloyat = models.CharField(max_length=100, blank=True, default='')
+    streak_days = models.IntegerField(default=0)
+    last_test_date = models.DateField(null=True, blank=True)
+    badge = models.CharField(max_length=100, blank=True, default='')
+    consecutive_perfect = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.user.username} - {self.coins} coins"
+
+
+class Friendship(models.Model):
+    from_user = models.ForeignKey(User, related_name='sent_requests', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='received_requests', on_delete=models.CASCADE)
+    accepted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')
+
+    def __str__(self):
+        return f"{self.from_user.username} → {self.to_user.username}"
 
 # ======================== TEST RESULTS & LIMITS ========================
 class UserTestResult(models.Model):

@@ -1,207 +1,73 @@
-V<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="uz">
 {% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - UniBase</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Sozlamalar — UniBase</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --color-primary: #274766;
-            --color-teal: #14b8a6;
-            --color-blue: #2563eb;
-            --bg-light: #f1f5f9;
-        }
+        :root { --primary: #274766; --teal: #14b8a6; --bg: #f4f7fa; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; }
 
-        body {
-            background: var(--bg-light);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            color: #334155;
-            overflow-x: hidden;
-        }
-
-        /* HEADER */
-        header {
-            background: var(--color-primary);
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
+        header { background: var(--primary); padding: 12px 0; position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         .logo { display: flex; align-items: center; text-decoration: none; color: white; gap: 10px; }
-        .logo-img { width: 40px; border-radius: 50%; }
-        .logo-text { font-weight: 800; font-size: 1.2rem; }
+        .logo img { width: 38px; border-radius: 50%; }
+        .logo span { font-weight: 700; font-size: 1.1rem; }
+        .back-btn { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+        .back-btn:hover { color: var(--teal); }
 
-        /* NAV MENU */
-        .nav-menu ul {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            gap: 20px;
-            align-items: center;
-        }
+        .container { max-width: 700px; margin: 2rem auto; padding: 0 20px; }
+        .page-title { font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-bottom: 1.5rem; }
 
-        .nav-menu ul li a {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
+        /* Messages */
+        .msg { padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 0.88rem; font-weight: 600; }
+        .msg.success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .msg.error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 
-        .btn-sm { padding: 8px 15px; border-radius: 8px; font-size: 13px; text-decoration: none; font-weight: 600; }
-        .btn-secondary { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
-        .btn-danger { background: #ef4444; color: white; }
+        .card { background: white; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f6; overflow: hidden; margin-bottom: 1.5rem; }
+        .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; font-weight: 700; color: var(--primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
 
-        /* MOBILE BURGER */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 2101;
-        }
-        .mobile-menu-btn span { width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s; }
+        /* Photo upload */
+        .photo-section { padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem; }
+        .photo-preview { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #e2e8f0; flex-shrink: 0; background: linear-gradient(135deg, #6366f1, #9333ea); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 800; overflow: hidden; }
+        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-info h4 { margin: 0 0 4px; font-size: 0.95rem; font-weight: 700; }
+        .photo-info p { margin: 0 0 10px; font-size: 0.8rem; color: #64748b; }
+        .upload-btn { display: inline-block; padding: 7px 14px; background: var(--primary); color: white; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .upload-btn:hover { background: var(--teal); }
+        #photoInput { display: none; }
 
-        @media (max-width: 991px) {
-            .mobile-menu-btn { display: flex; }
-            .nav-menu {
-                position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
-                background: var(--color-primary); transition: 0.4s; padding: 80px 30px; z-index: 2100;
-            }
-            .nav-menu.active { right: 0; }
-            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 25px; }
-            .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
-            .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
-            .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-        }
+        /* Form */
+        .form-body { padding: 1.5rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full { grid-column: span 2; }
+        .form-group label { font-size: 0.8rem; font-weight: 700; color: #374151; }
+        .form-group input { padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; font-family: 'Inter', sans-serif; outline: none; transition: 0.2s; color: #111; }
+        .form-group input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(20,184,166,0.1); }
+        .form-group input::placeholder { color: #94a3b8; }
 
-        /* SETTINGS BOX */
-        .settings-box {
-            max-width: 700px;
-            margin: 3rem auto;
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
+        .section-divider { grid-column: span 2; border: none; border-top: 1px dashed #e2e8f0; margin: 0.5rem 0; }
+        .section-label { grid-column: span 2; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: -4px; }
 
-        .settings-box h2 {
-            margin-top: 0;
-            color: var(--color-primary);
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 2rem;
-        }
+        .save-btn { width: 100%; padding: 13px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: 0.3s; margin-top: 1rem; }
+        .save-btn:hover { background: var(--teal); transform: translateY(-2px); }
 
-        .avatar-section {
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
-        }
+        /* Danger zone */
+        .danger-note { font-size: 0.8rem; color: #64748b; margin: 0 0 1rem; line-height: 1.5; }
+        .password-toggle { position: relative; }
+        .password-toggle input { padding-right: 40px; }
+        .toggle-eye { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 0.9rem; }
 
-        .avatar-section img {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .form-group { margin-bottom: 1.5rem; }
-
-        label {
-            display: block;
-            font-weight: 700;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            color: #475569;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="file"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-            box-sizing: border-box;
-        }
-
-        input:focus {
-            border-color: var(--color-blue);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        input[type="file"] {
-            font-size: 0.8rem;
-            padding: 10px;
-            background: #f8fafc;
-            cursor: pointer;
-        }
-
-        .btn-save {
-            background: var(--color-blue);
-            color: white;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.3s;
-            margin-top: 1rem;
-        }
-
-        .btn-save:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
-        }
-
-        .alert-success {
-            background: #dcfce7;
-            color: #166534;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #64748b;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
+        @media(max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full { grid-column: span 1; }
+            .section-divider, .section-label { grid-column: span 1; }
+            .photo-section { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -209,108 +75,131 @@ V<!DOCTYPE html>
 
 <header>
     <div class="header-container">
-        <a href="/" class="logo">
-            <img src="/media/media/logo.jpg" alt="Logo" class="logo-img">
-            <span class="logo-text">UniBase</span>
+        <a href="{% url 'home' %}" class="logo">
+            <img src="/media/media/logo.jpg" alt="Logo">
+            <span>UniBase</span>
         </a>
-
-        <button class="mobile-menu-btn">
-            <span></span><span></span><span></span>
-        </button>
-
-        <nav class="nav-menu">
-            <ul>
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'univers' %}">Universities</a></li>
-                <li><a href="https://t.me/unibase_support_bot">Support</a></li>
-                {% if user.is_authenticated %}
-                <li class="auth-links">
-                    <a href="{% url 'profile' %}" class="btn-sm btn-secondary">Dashboard</a>
-                    <a href="{% url 'logout' %}" class="btn-sm btn-danger">Logout</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
+        <a href="{% url 'profile' %}" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Profil</a>
     </div>
 </header>
 
-<div class="settings-box">
-    <h2><i class="fa-solid fa-sliders"></i> Account Settings</h2>
+<div class="container">
+    <div class="page-title">⚙️ Sozlamalar</div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert-success">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+    <!-- Django messages -->
+    {% for message in messages %}
+    <div class="msg {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <div class="avatar-section">
-            {% if profile.photo %}
-                <img src="{{ profile.photo.url }}" alt="Profile Photo">
-            {% else %}
-                <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=2563eb&color=fff&size=128" alt="Default Avatar">
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            <label><i class="fa-solid fa-camera"></i> Change Profile Photo</label>
-            <input type="file" name="photo">
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div class="form-group">
-                <label>First Name</label>
-                <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="Your name">
-            </div>
-            <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="Your surname">
+        <!-- PHOTO -->
+        <div class="card">
+            <div class="card-header"><i class="fa-solid fa-camera"></i> Profil rasmi</div>
+            <div class="photo-section">
+                <div class="photo-preview" id="photoPreview">
+                    {% if profile.photo %}
+                    <img src="{{ profile.photo.url }}" alt="Photo" id="previewImg">
+                    {% else %}
+                    <span id="avatarLetter">{{ user.username|slice:":1"|upper }}</span>
+                    {% endif %}
+                </div>
+                <div class="photo-info">
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p>JPG, PNG yoki GIF. Maksimal 5MB.</p>
+                    <label for="photoInput" class="upload-btn">
+                        <i class="fa-solid fa-upload"></i> Rasm yuklash
+                    </label>
+                    <input type="file" id="photoInput" name="photo" accept="image/*">
+                </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" name="username" value="{{ user.username }}" readonly style="background: #f1f5f9; cursor: not-allowed;">
-            <small style="color: #94a3b8; font-size: 0.75rem;">Username cannot be changed.</small>
+        <!-- PERSONAL INFO -->
+        <div class="card">
+            <div class="card-header"><i class="fa-solid fa-user"></i> Shaxsiy ma'lumotlar</div>
+            <div class="form-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Ism</label>
+                        <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="Ismingiz">
+                    </div>
+                    <div class="form-group">
+                        <label>Familiya</label>
+                        <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="Familiyangiz">
+                    </div>
+                    <div class="form-group full">
+                        <label>Username</label>
+                        <input type="text" name="username" value="{{ user.username }}" placeholder="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" value="{{ profile.email|default:'' }}" placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="text" name="phone_number" value="{{ profile.phone_number|default:'' }}" placeholder="+998 90 123 45 67">
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" name="email" value="{{ profile.email|default:user.email }}" placeholder="example@mail.com">
+        <!-- PASSWORD -->
+        <div class="card">
+            <div class="card-header"><i class="fa-solid fa-lock"></i> Parolni o'zgartirish</div>
+            <div class="form-body">
+                <p class="danger-note">Parolni o'zgartirish uchun eski parolni kiriting. Agar o'zgartirmoqchi bo'lmasangiz — bo'sh qoldiring.</p>
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Eski parol</label>
+                        <div class="password-toggle">
+                            <input type="password" name="old_password" placeholder="Eski parolni kiriting" id="oldPass">
+                            <button type="button" class="toggle-eye" onclick="togglePass('oldPass')"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Yangi parol</label>
+                        <div class="password-toggle">
+                            <input type="password" name="new_password" placeholder="Yangi parol" id="newPass">
+                            <button type="button" class="toggle-eye" onclick="togglePass('newPass')"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Parolni tasdiqlash</label>
+                        <div class="password-toggle">
+                            <input type="password" name="confirm_password" placeholder="Qayta kiriting" id="confirmPass">
+                            <button type="button" class="toggle-eye" onclick="togglePass('confirmPass')"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Phone Number</label>
-            <input type="text" name="phone_number" value="{{ profile.phone_number }}" placeholder="+998 90 ...">
-        </div>
-
-        <button type="submit" class="btn-save">Save Changes</button>
+        <button type="submit" class="save-btn">💾 Saqlash</button>
     </form>
-
-    <a href="{% url 'profile' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const menuBtn = document.querySelector(".mobile-menu-btn");
-        const navMenu = document.querySelector(".nav-menu");
+// Photo preview
+document.getElementById('photoInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = `<img src="${ev.target.result}" alt="Preview" id="previewImg" style="width:100%;height:100%;object-fit:cover;">`;
+    };
+    reader.readAsDataURL(file);
+});
 
-        menuBtn.addEventListener("click", function () {
-            this.classList.toggle("open");
-            navMenu.classList.toggle("active");
-        });
-
-        // Click outside to close
-        document.addEventListener("click", function (e) {
-            if (!navMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                menuBtn.classList.remove("open");
-                navMenu.classList.remove("active");
-            }
-        });
-    });
+// Password toggle
+function togglePass(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
 </script>
-
 </body>
 </html>

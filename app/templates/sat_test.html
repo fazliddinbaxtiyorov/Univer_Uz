@@ -292,14 +292,11 @@
         </a>
     {% endfor %}
 </div>
-
 <script>
-    // --- Timer Logic ---
-    let totalSeconds = {{ duration|default:60 }} * 60;
+    let totalSeconds = parseInt({{ duration|default:60 }}) * 60;
     const timerDisplay = document.getElementById('timer');
 
-    const interval = setInterval(() => {
-        totalSeconds--;
+    function updateTimer() {
         let mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
         let secs = String(totalSeconds % 60).padStart(2, '0');
         timerDisplay.textContent = `${mins}:${secs}`;
@@ -309,7 +306,13 @@
             alert("Time is up! Your answers will be submitted automatically.");
             document.getElementById('testForm').submit();
         }
-    }, 1000);
+        totalSeconds--;
+    }
+
+    updateTimer(); // boshlanishda ko‘rsatish
+    const interval = setInterval(updateTimer, 1000);
+</script>
+<script>
 
     // --- Navigation Dots Update ---
     function updateNav(num) {

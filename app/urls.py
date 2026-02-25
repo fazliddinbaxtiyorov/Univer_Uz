@@ -1,9 +1,17 @@
 from django.urls import path
-from .views import fanlar_view, ielts_listening_view, ielts_reading_view, test_boshlash, fan_tanlash, sat_test_view, ielts, writing, univerlar, dtm_test_view, manage_tests, support, contact_view, my_profile_view, test_list_view, ielts_main_dashboard, test_list_sat
+from .views import (
+    fanlar_view, ielts_listening_view, ielts_reading_view, test_boshlash,
+    fan_tanlash, sat_test_view, ielts, writing, univerlar, dtm_test_view,
+    manage_tests, support, contact_view, my_profile_view, test_list_view,
+    ielts_main_dashboard, test_list_sat, writing_tests, writing_detail,
+    writing_result, student_analytics, test_list_listening, buy_coins,
+    leaderboard, dtm_select_view, explain_error_view,
+    # ✅ Do'stlik viewlari
+    friend_profile, add_friend, accept_friend, reject_friend, my_friends,
+)
 from django.conf.urls.static import static
-from .views import writing_tests, writing_detail, writing_result, student_analytics, test_list_listening, buy_coins, leaderboard, dtm_select_view, explain_error_view
 from django.conf import settings
-
+from .views import news_list, news_detail
 urlpatterns = [
     path('', fanlar_view, name='home'),
     path('reading/', ielts_reading_view, name='ielts_reading'),
@@ -19,13 +27,23 @@ urlpatterns = [
     path('leaderboard/', leaderboard, name='leaderboard'),
     path('dtm_test/', dtm_test_view, name='dtm_test'),
     path('dtm_select/', dtm_select_view, name='dtm_select'),
-    path("tests/", manage_tests, name="manage_tests"),
-    path("support/", contact_view, name="support"),
-    path("my_statistics/", my_profile_view, name="my_statistics"),
-  path('writing/', writing_tests, name='writing_tests'),
-  path('writing/<int:pk>/', writing_detail, name='writing_detail'),
-  path('result/<int:pk>/', writing_result, name='writing_result'),
-  path('analytics/', student_analytics, name='analytics'),
+    path('tests/', manage_tests, name='manage_tests'),
+    path('support/', contact_view, name='support'),
+    path('my_statistics/', my_profile_view, name='profile'),
+    path('writing/', writing_tests, name='writing_tests'),
+    path('writing/<int:pk>/', writing_detail, name='writing_detail'),
+    path('result/<int:pk>/', writing_result, name='writing_result'),
+    path('analytics/', student_analytics, name='analytics'),
     path('buy_coins/', buy_coins, name='buy_coins'),
     path('explain-error/<int:submission_id>/', explain_error_view, name='explain_error'),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('news/', news_list, name='news_list'),
+    path('news/<slug:slug>/', news_detail, name='news_detail'),
+
+    # ✅ Do'stlik URL lari
+    path('friends/', my_friends, name='my_friends'),
+    path('user/<str:username>/', friend_profile, name='friend_profile'),
+    path('user/<str:username>/add/', add_friend, name='add_friend'),
+    path('user/<str:username>/accept/', accept_friend, name='accept_friend'),
+    path('user/<str:username>/reject/', reject_friend, name='reject_friend'),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

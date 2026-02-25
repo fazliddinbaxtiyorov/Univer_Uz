@@ -8,226 +8,421 @@
     <style>
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f8; color: #333; }
 
+        /* ===== TOPBAR ===== */
         .topbar {
             position: sticky; top: 0; z-index: 1000;
             background: #0f2742; color: #fff;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 12px 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); gap: 16px;
         }
-        .logo { font-size: 1.5rem; font-weight: 800; color: #fff; text-decoration: none; }
-        .progress-container { width: 300px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: #4cc9f0; transition: 0.3s; }
-        .timer-box { font-size: 1.2rem; font-weight: 700; background: #1a3a5a; padding: 6px 15px; border-radius: 8px; border: 1px solid #4cc9f0; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: #fff; text-decoration: none; }
+        .progress-wrap { flex: 1; max-width: 280px; }
+        .progress-label { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+        .progress-bar-bg { height: 7px; background: rgba(255,255,255,0.15); border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: #4cc9f0; border-radius: 10px; transition: width 0.3s; width: 0%; }
+        .timer-box {
+            font-size: 1.15rem; font-weight: 700;
+            background: #1a3a5a; padding: 7px 16px;
+            border-radius: 9px; border: 1px solid #4cc9f0;
+            min-width: 90px; text-align: center;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .topbar-submit {
+            background: #4cc9f0; border: none; padding: 9px 18px;
+            border-radius: 9px; font-weight: 700; cursor: pointer;
+            font-size: 13px; color: #0f2742; transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .topbar-submit:hover { background: #38b8e0; transform: translateY(-1px); }
 
+        /* ===== LAYOUT ===== */
         .layout {
-            display: grid; grid-template-columns: 1fr 320px;
-            gap: 25px; max-width: 1200px; margin: 30px auto; padding: 0 20px;
+            display: grid; grid-template-columns: 1fr 290px;
+            gap: 22px; max-width: 1200px; margin: 26px auto; padding: 0 20px;
+            align-items: start;
         }
 
+        /* ===== FAN SARLAVHASI ===== */
+        .fan-header {
+            display: flex; align-items: center; gap: 14px;
+            background: linear-gradient(135deg, #0f2742 0%, #1c3f6e 100%);
+            border-radius: 14px; padding: 15px 22px;
+            margin-bottom: 12px; margin-top: 28px;
+            box-shadow: 0 4px 18px rgba(15,39,66,0.2);
+            position: relative; overflow: hidden;
+        }
+        .fan-header:first-child { margin-top: 0; }
+        .fan-header::after {
+            content: ''; position: absolute; right: -15px; top: -15px;
+            width: 80px; height: 80px; border-radius: 50%;
+            background: rgba(76,201,240,0.08);
+        }
+        .fan-icon {
+            font-size: 1.8rem; width: 48px; height: 48px; min-width: 48px;
+            background: rgba(76,201,240,0.12); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(76,201,240,0.25); flex-shrink: 0;
+        }
+        .fan-info { flex: 1; }
+        .fan-title { font-size: 1.05rem; font-weight: 800; color: #fff; margin-bottom: 2px; }
+        .fan-meta { display: flex; gap: 14px; }
+        .fan-badge {
+            font-size: 11px; font-weight: 600; padding: 2px 10px;
+            border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;
+        }
+        .fan-badge-count { background: rgba(76,201,240,0.15); color: #4cc9f0; border: 1px solid rgba(76,201,240,0.3); }
+        .fan-badge-ball { background: rgba(56,176,0,0.15); color: #4ade80; border: 1px solid rgba(56,176,0,0.3); }
+        .fan-step {
+            font-size: 11px; color: rgba(255,255,255,0.4);
+            margin-left: auto; font-weight: 500; align-self: center;
+        }
+
+        /* ===== SAVOL KARTASI ===== */
         .question-card {
-            background: #fff; border-radius: 16px; padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e0e6ed;
-            margin-bottom: 20px;
+            background: #fff; border-radius: 13px; padding: 20px 22px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04); border: 1px solid #e8ecf1;
+            margin-bottom: 12px; transition: box-shadow 0.2s;
         }
-        .q-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .q-num { width: 40px; height: 40px; background: #0f2742; color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; flex-shrink: 0; }
-        .q-text { font-size: 1.1rem; font-weight: 600; color: #1a202c; }
+        .question-card:hover { box-shadow: 0 4px 18px rgba(15,39,66,0.08); }
+        .q-header { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 13px; }
+        .q-num {
+            width: 34px; height: 34px; min-width: 34px;
+            background: #0f2742; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 9px; font-weight: 700; font-size: 13px;
+        }
+        .q-text { font-size: 0.97rem; font-weight: 600; color: #1a202c; line-height: 1.55; padding-top: 7px; }
+        .savol-rasm { max-width: 100%; max-height: 240px; border-radius: 9px; margin-bottom: 13px; border: 1px solid #e0e6ed; object-fit: contain; }
 
-        /* Savol rasmi */
-        .savol-rasm { max-width: 100%; max-height: 300px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e0e6ed; object-fit: contain; display: block; }
-
-        /* Variantlar */
+        /* ===== VARIANTLAR ===== */
         .options-list { list-style: none; padding: 0; margin: 0; }
         .option-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; border: 1px solid #e2e8f0;
-            border-radius: 12px; margin-bottom: 10px;
-            cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 0;
+            border: 1.5px solid #e2e8f0; border-radius: 10px;
+            margin-bottom: 8px; cursor: pointer; transition: all 0.15s; overflow: hidden;
         }
-        .option-item:hover { background: #f7fafc; border-color: #0f2742; }
-        .option-item input[type="radio"] { width: 18px; height: 18px; accent-color: #0f2742; flex-shrink: 0; }
-        .option-item label { cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
-
-        /* Variant harfi (A, B, C, D) */
+        .option-item:hover { border-color: #0f2742; background: #f7fafc; }
+        .option-item:has(input:checked) { background: #eff7ff; border-color: #0f2742; }
+        .option-item input[type="radio"] { display: none; }
+        .option-item label {
+            cursor: pointer; display: flex; align-items: center;
+            gap: 11px; width: 100%; padding: 10px 14px; font-size: 0.93rem;
+        }
         .option-letter {
-            width: 28px; height: 28px; background: #eef2f8;
-            border-radius: 6px; display: flex; align-items: center;
-            justify-content: center; font-weight: 700; font-size: 13px;
-            color: #0f2742; flex-shrink: 0;
+            width: 28px; height: 28px; min-width: 28px;
+            background: #eef2f8; border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 12px; color: #0f2742; transition: all 0.15s;
         }
+        .option-item:has(input:checked) .option-letter { background: #0f2742; color: #fff; }
+        .variant-rasm { max-width: 150px; max-height: 100px; border-radius: 7px; border: 1px solid #e0e6ed; object-fit: contain; }
 
-        /* Variant rasmi */
-        .variant-rasm { max-width: 180px; max-height: 130px; border-radius: 8px; border: 1px solid #e0e6ed; object-fit: contain; }
+        /* ===== NAVIGATOR ===== */
+        .navigator {
+            position: sticky; top: 76px; background: #fff;
+            border-radius: 14px; padding: 18px 16px; border: 1px solid #e3e8f1;
+            max-height: calc(100vh - 100px); overflow-y: auto;
+        }
+        .nav-title { font-size: 14px; font-weight: 800; color: #0f2742; margin-bottom: 2px; }
+        .nav-subtitle { font-size: 11px; color: #94a3b8; margin-bottom: 14px; }
 
-        .navigator { position: sticky; top: 90px; background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #e3e8f1; height: fit-content; }
-        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 15px; }
+        .nav-fan-block { margin-bottom: 14px; }
+        .nav-fan-label {
+            font-size: 10px; font-weight: 700; color: #0f2742;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            margin-bottom: 7px; display: flex; align-items: center; gap: 5px;
+        }
+        .nav-fan-label span { font-size: 13px; }
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
         .nav-item {
-            width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
-            border: 1px solid #d1d5db; border-radius: 10px; font-weight: 600;
-            cursor: pointer; text-decoration: none; color: #4a5568; transition: 0.2s; font-size: 13px;
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid #d1d5db; border-radius: 8px; font-weight: 600;
+            cursor: pointer; text-decoration: none; color: #4a5568;
+            transition: all 0.15s; font-size: 11px;
         }
-        .nav-item.answered { background: #e8fff1; border-color: #38b000; color: #38b000; }
-        .nav-item:hover { background: #f0f4f8; }
+        .nav-item.answered { background: #e8fff1; border-color: #38b000; color: #1a7a00; }
+        .nav-item:hover { background: #eef2f8; border-color: #0f2742; }
+
+        .nav-divider { height: 1px; background: #f1f5f9; margin: 10px 0; }
+
+        .nav-legend { margin-top: 10px; font-size: 11px; color: #888; }
+        .nav-legend-row { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+        .legend-box { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+
+        .nav-stats {
+            background: #f8fafc; border-radius: 9px; padding: 10px 12px;
+            margin-top: 12px; font-size: 12px; color: #64748b;
+        }
+        .nav-stats-row { display: flex; justify-content: space-between; margin-top: 4px; }
+        .nav-stats-val { font-weight: 700; color: #0f2742; }
 
         .submit-btn {
-            width: 100%; padding: 13px; margin-top: 20px; border-radius: 10px;
+            width: 100%; padding: 12px; margin-top: 14px; border-radius: 10px;
             border: none; background: #0f2742; color: #fff; font-weight: 700;
-            font-size: 1rem; cursor: pointer; transition: 0.2s;
+            font-size: 14px; cursor: pointer; transition: all 0.2s;
         }
-        .submit-btn:hover { background: #1a3a5a; }
+        .submit-btn:hover { background: #1a3a5a; transform: translateY(-1px); }
 
-        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .navigator { position: relative; top: 0; } }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .navigator { position: relative; top: 0; max-height: none; }
+            .topbar { padding: 10px 16px; }
+            .progress-wrap { display: none; }
+            .topbar-submit { padding: 7px 12px; font-size: 12px; }
+        }
     </style>
 </head>
 <body>
 
+<!-- TOPBAR -->
 <div class="topbar">
     <a href="/" class="logo">UniBase</a>
-    <div class="progress-container">
-        <div class="progress-bar" id="p-bar" style="width: 0%;"></div>
+    <div class="progress-wrap">
+        <div class="progress-label" id="progress-label">0 / {{ total_questions }} savol</div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar" id="p-bar"></div>
+        </div>
     </div>
-    <div class="timer-box" id="timer-display">60:00</div>
-    <button type="button" onclick="document.getElementById('main-form').submit()"
-        style="background:#4cc9f0; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer;">
-        Submit
-    </button>
+    <div class="timer-box" id="timer-display">180:00</div>
+    <button type="button" class="topbar-submit" onclick="submitConfirm()">✅ Yakunlash</button>
 </div>
 
+<!-- LAYOUT -->
 <div class="layout">
     <main>
         <form method="post" id="main-form">
             {% csrf_token %}
 
-            {% for q in all_questions %}
-            <div class="question-card" id="q-card-{{ forloop.counter }}">
+            {% for fanlar_item in fanlar_data %}
+            <!-- ===== FAN SARLAVHASI ===== -->
+            <div class="fan-header" id="fan-section-{{ forloop.counter }}">
+                <div class="fan-icon">
+                    {% with fan=fanlar_item.fan %}
+                        {% if "Matem" in fan or "matem" in fan %}📐
+                        {% elif "Fizika" in fan or "fizika" in fan %}⚡
+                        {% elif "Kimyo" in fan or "kimyo" in fan %}🧪
+                        {% elif "Biologiya" in fan or "bio" in fan %}🧬
+                        {% elif "Tarix" in fan or "tarix" in fan %}📜
+                        {% elif "Ingliz" in fan or "ingliz" in fan %}🌐
+                        {% elif "Ona til" in fan or "ona" in fan %}📖
+                        {% elif "Geografiya" in fan or "geo" in fan %}🌍
+                        {% elif "Adabiyot" in fan %}✍️
+                        {% elif "Informatika" in fan or "info" in fan %}💻
+                        {% elif "Huquq" in fan or "huquq" in fan %}⚖️
+                        {% elif "Iqtisod" in fan or "iqtisod" in fan %}📊
+                        {% else %}📚{% endif %}
+                    {% endwith %}
+                </div>
+                <div class="fan-info">
+                    <div class="fan-title">{{ fanlar_item.fan }} testlari</div>
+                    <div class="fan-meta">
+                        <span class="fan-badge fan-badge-count">📝 {{ fanlar_item.questions|length }} ta savol</span>
+                        <span class="fan-badge fan-badge-ball">⭐ {{ fanlar_item.ball }} ball/savol</span>
+                    </div>
+                </div>
+                <div class="fan-step">{{ fanlar_item.step }}-fan</div>
+            </div>
 
-                <!-- Savol nomeri + matni -->
+            <!-- ===== SAVOLLAR ===== -->
+            {% for q in fanlar_item.questions %}
+            <div class="question-card" id="q-card-{{ q.id }}">
                 <div class="q-header">
                     <div class="q-num">{{ forloop.counter }}</div>
                     <div class="q-text">{{ q.savol }}</div>
                 </div>
 
-                <!-- Savol rasmi (agar bo'lsa) -->
                 {% if q.savol_rasm %}
                     <img src="{{ q.savol_rasm.url }}" alt="Savol rasmi" class="savol-rasm">
                 {% endif %}
 
-                <!-- Variantlar -->
                 <ul class="options-list">
-                    <!-- A varianti -->
                     <li class="option-item">
                         <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_a" value="A">
                         <label for="q{{ q.id }}_a">
                             <span class="option-letter">A</span>
-                            {% if q.image_a %}
-                                <img src="{{ q.image_a.url }}" alt="A" class="variant-rasm">
-                            {% else %}
-                                {{ q.variant_a }}
-                            {% endif %}
+                            {% if q.image_a %}<img src="{{ q.image_a.url }}" alt="A" class="variant-rasm">
+                            {% else %}{{ q.variant_a }}{% endif %}
                         </label>
                     </li>
-
-                    <!-- B varianti -->
                     <li class="option-item">
                         <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_b" value="B">
                         <label for="q{{ q.id }}_b">
                             <span class="option-letter">B</span>
-                            {% if q.image_b %}
-                                <img src="{{ q.image_b.url }}" alt="B" class="variant-rasm">
-                            {% else %}
-                                {{ q.variant_b }}
-                            {% endif %}
+                            {% if q.image_b %}<img src="{{ q.image_b.url }}" alt="B" class="variant-rasm">
+                            {% else %}{{ q.variant_b }}{% endif %}
                         </label>
                     </li>
-
-                    <!-- C varianti -->
                     <li class="option-item">
                         <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_c" value="C">
                         <label for="q{{ q.id }}_c">
                             <span class="option-letter">C</span>
-                            {% if q.image_c %}
-                                <img src="{{ q.image_c.url }}" alt="C" class="variant-rasm">
-                            {% else %}
-                                {{ q.variant_c }}
-                            {% endif %}
+                            {% if q.image_c %}<img src="{{ q.image_c.url }}" alt="C" class="variant-rasm">
+                            {% else %}{{ q.variant_c }}{% endif %}
                         </label>
                     </li>
-
-                    <!-- D varianti -->
                     <li class="option-item">
                         <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_d" value="D">
                         <label for="q{{ q.id }}_d">
                             <span class="option-letter">D</span>
-                            {% if q.image_d %}
-                                <img src="{{ q.image_d.url }}" alt="D" class="variant-rasm">
-                            {% else %}
-                                {{ q.variant_d }}
-                            {% endif %}
+                            {% if q.image_d %}<img src="{{ q.image_d.url }}" alt="D" class="variant-rasm">
+                            {% else %}{{ q.variant_d }}{% endif %}
                         </label>
                     </li>
                 </ul>
             </div>
+            {% endfor %}
             {% endfor %}
 
             <button type="submit" class="submit-btn">✅ Testni Yakunlash</button>
         </form>
     </main>
 
+    <!-- NAVIGATOR -->
     <aside class="navigator">
-        <h3 style="margin:0; color:#0f2742;">Savollar Paneli</h3>
-        <div class="nav-grid">
-            {% for q in all_questions %}
-                <a href="#q-card-{{ forloop.counter }}" class="nav-item" id="nav-{{ q.id }}">
-                    {{ forloop.counter }}
-                </a>
-            {% endfor %}
-        </div>
+        <div class="nav-title">Savollar Paneli</div>
+        <div class="nav-subtitle">Savolga o'tish uchun bosing</div>
 
-        <div style="margin-top: 15px; font-size: 12px; color: #666;">
-            <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
-                <span style="width:12px; height:12px; background:#e8fff1; border:1px solid #38b000; border-radius:3px; display:inline-block;"></span>
-                Javob berilgan
+        {% for fanlar_item in fanlar_data %}
+        <div class="nav-fan-block">
+            <div class="nav-fan-label">
+                <span>
+                    {% with fan=fanlar_item.fan %}
+                        {% if "Matem" in fan %}📐{% elif "Fizika" in fan %}⚡{% elif "Kimyo" in fan %}🧪{% elif "Biologiya" in fan %}🧬{% elif "Tarix" in fan %}📜{% elif "Ingliz" in fan %}🌐{% elif "Ona" in fan %}📖{% elif "Geo" in fan %}🌍{% else %}📚{% endif %}
+                    {% endwith %}
+                </span>
+                {{ fanlar_item.fan }}
+                <span style="color:#4cc9f0; margin-left:auto; font-size:10px;">{{ fanlar_item.ball }}б</span>
+            </div>
+            <div class="nav-grid">
+                {% for q in fanlar_item.questions %}
+                    <a href="#q-card-{{ q.id }}" class="nav-item" id="nav-{{ q.id }}">
+                        {{ forloop.counter }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% if not forloop.last %}<div class="nav-divider"></div>{% endif %}
+        {% endfor %}
+
+        <div class="nav-legend">
+            <div class="nav-legend-row">
+                <span class="legend-box" style="background:#e8fff1; border:1px solid #38b000;"></span> Javob berilgan
+            </div>
+            <div class="nav-legend-row">
+                <span class="legend-box" style="background:#fff; border:1px solid #d1d5db;"></span> Javob berilmagan
             </div>
         </div>
 
-        <button class="submit-btn" onclick="document.getElementById('main-form').submit()">Yakunlash →</button>
+        <div class="nav-stats">
+            <div class="nav-stats-row">
+                <span>Jami savollar:</span>
+                <span class="nav-stats-val">{{ total_questions }}</span>
+            </div>
+            <div class="nav-stats-row">
+                <span>Javob berildi:</span>
+                <span class="nav-stats-val" id="answered-count">0</span>
+            </div>
+        </div>
+
+        <button class="submit-btn" onclick="submitConfirm()">Yakunlash →</button>
     </aside>
 </div>
 
 <script>
-    // Timer
-    let seconds = {{ timer_seconds }};
-    const timerEl = document.getElementById("timer-display");
+    // ===== SUBMIT CONFIRM =====
+    function submitConfirm() {
+        const answered = new Set(
+            [...allRadios].filter(r => r.checked).map(r => r.name)
+        ).size;
+        const unanswered = totalQuestions - answered;
 
+        if (unanswered > 0) {
+            const ok = confirm(
+                `⚠️ Hali ${unanswered} ta savol javobsiz!\n\nBaribir yakunlashni xohlaysizmi?`
+            );
+            if (!ok) return;
+        }
+        document.getElementById('main-form').submit();
+    }
+</script>
+<script>
+    // 180 daqiqa soniyalarda
+    const TOTAL_TIME = 180 * 60;
+    const timerEl = document.getElementById("timer-display");
+    const mainForm = document.getElementById('main-form');
+
+    // 1. Vaqtni aniqlash (Xotiradan olish yoki yangi boshlash)
+    let timeLeft;
+    const savedTime = localStorage.getItem('test_timer_seconds');
+    const startTime = localStorage.getItem('test_start_timestamp');
+
+    if (savedTime && startTime) {
+        // Agar avval saqlangan bo'lsa, o'tgan vaqtni hisoblab chiqamiz
+        const currentTime = Math.floor(Date.now() / 1000);
+        const passedTime = currentTime - parseInt(startTime);
+        timeLeft = parseInt(savedTime) - passedTime;
+
+        if (timeLeft <= 0) timeLeft = 0;
+    } else {
+        // Agar birinchi marta kirayotgan bo'lsa
+        timeLeft = TOTAL_TIME;
+        localStorage.setItem('test_timer_seconds', timeLeft);
+        localStorage.setItem('test_start_timestamp', Math.floor(Date.now() / 1000));
+    }
+
+    // 2. Taymer funksiyasi
     const timerInterval = setInterval(() => {
-        seconds--;
-        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-        const s = String(seconds % 60).padStart(2, '0');
-        timerEl.textContent = `${m}:${s}`;
-        if (seconds <= 0) {
+        if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            document.getElementById('main-form').submit();
+            localStorage.removeItem('test_timer_seconds');
+            localStorage.removeItem('test_start_timestamp');
+            mainForm.submit();
+            return;
+        }
+
+        timeLeft--;
+
+        // Har 5 soniyada xotirani yangilab turish (zaxira uchun)
+        if (timeLeft % 5 === 0) {
+            localStorage.setItem('test_timer_seconds', timeLeft);
+            localStorage.setItem('test_start_timestamp', Math.floor(Date.now() / 1000));
+        }
+
+        // Vaqtni formatlash (MM:SS)
+        const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const s = String(timeLeft % 60).padStart(2, '0');
+        timerEl.textContent = `${m}:${s}`;
+
+        // 5 daqiqa qolganda ogohlantirish (vizual)
+        if (timeLeft < 300) {
+            timerEl.style.color = "#ff4d4d";
+            timerEl.style.borderColor = "#ff4d4d";
         }
     }, 1000);
 
-    // Progress bar + Navigator
+    // 3. Test yakunlanganda xotirani tozalash
+    mainForm.addEventListener('submit', () => {
+        localStorage.removeItem('test_timer_seconds');
+        localStorage.removeItem('test_start_timestamp');
+    });
+
+    // --- Progress Bar va Navigator kodi ---
     const allRadios = document.querySelectorAll('input[type="radio"]');
     const pBar = document.getElementById('p-bar');
-    const totalQuestions = {{ all_questions|length }};
+    const totalQuestions = {{ total_questions }}; // Django o'zgaruvchisi
 
     allRadios.forEach(radio => {
         radio.addEventListener('change', () => {
-            // Navigator itemni yashil qil
             const qId = radio.name.replace('q_', '');
             const navItem = document.getElementById(`nav-${qId}`);
             if (navItem) navItem.classList.add('answered');
 
-            // Progress bar yangilash
             const answered = new Set([...allRadios].filter(r => r.checked).map(r => r.name)).size;
             pBar.style.width = (answered / totalQuestions * 100) + '%';
+            document.getElementById('answered-count').textContent = answered;
         });
     });
 </script>
-
 </body>
 </html>

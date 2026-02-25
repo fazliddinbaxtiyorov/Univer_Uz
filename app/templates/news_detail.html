@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ news.title }} - UniBase</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { max-width: 100%; overflow-x: hidden; font-family: 'Segoe UI', sans-serif; font-size: 14px; color: #1e293b; background: #f8fafc; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* BREADCRUMB */
+        .breadcrumb-bar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 14px 0;
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #94a3b8;
+            flex-wrap: wrap;
+        }
+        .breadcrumb a { color: #64748b; text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: #1e3a5f; }
+        .breadcrumb-sep { color: #cbd5e1; }
+        .breadcrumb-current { color: #1e3a5f; font-weight: 600; }
+
+        /* ARTICLE LAYOUT */
+        .article-page { padding: 20px 0 40px; background: #f8fafc; }
+
+        .article-layout {
+            display: grid;
+            grid-template-columns: 1fr 240px;
+            gap: 16px;
+            align-items: start;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        @media (max-width: 860px) { .article-layout { grid-template-columns: 1fr; max-width: 600px; } }
+
+        /* MAIN ARTICLE */
+        .article-main {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(30,58,95,0.07);
+        }
+
+        /* Cover: kichik, ixcham */
+        .article-cover {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #26d0ce 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+        .article-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+        .article-body { padding: 16px 20px 22px; }
+        @media (max-width: 600px) { .article-body { padding: 14px 14px 18px; } }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .article-category {
+            background: #eff6ff;
+            color: #1e3a5f;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+        .article-date { color: #94a3b8; font-size: 12px; }
+        .article-new-badge {
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .article-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1.3;
+            margin: 0 0 8px;
+        }
+        @media (max-width: 600px) { .article-title { font-size: 1rem; } }
+
+        .article-excerpt {
+            font-size: 0.875rem;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-style: italic;
+        }
+
+        .article-content {
+            font-size: 0.9rem;
+            color: #374151;
+            line-height: 1.75;
+        }
+        .article-content p { margin-bottom: 10px; }
+        .article-content h2, .article-content h3 {
+            color: #1e3a5f;
+            margin: 16px 0 6px;
+        }
+        .article-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .article-content a { color: #26d0ce; }
+        .article-content blockquote {
+            border-left: 3px solid #26d0ce;
+            padding: 8px 14px;
+            background: #f0fdfd;
+            border-radius: 0 8px 8px 0;
+            margin: 12px 0;
+            color: #1e3a5f;
+            font-style: italic;
+            font-size: 0.875rem;
+        }
+
+        /* SHARE */
+        .article-share {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .share-label { font-size: 12px; font-weight: 700; color: #64748b; }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .share-tg { background: #0088cc; color: white; }
+        .share-tg:hover { background: #0077b5; color: white; transform: translateY(-1px); }
+        .share-copy { background: #f1f5f9; color: #1e3a5f; }
+        .share-copy:hover { background: #e2e8f0; transform: translateY(-1px); }
+
+        /* SIDEBAR */
+        .article-sidebar { display: flex; flex-direction: column; gap: 12px; }
+
+        .sidebar-card {
+            background: white;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(30,58,95,0.06);
+        }
+        .sidebar-card-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #1e3a5f;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Related news */
+        .related-item {
+            display: flex;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8fafc;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
+        .related-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .related-item:hover { transform: translateX(3px); }
+        .related-item:first-child { padding-top: 0; }
+
+        .related-img {
+            width: 46px;
+            height: 40px;
+            min-width: 46px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #1e3a5f, #26d0ce);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            overflow: hidden;
+        }
+        .related-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
+        .related-body { flex: 1; }
+        .related-title {
+            font-size: 12px; font-weight: 700; color: #1e293b; line-height: 1.4;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; margin-bottom: 4px;
+        }
+        .related-date { font-size: 10px; color: #94a3b8; }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            color: #1e3a5f; font-weight: 700; font-size: 13px;
+            text-decoration: none; padding: 9px 16px;
+            border: 1px solid #e2e8f0; border-radius: 9px;
+            background: white; transition: all 0.2s ease;
+            width: 100%; justify-content: center;
+        }
+        .back-btn:hover { background: #1e3a5f; border-color: #1e3a5f; color: white; }
+
+        /* Breadcrumb */
+        .breadcrumb-bar { background: white; border-bottom: 1px solid #e2e8f0; padding: 10px 0; }
+        .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8; flex-wrap: wrap; }
+        .breadcrumb a { color: #64748b; text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: #1e3a5f; }
+        .breadcrumb-sep { color: #cbd5e1; }
+        .breadcrumb-current { color: #1e3a5f; font-weight: 600; }
+
+        /* Header & footer */
+        header { background:#1e3a5f; padding:12px 0; position:sticky; top:0; z-index:1000; box-shadow:0 2px 10px rgba(0,0,0,0.15); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 18px; }
+        .header-container { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+        .logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+        .logo-img { width:32px; height:32px; border-radius:50%; object-fit:cover; }
+        .logo-text { font-size:1.1rem; font-weight:800; color:white; }
+        nav ul { display:flex; align-items:center; gap:2px; list-style:none; }
+        nav a { color:rgba(255,255,255,0.85); font-size:13px; font-weight:500; padding:6px 10px; border-radius:7px; transition:all 0.2s; text-decoration:none; }
+        nav a:hover { background:rgba(255,255,255,0.12); color:white; }
+        .auth-links { display:flex; gap:6px; align-items:center; }
+        .btn { display:inline-flex; align-items:center; padding:6px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; text-decoration:none; }
+        .btn-secondary { background:transparent; color:white; border:1px solid rgba(255,255,255,0.5); }
+        .btn-secondary:hover { background:rgba(255,255,255,0.1); }
+        .btn-danger { background:#ef4444; color:white; }
+        .btn-primary { background:#26d0ce; color:white; }
+        .btn-sm { padding:5px 12px; font-size:12px; }
+        .language-selector { background:transparent; border:1px solid rgba(255,255,255,0.4); color:white; padding:5px 8px; border-radius:7px; font-size:12px; cursor:pointer; outline:none; }
+        .back-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            color: #1e3a5f; font-weight: 600; font-size: 13px;
+            text-decoration: none; padding: 9px 16px;
+            border: 1.5px solid #e2e8f0; border-radius: 9px;
+            background: white; transition: all 0.2s;
+            width: 100%;
+        }
+        .back-btn:hover { background: #1e3a5f; border-color: #1e3a5f; color: white; }
+
+        footer { background:#0f172a; color:rgba(255,255,255,0.5); padding:22px 0; }
+        .footer-content { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+        .footer-links { display:flex; gap:18px; list-style:none; flex-wrap:wrap; }
+        .footer-links a { color:rgba(255,255,255,0.5); font-size:13px; transition:color 0.2s; text-decoration:none; }
+        .footer-links a:hover { color:white; }
+
+        @media (max-width: 768px) {
+            .article-cover { height: 130px; }
+            .article-layout { max-width: 100%; }
+            nav ul { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'images/logo.jpg' %}" alt="UniBase" class="logo-img"
+                     onerror="this.style.display='none'">
+                <span class="logo-text">UniBase</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}#tests">Tests</a></li>
+                    <li><a href="{% url 'univers' %}">Universities</a></li>
+                    <li><a href="{% url 'news_list' %}" style="color:#26d0ce">News</a></li>
+                    <li><a href="{% url 'home' %}#features">Features</a></li>
+                    <li><a href="https://t.me/unibase_support_bot">Support</a></li>
+                    <li>
+                        <select id="language-selector" class="language-selector">
+                            <option value="en">EN</option>
+                            <option value="ru">RU</option>
+                            <option value="uz">UZ</option>
+                        </select>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="auth-links">
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">Dashboard</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="auth-links">
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb-bar">
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="{% url 'home' %}">🏠 Bosh sahifa</a>
+            <span class="breadcrumb-sep">›</span>
+            <a href="{% url 'news_list' %}">Yangiliklar</a>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-current">{{ news.title|truncatewords:6 }}</span>
+        </nav>
+    </div>
+</div>
+
+<!-- Article -->
+<section class="article-page">
+    <div class="container">
+        <div class="article-layout">
+
+            <!-- Main Content -->
+            <article class="article-main">
+                <!-- Cover image -->
+                <div class="article-cover">
+                    {% if news.image %}
+                        <img src="{{ news.image.url }}" alt="{{ news.title }}">
+                    {% else %}
+                        <span>
+                            {% if news.category == "IELTS" %}📘
+                            {% elif news.category == "SAT" %}📗
+                            {% elif news.category == "DTM" %}📕
+                            {% elif news.category == "University" %}🏛️
+                            {% else %}📰{% endif %}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="article-body">
+                    <!-- Meta -->
+                    <div class="article-meta">
+                        {% if news.category %}
+                            <span class="article-category">{{ news.category }}</span>
+                        {% endif %}
+                        {% if news.is_new %}
+                            <span class="article-new-badge">🔥 Yangi</span>
+                        {% endif %}
+                        <span class="article-date">📅 {{ news.created_at|date:"d M, Y — H:i" }}</span>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="article-title">{{ news.title }}</h1>
+
+                    <!-- Excerpt -->
+                    {% if news.excerpt %}
+                        <p class="article-excerpt">{{ news.excerpt }}</p>
+                    {% endif %}
+
+                    <!-- Content -->
+                    <div class="article-content">
+                        {{ news.content|linebreaks }}
+                    </div>
+
+                    <!-- Share -->
+                    <div class="article-share">
+                        <span class="share-label">Ulashish:</span>
+                        <a href="https://t.me/share/url?url={{ request.build_absolute_uri }}&text={{ news.title }}"
+                           target="_blank" class="share-btn share-tg">
+                            ✈️ Telegram
+                        </a>
+                        <button class="share-btn share-copy" onclick="navigator.clipboard.writeText(window.location.href); this.textContent='✅ Nusxalandi!'">
+                            🔗 Havolani nusxalash
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Sidebar -->
+            <aside class="article-sidebar">
+
+                <!-- Related news -->
+                {% if related_news %}
+                <div class="sidebar-card">
+                    <div class="sidebar-card-title">📌 Bog'liq yangiliklar</div>
+                    {% for item in related_news %}
+                    <a href="{% url 'news_detail' item.slug %}" class="related-item">
+                        <div class="related-img">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                            {% else %}
+                                <span>
+                                    {% if item.category == "IELTS" %}📘
+                                    {% elif item.category == "SAT" %}📗
+                                    {% elif item.category == "DTM" %}📕
+                                    {% else %}📰{% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="related-body">
+                            <p class="related-title">{{ item.title }}</p>
+                            <span class="related-date">📅 {{ item.created_at|date:"d M, Y" }}</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Latest news -->
+                {% if latest_news %}
+                <div class="sidebar-card">
+                    <div class="sidebar-card-title">🕐 So'nggi yangiliklar</div>
+                    {% for item in latest_news %}
+                    <a href="{% url 'news_detail' item.slug %}" class="related-item">
+                        <div class="related-img">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                            {% else %}
+                                <span>📰</span>
+                            {% endif %}
+                        </div>
+                        <div class="related-body">
+                            <p class="related-title">{{ item.title }}</p>
+                            <span class="related-date">📅 {{ item.created_at|date:"d M, Y" }}</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Back button -->
+                <a href="{% url 'news_list' %}" class="back-btn">
+                    ← Barcha yangiliklarga qaytish
+                </a>
+
+            </aside>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <p style="font-size:13px;">© 2026 UniBase. All rights reserved.</p>
+            <ul class="footer-links">
+                <li><a href="{% url 'home' %}#tests">Tests</a></li>
+                <li><a href="{% url 'home' %}#features">Features</a></li>
+                <li><a href="{% url 'news_list' %}">News</a></li>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="https://t.me/unibase_support_bot">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'language.js' %}"></script>
+<script src="{% static 'theme.js' %}"></script>
+<script src="{% static 'main.js' %}"></script>
+</body>
+</html>

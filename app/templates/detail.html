@@ -186,98 +186,107 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    const STORAGE_KEY = 'ielts_essay_backup';
-    const TIMER_KEY = 'ielts_timer_left';
-    const form = document.getElementById('writingForm');
-    const essayTextarea = document.getElementById('essay-text');
-    const timerDisplay = document.getElementById('timer');
+const STORAGE_KEY = 'ielts_essay_backup_{{ question.id }}';
+const TIMER_KEY = 'ielts_timer_left_{{ question.id }}';
+const form = document.getElementById('writingForm');
+const essayTextarea = document.getElementById('essay-text');
+const timerDisplay = document.getElementById('timer');
 
-    // 1. Sahifa yuklanganda xotiradan ma'lumotlarni tiklash
-    window.onload = () => {
-        const savedEssay = localStorage.getItem(STORAGE_KEY);
-        if (savedEssay) {
-            essayTextarea.value = savedEssay;
-            updateWordCount();
-        }
-    };
+// 1️⃣ Har yangi test ochilganda eski timerni tozalash
+// Bu satr timerni yangi test uchun reset qiladi
+if (!sessionStorage.getItem('new_test_started_{{ question.id }}')) {
+    localStorage.removeItem(TIMER_KEY); // eski timer o'chirildi
+    sessionStorage.setItem('new_test_started_{{ question.id }}', 'true');
+}
 
-    // 2. So'z sanash va matnni xotiraga saqlab borish (Backup)
-    function updateWordCount() {
-        const text = essayTextarea.value.trim();
-        const words = text ? text.split(/\s+/).length : 0;
-        document.getElementById('word-count').textContent = words;
-
-        // Har bir harf yozilganda xotiraga saqlaydi (Reload qilsa o'chmasligi uchun)
-        localStorage.setItem(STORAGE_KEY, essayTextarea.value);
+// 2️⃣ Sahifa yuklanganda insho va so'z sanashni tiklash
+window.onload = () => {
+    const savedEssay = localStorage.getItem(STORAGE_KEY);
+    if (savedEssay) {
+        essayTextarea.value = savedEssay;
+        updateWordCount();
     }
+};
 
-    // 3. Taymer Logikasi (Reloadga chidamli)
-    let initialTime = 40 * 60;
-    let timeLeft = localStorage.getItem(TIMER_KEY) ? parseInt(localStorage.getItem(TIMER_KEY)) : initialTime;
+// 3️⃣ So'z sanash va xotiraga saqlash
+function updateWordCount() {
+    const text = essayTextarea.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    document.getElementById('word-count').textContent = words;
+    localStorage.setItem(STORAGE_KEY, essayTextarea.value);
+}
 
-    const timerInterval = setInterval(() => {
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            autoSubmit(); // Vaqt tugaganda avtomatik topshirish
-        } else {
-            timeLeft--;
-            localStorage.setItem(TIMER_KEY, timeLeft); // Vaqtni saqlab borish
-            renderTimer();
-        }
-    }, 1000);
+// 4️⃣ Timer: 40 daqiqa
+const initialTime = 40 * 60; // 40 daqiqa
+let savedTime = localStorage.getItem(TIMER_KEY);
+let timeLeft = savedTime !== null ? parseInt(savedTime) : initialTime;
 
-    function renderTimer() {
+// Timer funksiyasi
+function updateTimer() {
+    if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        autoSubmit();
+    } else {
         let m = Math.floor(timeLeft / 60);
         let s = timeLeft % 60;
-        timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        timerDisplay.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
 
-        // Vaqt kam qolganda rangni o'zgartirish
-        if (timeLeft < 300) timerDisplay.style.background = "#e74c3c";
-    }
-
-    // 4. Avtomatik topshirish funksiyasi
-    function autoSubmit() {
-        // Xotirani tozalaymiz
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(TIMER_KEY);
-        window.onbeforeunload = null;
-
-        Swal.fire({
-            title: 'Vaqt tugadi!',
-            text: 'Test avtomatik ravishda topshirilmoqda...',
-            icon: 'warning',
-            timer: 2000,
-            showConfirmButton: false
-        }).then(() => {
-            form.submit();
-        });
-    }
-
-    // 5. Qo'lda topshirish tugmasi
-    function confirmSubmit() {
-        Swal.fire({
-            title: 'Tayyormisiz?',
-            text: "Insho tahlil uchun yuborilsinmi?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Ha, yuborish',
-            cancelButtonText: 'Bekor qilish'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.removeItem(TIMER_KEY);
-                window.onbeforeunload = null;
-                form.submit();
-            }
-        });
-    }
-
-    // 6. Tasodifiy chiqib ketishdan himoya
-    window.onbeforeunload = function() {
-        if (timeLeft > 0) {
-            return "Sizda tugallanmagan test bor. Chiqib ketmoqchimisiz?";
+        // Qizil rang 5 daqiqa qolsa
+        if (timeLeft <= 300) {
+            timerDisplay.style.background = "#e74c3c";
         }
-    };
+
+        timeLeft--;
+        localStorage.setItem(TIMER_KEY, timeLeft); // qolgan vaqtni saqlash
+    }
+}
+
+// Darhol timerni render va interval ishga tushurish
+updateTimer();
+const timerInterval = setInterval(updateTimer, 1000);
+
+// 5️⃣ Avtomatik topshirish
+function autoSubmit() {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TIMER_KEY);
+    sessionStorage.removeItem('new_test_started_{{ question.id }}');
+    window.onbeforeunload = null;
+
+    Swal.fire({
+        title: 'Vaqt tugadi!',
+        text: 'Test avtomatik ravishda topshirilmoqda...',
+        icon: 'warning',
+        timer: 2000,
+        showConfirmButton: false
+    }).then(() => form.submit());
+}
+
+// 6️⃣ Qo'lda topshirish tugmasi
+function confirmSubmit() {
+    Swal.fire({
+        title: 'Tayyormisiz?',
+        text: "Insho tahlil uchun yuborilsinmi?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ha, yuborish',
+        cancelButtonText: 'Bekor qilish'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(TIMER_KEY);
+            sessionStorage.removeItem('new_test_started_{{ question.id }}');
+            window.onbeforeunload = null;
+            form.submit();
+        }
+    });
+}
+
+// 7️⃣ Chiqib ketishga himoya
+window.onbeforeunload = function() {
+    if (timeLeft > 0) {
+        return "Sizda tugallanmagan test bor. Chiqib ketmoqchimisiz?";
+    }
+};
 </script>
 
 </body>

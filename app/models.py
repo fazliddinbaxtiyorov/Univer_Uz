@@ -307,9 +307,27 @@ class TestAccess(models.Model):
     ])
     test_id = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-
+    paid = models.BooleanField(default=False)
     class Meta:
         unique_together = ('user', 'category', 'test_id')
 
     def __str__(self):
         return f"{self.user.username} | {self.category} | {self.test_id}"
+
+from django.utils.text import slugify
+
+class News(models.Model):
+    title     = models.CharField(max_length=300)
+    slug      = models.SlugField(unique=True, blank=True)
+    category  = models.CharField(max_length=100, blank=True)  # IELTS, SAT, DTM...
+    excerpt   = models.TextField(blank=True)
+    content   = models.TextField()
+    image     = models.ImageField(upload_to='news/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    is_new    = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
