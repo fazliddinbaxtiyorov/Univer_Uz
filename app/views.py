@@ -50,7 +50,7 @@ def score_to_band(correct_count, total=40):
         25: 5.0, 24: 4.5, 23: 4.5, 22: 4.0, 21: 4.0,
         20: 4.0, 19: 3.5, 18: 3.5, 17: 3.0, 16: 3.0,
     }
-    return table.get(correct_count, 2.5)
+    return table.get(correct_count, 0)
 
 
 def update_streak(user):
