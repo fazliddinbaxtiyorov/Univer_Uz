@@ -8,425 +8,531 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1; --primary-hover: #4f46e5; --secondary: #10b981;
-            --danger: #ef4444; --bg: #f8fafc; --card: #ffffff;
+            --primary: #6366f1; --primary-hover: #4f46e5;
+            --secondary: #10b981; --danger: #ef4444;
+            --bg: #f8fafc; --card: #ffffff;
             --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
         }
 
+        * { box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 30px 15px; }
-        .container { max-width: 980px; margin: 0 auto; }
+        .container { max-width: 1000px; margin: 0 auto; }
 
         .header { text-align: center; margin-bottom: 40px; }
         .header h1 { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
+        .header p { color: var(--text-muted); margin: 8px 0 0; }
 
         .card { background: var(--card); border-radius: 20px; padding: 30px; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .step-badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: inline-block; }
 
         h2 { font-size: 20px; font-weight: 700; margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        h3 { font-size: 15px; font-weight: 700; margin: 0 0 14px 0; color: var(--text-muted); }
+
+        .grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 7px; color: var(--text-main); }
         label.small { font-size: 11px; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
 
         input, select, textarea {
-            width: 100%; padding: 12px; border: 1.5px solid var(--border);
+            width: 100%; padding: 11px 13px;
+            border: 1.5px solid var(--border);
             border-radius: 10px; font-family: inherit; font-size: 14px;
-            box-sizing: border-box; background: #fff; color: var(--text-main);
+            background: #fff; color: var(--text-main); transition: border-color 0.2s;
         }
         input:focus, select:focus, textarea:focus {
             border-color: var(--primary); outline: none;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
         }
         input[type="file"] { padding: 8px; font-size: 12px; background: #f8fafc; cursor: pointer; }
+        textarea { min-height: 90px; resize: vertical; }
+
+        /* PASSAGE TABS */
+        .passage-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+        .ptab {
+            padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 700;
+            border: 2px solid var(--border); background: #fff; cursor: pointer;
+            transition: 0.2s; color: var(--text-muted);
+        }
+        .ptab.active { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
+        .ptab:hover { border-color: #a5b4fc; color: var(--primary); }
+        .passage-panel { display: none; }
+        .passage-panel.active { display: block; }
+        .passage-box {
+            border: 2px dashed var(--border); border-radius: 14px;
+            padding: 20px; background: #fafbff;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
         .mixin-box {
-            background: #f1f5f9; padding: 20px; border-radius: 12px;
+            background: #f1f5f9; padding: 18px 20px; border-radius: 12px;
             margin-bottom: 20px; display: flex; align-items: center;
             gap: 25px; border: 1px dashed var(--border);
         }
-        .toggle-container { display: flex; align-items: center; gap: 10px; cursor: pointer; white-space: nowrap; }
+        .toggle-container { display: flex; align-items: center; gap: 10px; cursor: pointer; white-space: nowrap; font-weight: 600; }
         input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); margin: 0; }
 
-        .btn { padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; font-size: 14px; }
+        .btn { padding: 11px 22px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; font-size: 14px; font-family: inherit; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--secondary); color: white; width: 100%; margin-top: 10px; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-success { background: var(--secondary); color: white; width: 100%; margin-top: 10px; font-size: 15px; padding: 13px; }
+        .btn:hover { opacity: 0.88; transform: translateY(-1px); }
 
-        .alert { padding: 15px; background: #dcfce7; color: #166534; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid var(--secondary); font-weight: 600; }
-        .alert-error { background: #fee2e2; color: #991b1b; border-left-color: var(--danger); }
+        .alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; border-left: 5px solid; }
+        .alert-ok    { background: #dcfce7; color: #166534; border-color: var(--secondary); }
+        .alert-error { background: #fee2e2; color: #991b1b; border-color: var(--danger); }
 
-        .hidden { display: none; }
-        .variant-grid { background: #fafafa; padding: 20px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .variant-grid h4 { margin: 0 0 15px 0; font-size: 14px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .hidden { display: none !important; }
 
-        .section-divider { border: none; border-top: 2px dashed var(--border); margin: 25px 0; }
+        .variant-grid { background: #fafafa; padding: 20px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 14px; }
+        .variant-grid h4 { margin: 0 0 14px 0; font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .type-selector { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .type-btn { padding: 8px 16px; border-radius: 8px; border: 2px solid var(--border); background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; }
+        .section-divider { border: none; border-top: 2px dashed var(--border); margin: 22px 0; }
+
+        .type-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+        .type-btn {
+            padding: 7px 15px; border-radius: 8px; border: 2px solid var(--border);
+            background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s;
+        }
         .type-btn.active, .type-btn:hover { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
 
-        .section-label { background: #e0e7ff; color: var(--primary); padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; margin-bottom: 15px; display: inline-block; }
+        .section-label { background: #e0e7ff; color: var(--primary); padding: 5px 13px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-bottom: 14px; display: inline-block; }
 
-        /* TFNG / FILL variants */
-        #tfng_variants label { font-size: 13px; }
+        /* Reading group list */
+        .test-list { margin-top: 16px; }
+        .test-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px; border: 1px solid var(--border);
+            border-radius: 10px; margin-bottom: 8px; background: #fafafa;
+            font-size: 13px;
+        }
+        .test-item .ti-id { background: #eef2ff; color: var(--primary); padding: 3px 9px; border-radius: 6px; font-weight: 700; font-size: 12px; }
+        .test-item .ti-title { font-weight: 600; flex: 1; margin: 0 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .test-item .ti-parts { font-size: 11px; color: var(--text-muted); }
 
-        textarea { min-height: 80px; resize: vertical; }
+        @media (max-width: 640px) {
+            .grid, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .passage-tabs { flex-wrap: wrap; }
+        }
     </style>
 </head>
 <body>
-
 <div class="container">
-    {% if user.is_superuser %}
+{% if user.is_superuser %}
 
-        <div class="header">
-            <h1>🎛 UniBase Control Center</h1>
-            <p style="color: var(--text-muted); margin: 5px 0 0;">Salom, <strong>{{ user.username }}</strong>. Testlar va savollarni boshqarish paneli.</p>
-        </div>
+    <div class="header">
+        <h1>🎛 UniBase Control Center</h1>
+        <p>Salom, <strong>{{ user.username }}</strong>. Testlar va savollarni boshqarish paneli.</p>
+    </div>
 
-        {% if messages %}
-            {% for m in messages %}
-                <div class="alert {% if 'Xatolik' in m.message %}alert-error{% endif %}">{{ m }}</div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+        {% for m in messages %}
+            <div class="alert {% if 'Xatolik' in m.message %}alert-error{% else %}alert-ok{% endif %}">{{ m }}</div>
+        {% endfor %}
+    {% endif %}
 
-        <!-- ===================== STEP 1: GURUH ===================== -->
-        <div class="card">
-            <span class="step-badge">Step 1</span>
-            <h2>📁 Test Guruhi Yaratish</h2>
-            <form method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="create_group">
+    <!-- ═══════════════════════════════════════════════════════
+         STEP 1 — GURUH YARATISH
+    ══════════════════════════════════════════════════════════ -->
+    <div class="card">
+        <span class="step-badge">Step 1</span>
+        <h2>📁 Test Guruhi Yaratish</h2>
 
-                <div class="grid">
-                    <div class="form-group">
-                        <label>Kategoriya</label>
-                        <select name="group_category" id="group_cat" required>
-                            <option value="">-- Tanlang --</option>
-                            <option value="READING">📖 IELTS Reading</option>
-                            <option value="LISTENING">🎧 IELTS Listening</option>
-                            <option value="SAT">🎓 SAT Test</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Sarlavha / Nomi</label>
-                        <input type="text" name="group_title" placeholder="Masalan: Cambridge 18 Test 1">
-                    </div>
-                </div>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_group">
 
-                <!-- Reading uchun qo'shimcha -->
-                <div id="reading_fields" class="hidden">
-                    <div class="form-group">
-                        <label>Passage Sarlavhasi</label>
-                        <input type="text" name="passage_title" placeholder="Masalan: The History of Solar Energy">
-                    </div>
-                    <div class="form-group">
-                        <label>Passage Matni</label>
-                        <textarea name="passage_content" rows="5" placeholder="Bu yerga to'liq reading matnini kiriting..."></textarea>
-                    </div>
-                </div>
-
-                <div class="mixin-box">
-                    <label class="toggle-container">
-                        <input type="checkbox" name="is_paid" id="is_paid_check">
-                        <span>💰 Pullik testmi?</span>
-                    </label>
-                    <div id="price_field" style="flex-grow: 1; opacity: 0.4; pointer-events: none;">
-                        <label>Narxi (coin)</label>
-                        <input type="number" name="price" value="25" min="0" max="999">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">💾 Guruhni Saqlash</button>
-            </form>
-        </div>
-
-        <!-- ===================== STEP 2: SAVOL ===================== -->
-        <div class="card">
-            <span class="step-badge">Step 2</span>
-            <h2>❓ Savol Qo'shish</h2>
-
-            <form method="POST" enctype="multipart/form-data" id="questionForm">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="add_question">
-
-                <!-- Kategoriya va Guruh -->
-                <div class="grid">
-                    <div class="form-group">
-                        <label>Kategoriya</label>
-                        <select name="category" id="main_cat" required>
-                            <option value="">-- Tanlang --</option>
-                            <option value="IELTS_READING">📖 IELTS Reading</option>
-                            <option value="IELTS_LISTENING">🎧 IELTS Listening</option>
-                            <option value="SAT">🎓 SAT</option>
-                            <option value="MILL_NATIONAL">🏛 Milliy Sertifikat</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="group_wrapper">
-                        <label>Guruhni Tanlang</label>
-                        <select name="test_group" id="test_group_select">
-                            <option value="">-- Avval kategoriya tanlang --</option>
-                            {% for r in reading_tests %}
-                                <option value="{{ r.id }}" class="g rd">📖 {{ r.passage_title|default:"Reading" }} #{{ r.id }}</option>
-                            {% endfor %}
-                            {% for l in listening_tests %}
-                                <option value="{{ l.id }}" class="g ls">🎧 {{ l.title }}</option>
-                            {% endfor %}
-                            {% for s in sat_tests %}
-                                <option value="{{ s.id }}" class="g st">🎓 {{ s.title }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <!-- IELTS Reading: Part tanlash -->
-                <div id="reading_part_field" class="hidden form-group">
-                    <label>Part (1–4)</label>
-                    <select name="part">
-                        <option value="1">Part 1</option>
-                        <option value="2">Part 2</option>
-                        <option value="3">Part 3</option>
-                        <option value="4">Part 4</option>
+            <div class="grid">
+                <div class="form-group">
+                    <label>Kategoriya</label>
+                    <select name="group_category" id="group_cat" required>
+                        <option value="">-- Tanlang --</option>
+                        <option value="READING">📖 IELTS Reading</option>
+                        <option value="LISTENING">🎧 IELTS Listening</option>
+                        <option value="SAT">🎓 SAT Test</option>
                     </select>
                 </div>
+                <div class="form-group" id="group_title_wrap">
+                    <label>Test Nomi (Listening / SAT uchun)</label>
+                    <input type="text" name="group_title" placeholder="Masalan: Cambridge 18 Test 1">
+                </div>
+            </div>
 
-                <!-- IELTS Listening: Part + Audio + Map -->
-                <div id="ls_extra" class="hidden">
-                    <div class="section-label">🎧 Listening Sozlamalari</div>
-                    <div class="grid-3">
+            <!-- ── READING: 3 ta passage ── -->
+            <div id="reading_fields" class="hidden">
+                <div class="passage-tabs">
+                    <button type="button" class="ptab active" onclick="switchPassage(1, this)">📄 Passage 1</button>
+                    <button type="button" class="ptab" onclick="switchPassage(2, this)">📄 Passage 2</button>
+                    <button type="button" class="ptab" onclick="switchPassage(3, this)">📄 Passage 3</button>
+                </div>
+
+                <div class="passage-panel active" id="pp1">
+                    <div class="passage-box">
+                        <h3>Passage 1</h3>
                         <div class="form-group">
-                            <label>Part (1–4)</label>
-                            <select name="part">
-                                <option value="1">Part 1</option>
-                                <option value="2">Part 2</option>
-                                <option value="3">Part 3</option>
-                                <option value="4">Part 4</option>
-                            </select>
+                            <label>Sarlavha</label>
+                            <input type="text" name="passage_title_1" placeholder="Masalan: The History of Solar Energy">
                         </div>
                         <div class="form-group">
-                            <label>Audio Fayl</label>
-                            <input type="file" name="audio" accept="audio/*">
-                        </div>
-                        <div class="form-group">
-                            <label>Map/Diagram Rasm (ixtiyoriy)</label>
-                            <input type="file" name="map_image" accept="image/*">
+                            <label>Matn</label>
+                            <textarea name="passage_text_1" rows="7" placeholder="Passage 1 matnini shu yerga kiriting..."></textarea>
                         </div>
                     </div>
                 </div>
 
-                <!-- Milliy: Fan tanlash -->
-                <div id="milliy_fan" class="hidden form-group">
-                    <label>Fan</label>
-                    <select name="fan">
-                        {% for code, name in milliy_fan_choices %}
-                            <option value="{{ code }}">{{ name }}</option>
+                <div class="passage-panel" id="pp2">
+                    <div class="passage-box">
+                        <h3>Passage 2</h3>
+                        <div class="form-group">
+                            <label>Sarlavha</label>
+                            <input type="text" name="passage_title_2" placeholder="Masalan: Ocean Exploration">
+                        </div>
+                        <div class="form-group">
+                            <label>Matn</label>
+                            <textarea name="passage_text_2" rows="7" placeholder="Passage 2 matnini shu yerga kiriting..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="passage-panel" id="pp3">
+                    <div class="passage-box">
+                        <h3>Passage 3</h3>
+                        <div class="form-group">
+                            <label>Sarlavha</label>
+                            <input type="text" name="passage_title_3" placeholder="Masalan: Artificial Intelligence">
+                        </div>
+                        <div class="form-group">
+                            <label>Matn</label>
+                            <textarea name="passage_text_3" rows="7" placeholder="Passage 3 matnini shu yerga kiriting..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ── /READING ── -->
+
+            <div class="mixin-box">
+                <label class="toggle-container">
+                    <input type="checkbox" name="is_paid" id="is_paid_check">
+                    <span>💰 Pullik testmi?</span>
+                </label>
+                <div id="price_field" style="flex-grow:1; opacity:0.4; pointer-events:none;">
+                    <label>Narxi (coin)</label>
+                    <input type="number" name="price" value="25" min="0" max="999">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">💾 Guruhni Saqlash</button>
+        </form>
+
+        <!-- Mavjud reading testlar ro'yxati -->
+        {% if reading_tests %}
+        <div class="test-list" style="margin-top:24px;">
+            <div style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:10px;">📋 Mavjud Reading testlar:</div>
+            {% for rt in reading_tests %}
+            <div class="test-item">
+                <span class="ti-id">#{{ rt.id }}</span>
+                <span class="ti-title">{{ rt.passage_title|default:"(sarlavsiz)" }}</span>
+                <span class="ti-parts">
+                    {% if rt.passage_text %}P1{% endif %}
+                    {% if rt.passage_text_2 %}· P2{% endif %}
+                    {% if rt.passage_text_3 %}· P3{% endif %}
+                    · {{ rt.questions.count }} savol
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         STEP 2 — SAVOL QO'SHISH
+    ══════════════════════════════════════════════════════════ -->
+    <div class="card">
+        <span class="step-badge">Step 2</span>
+        <h2>❓ Savol Qo'shish</h2>
+
+        <form method="POST" enctype="multipart/form-data" id="questionForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_question">
+
+            <!-- Kategoriya va Guruh -->
+            <div class="grid">
+                <div class="form-group">
+                    <label>Kategoriya</label>
+                    <select name="category" id="main_cat" required>
+                        <option value="">-- Tanlang --</option>
+                        <option value="IELTS_READING">📖 IELTS Reading</option>
+                        <option value="IELTS_LISTENING">🎧 IELTS Listening</option>
+                        <option value="SAT">🎓 SAT</option>
+                        <option value="MILL_NATIONAL">🏛 Milliy Sertifikat</option>
+                    </select>
+                </div>
+                <div class="form-group" id="group_wrapper">
+                    <label>Guruhni Tanlang</label>
+                    <select name="test_group" id="test_group_select">
+                        <option value="">-- Avval kategoriya tanlang --</option>
+                        {% for r in reading_tests %}
+                            <option value="{{ r.id }}" class="g rd">
+                                📖 #{{ r.id }} — {{ r.passage_title|default:"Reading"|truncatechars:40 }}
+                            </option>
+                        {% endfor %}
+                        {% for l in listening_tests %}
+                            <option value="{{ l.id }}" class="g ls">🎧 {{ l.title }}</option>
+                        {% endfor %}
+                        {% for s in sat_tests %}
+                            <option value="{{ s.id }}" class="g st">🎓 {{ s.title }}</option>
                         {% endfor %}
                     </select>
                 </div>
+            </div>
 
-                <hr class="section-divider">
+            <!-- Reading: Part tanlash -->
+            <div id="reading_part_field" class="hidden form-group">
+                <label>Qaysi Passage ga tegishli?</label>
+                <select name="part">
+                    <option value="1">📄 Passage 1</option>
+                    <option value="2">📄 Passage 2</option>
+                    <option value="3">📄 Passage 3</option>
+                </select>
+            </div>
 
-                <!-- Savol turi -->
-                <div class="form-group" id="question_type_wrapper">
-                    <label>Savol Turi</label>
-                    <div class="type-selector" id="type_selector">
-                        <button type="button" class="type-btn active" data-val="ABCD" onclick="setType('ABCD', this)">🔵 ABCD (Ko'p tanlov)</button>
-                        <button type="button" class="type-btn" data-val="TFNG" onclick="setType('TFNG', this)">✅ True/False/NG</button>
-                        <button type="button" class="type-btn" data-val="FILL" onclick="setType('FILL', this)">✏️ Fill in Blank</button>
-                        <button type="button" class="type-btn" data-val="MATCH" onclick="setType('MATCH', this)">🔗 Matching</button>
-                        <button type="button" class="type-btn" data-val="MAP" onclick="setType('MAP', this)" id="map_btn">🗺 Map/Diagram</button>
-                    </div>
-                    <input type="hidden" name="question_type" id="question_type_input" value="ABCD">
-                </div>
-
-                <!-- Savol matni -->
-                <div class="form-group">
-                    <label>Savol Matni</label>
-                    <textarea name="savol" rows="3" placeholder="Savol matnini shu yerga kiriting..." required></textarea>
-                </div>
-
-                <!-- Savol rasmi -->
-                <div class="form-group">
-                    <label class="small">📷 Savol Rasmi (ixtiyoriy)</label>
-                    <input type="file" name="question_image" accept="image/*">
-                </div>
-
-                <!-- Milliy uchun savol rasmi -->
-                <div class="form-group hidden" id="savol_rasm_field">
-                    <label class="small">🖼 Savol Rasmi (Milliy uchun)</label>
-                    <input type="file" name="savol_rasm" accept="image/*">
-                </div>
-
-                <hr class="section-divider">
-
-                <!-- ABCD variantlar -->
-                <div id="abcd_variants" class="variant-grid">
-                    <h4>📝 Javob Variantlari</h4>
-                    <div class="grid">
-                        <div class="form-group">
-                            <label>Variant A</label>
-                            <input type="text" name="variant_a" placeholder="A varianti...">
-                            <label class="small">🖼 Rasm (A):</label>
-                            <input type="file" name="image_a" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <label>Variant B</label>
-                            <input type="text" name="variant_b" placeholder="B varianti...">
-                            <label class="small">🖼 Rasm (B):</label>
-                            <input type="file" name="image_b" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <label>Variant C</label>
-                            <input type="text" name="variant_c" placeholder="C varianti...">
-                            <label class="small">🖼 Rasm (C):</label>
-                            <input type="file" name="image_c" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <label>Variant D</label>
-                            <input type="text" name="variant_d" placeholder="D varianti...">
-                            <label class="small">🖼 Rasm (D):</label>
-                            <input type="file" name="image_d" accept="image/*">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TFNG variantlar -->
-                <div id="tfng_variants" class="variant-grid hidden">
-                    <h4>✅ True / False / Not Given</h4>
-                    <p style="color: var(--text-muted); font-size: 13px; margin: 0 0 10px;">To'g'ri javobni pastda tanlang.</p>
-                </div>
-
-                <!-- FILL / MAP uchun -->
-                <div id="fill_variants" class="variant-grid hidden">
-                    <h4>✏️ To'ldirish</h4>
+            <!-- Listening extra -->
+            <div id="ls_extra" class="hidden">
+                <div class="section-label">🎧 Listening Sozlamalari</div>
+                <div class="grid-3">
                     <div class="form-group">
-                        <label>To'g'ri Javob (Matn)</label>
-                        <input type="text" name="fill_answer" id="fill_answer_input" placeholder="Masalan: photosynthesis">
-                        <p style="color: var(--text-muted); font-size: 12px; margin: 6px 0 0;">Kichik/katta harf farq qilmaydi.</p>
-                    </div>
-                </div>
-
-                <!-- To'g'ri javob -->
-                <div class="form-group" style="margin-top: 15px;">
-                    <label>✅ To'g'ri Javob</label>
-                    <div id="abcd_answer">
-                        <select name="togri_variant" id="togri_variant_select" required>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
+                        <label>Part (1–4)</label>
+                        <select name="part">
+                            <option value="1">Part 1</option>
+                            <option value="2">Part 2</option>
+                            <option value="3">Part 3</option>
+                            <option value="4">Part 4</option>
                         </select>
                     </div>
-                    <div id="tfng_answer" class="hidden">
-                        <select name="togri_variant_tfng">
-                            <option value="True">True</option>
-                            <option value="False">False</option>
-                            <option value="Not Given">Not Given</option>
-                        </select>
+                    <div class="form-group">
+                        <label>Audio Fayl</label>
+                        <input type="file" name="audio" accept="audio/*">
                     </div>
-                    <div id="fill_answer_display" class="hidden">
-                        <input type="text" name="togri_variant_fill" placeholder="To'g'ri javob matnini kiriting..." style="color: #166534; background: #dcfce7; border-color: #86efac;">
+                    <div class="form-group">
+                        <label>Map/Diagram (ixtiyoriy)</label>
+                        <input type="file" name="map_image" accept="image/*">
                     </div>
                 </div>
+            </div>
 
-                <button type="submit" class="btn btn-success" onclick="prepareSubmit()">💾 Savolni Bazaga Saqlash</button>
-            </form>
-        </div>
+            <!-- Milliy: Fan -->
+            <div id="milliy_fan" class="hidden form-group">
+                <label>Fan</label>
+                <select name="fan">
+                    {% for code, name in milliy_fan_choices %}
+                        <option value="{{ code }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-    {% else %}
-        <div class="card" style="text-align: center; padding: 100px 20px;">
-            <h1 style="color: var(--danger); font-size: 60px; margin: 0;">403</h1>
-            <h2>Ruxsat Yo'q</h2>
-            <p>Ushbu panelga faqat superuserlar kira oladi.</p>
-            <a href="/" class="btn btn-primary">Bosh sahifaga qaytish</a>
-        </div>
-    {% endif %}
+            <hr class="section-divider">
+
+            <!-- Savol turi -->
+            <div class="form-group" id="question_type_wrapper">
+                <label>Savol Turi</label>
+                <div class="type-selector" id="type_selector">
+                    <button type="button" class="type-btn active" data-val="ABCD"  onclick="setType('ABCD', this)">🔵 ABCD</button>
+                    <button type="button" class="type-btn"        data-val="TFNG"  onclick="setType('TFNG', this)">✅ True/False/NG</button>
+                    <button type="button" class="type-btn"        data-val="FILL"  onclick="setType('FILL', this)">✏️ Fill in Blank</button>
+                    <button type="button" class="type-btn"        data-val="MATCH" onclick="setType('MATCH', this)">🔗 Matching</button>
+                    <button type="button" class="type-btn hidden" data-val="MAP"   onclick="setType('MAP', this)" id="map_btn">🗺 Map/Diagram</button>
+                </div>
+                <input type="hidden" name="question_type" id="question_type_input" value="ABCD">
+            </div>
+
+            <!-- Savol matni + rasmi -->
+            <div class="form-group">
+                <label>Savol Matni</label>
+                <textarea name="savol" rows="3" placeholder="Savol matnini kiriting..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="small">📷 Savol Rasmi (ixtiyoriy)</label>
+                <input type="file" name="question_image" accept="image/*">
+            </div>
+            <div class="form-group hidden" id="savol_rasm_field">
+                <label class="small">🖼 Savol Rasmi (Milliy)</label>
+                <input type="file" name="savol_rasm" accept="image/*">
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- ABCD / MATCH variantlar -->
+            <div id="abcd_variants" class="variant-grid">
+                <h4>📝 Javob Variantlari</h4>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Variant A</label>
+                        <input type="text" name="variant_a" placeholder="A varianti...">
+                        <label class="small">🖼 Rasm (A):</label>
+                        <input type="file" name="image_a" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Variant B</label>
+                        <input type="text" name="variant_b" placeholder="B varianti...">
+                        <label class="small">🖼 Rasm (B):</label>
+                        <input type="file" name="image_b" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Variant C</label>
+                        <input type="text" name="variant_c" placeholder="C varianti...">
+                        <label class="small">🖼 Rasm (C):</label>
+                        <input type="file" name="image_c" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Variant D</label>
+                        <input type="text" name="variant_d" placeholder="D varianti...">
+                        <label class="small">🖼 Rasm (D):</label>
+                        <input type="file" name="image_d" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TFNG -->
+            <div id="tfng_variants" class="variant-grid hidden">
+                <h4>✅ True / False / Not Given</h4>
+                <p style="color:var(--text-muted); font-size:13px; margin:0 0 8px;">Pastda to'g'ri javobni tanlang.</p>
+            </div>
+
+            <!-- FILL / MAP -->
+            <div id="fill_variants" class="variant-grid hidden">
+                <h4>✏️ To'ldirish</h4>
+                <div class="form-group">
+                    <label>To'g'ri Javob (matn)</label>
+                    <input type="text" placeholder="Masalan: photosynthesis">
+                    <p style="color:var(--text-muted); font-size:12px; margin:5px 0 0;">Kichik/katta harf farq qilmaydi.</p>
+                </div>
+            </div>
+
+            <!-- To'g'ri javob -->
+            <div class="form-group" style="margin-top:14px;">
+                <label>✅ To'g'ri Javob</label>
+                <div id="abcd_answer">
+                    <select name="togri_variant" id="togri_variant_select" required>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+                <div id="tfng_answer" class="hidden">
+                    <select name="togri_variant_tfng">
+                        <option value="TRUE">True</option>
+                        <option value="FALSE">False</option>
+                        <option value="NOT GIVEN">Not Given</option>
+                    </select>
+                </div>
+                <div id="fill_answer_display" class="hidden">
+                    <input type="text" name="togri_variant_fill"
+                           placeholder="To'g'ri javob matnini kiriting..."
+                           style="color:#166534; background:#dcfce7; border-color:#86efac;">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success" onclick="prepareSubmit()">
+                💾 Savolni Bazaga Saqlash
+            </button>
+        </form>
+    </div>
+
+{% else %}
+    <div class="card" style="text-align:center; padding:100px 20px;">
+        <h1 style="color:var(--danger); font-size:60px; margin:0;">403</h1>
+        <h2>Ruxsat Yo'q</h2>
+        <p>Ushbu panelga faqat superuserlar kira oladi.</p>
+        <a href="/" class="btn btn-primary">Bosh sahifaga</a>
+    </div>
+{% endif %}
 </div>
 
 <script>
-    // ====== PULLIK TOGGLE ======
-    document.getElementById('is_paid_check').addEventListener('change', function() {
-        const price = document.getElementById('price_field');
-        price.style.opacity = this.checked ? "1" : "0.4";
-        price.style.pointerEvents = this.checked ? "auto" : "none";
+// ── Passage tabs ──────────────────────────────────────────────────────────
+function switchPassage(num, btn) {
+    document.querySelectorAll('.passage-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+    document.getElementById('pp' + num).classList.add('active');
+    btn.classList.add('active');
+}
+
+// ── Pullik toggle ─────────────────────────────────────────────────────────
+document.getElementById('is_paid_check').addEventListener('change', function() {
+    const pf = document.getElementById('price_field');
+    pf.style.opacity       = this.checked ? '1'    : '0.4';
+    pf.style.pointerEvents = this.checked ? 'auto' : 'none';
+});
+
+// ── Guruh kategoriya toggle ───────────────────────────────────────────────
+document.getElementById('group_cat').addEventListener('change', function() {
+    document.getElementById('reading_fields').classList.toggle('hidden', this.value !== 'READING');
+});
+
+// ── Savol kategoriya ──────────────────────────────────────────────────────
+const mainCat = document.getElementById('main_cat');
+const opts    = document.querySelectorAll('.g');
+
+mainCat.addEventListener('change', function() {
+    const val = this.value;
+
+    document.getElementById('group_wrapper').classList.toggle('hidden', val === 'MILL_NATIONAL');
+    document.getElementById('ls_extra').classList.toggle('hidden', val !== 'IELTS_LISTENING');
+    document.getElementById('reading_part_field').classList.toggle('hidden', val !== 'IELTS_READING');
+    document.getElementById('milliy_fan').classList.toggle('hidden', val !== 'MILL_NATIONAL');
+    document.getElementById('savol_rasm_field').classList.toggle('hidden', val !== 'MILL_NATIONAL');
+    document.getElementById('map_btn').classList.toggle('hidden', val !== 'IELTS_LISTENING');
+
+    // Guruh optionlarini filter
+    opts.forEach(o => {
+        o.style.display = 'none';
+        if (val === 'IELTS_READING'  && o.classList.contains('rd')) o.style.display = '';
+        if (val === 'IELTS_LISTENING' && o.classList.contains('ls')) o.style.display = '';
+        if (val === 'SAT'             && o.classList.contains('st')) o.style.display = '';
     });
+    document.getElementById('test_group_select').value = '';
 
-    // ====== GURUH KATEGORIYASI ======
-    document.getElementById('group_cat').addEventListener('change', function() {
-        document.getElementById('reading_fields').classList.toggle('hidden', this.value !== 'READING');
-    });
-
-    // ====== SAVOL KATEGORIYASI ======
-    const mainCat = document.getElementById('main_cat');
-    const opts = document.querySelectorAll('.g');
-
-    mainCat.addEventListener('change', function() {
-        const val = this.value;
-
-        // Guruh tanlash
-        document.getElementById('group_wrapper').classList.toggle('hidden', val === 'MILL_NATIONAL');
-
-        // Qo'shimcha fieldlar
-        document.getElementById('ls_extra').classList.toggle('hidden', val !== 'IELTS_LISTENING');
-        document.getElementById('reading_part_field').classList.toggle('hidden', val !== 'IELTS_READING');
-        document.getElementById('milliy_fan').classList.toggle('hidden', val !== 'MILL_NATIONAL');
-        document.getElementById('savol_rasm_field').classList.toggle('hidden', val !== 'MILL_NATIONAL');
-
-        // MAP tugmasi faqat Listening da
-        document.getElementById('map_btn').classList.toggle('hidden', val !== 'IELTS_LISTENING');
-
-        // Guruh filterini tozala
-        opts.forEach(o => {
-            o.style.display = 'none';
-            if(val === 'IELTS_READING' && o.classList.contains('rd')) o.style.display = '';
-            if(val === 'IELTS_LISTENING' && o.classList.contains('ls')) o.style.display = '';
-            if(val === 'SAT' && o.classList.contains('st')) o.style.display = '';
-        });
-        document.getElementById('test_group_select').value = "";
-
-        // SAT uchun TFNG/FILL/MAP o'chirish
-        if (val === 'SAT') {
-            document.querySelectorAll('[data-val="TFNG"], [data-val="FILL"], [data-val="MATCH"], [data-val="MAP"]').forEach(b => b.classList.add('hidden'));
-            setType('ABCD', document.querySelector('[data-val="ABCD"]'));
-        } else {
-            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('hidden'));
-            if (val !== 'IELTS_LISTENING') document.getElementById('map_btn').classList.add('hidden');
-        }
-    });
-
-    // ====== SAVOL TURI ======
-    function setType(val, btn) {
-        document.getElementById('question_type_input').value = val;
-        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-
-        // Variant ko'rinishi
-        document.getElementById('abcd_variants').classList.toggle('hidden', val !== 'ABCD' && val !== 'MATCH');
-        document.getElementById('tfng_variants').classList.toggle('hidden', val !== 'TFNG');
-        document.getElementById('fill_variants').classList.toggle('hidden', val !== 'FILL' && val !== 'MAP');
-
-        // Javob inputi
-        document.getElementById('abcd_answer').classList.toggle('hidden', val === 'TFNG' || val === 'FILL' || val === 'MAP');
-        document.getElementById('tfng_answer').classList.toggle('hidden', val !== 'TFNG');
-        document.getElementById('fill_answer_display').classList.toggle('hidden', val !== 'FILL' && val !== 'MAP');
+    // SAT: faqat ABCD
+    if (val === 'SAT') {
+        document.querySelectorAll('[data-val="TFNG"],[data-val="FILL"],[data-val="MATCH"],[data-val="MAP"]')
+            .forEach(b => b.classList.add('hidden'));
+        setType('ABCD', document.querySelector('[data-val="ABCD"]'));
+    } else {
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('hidden'));
+        if (val !== 'IELTS_LISTENING') document.getElementById('map_btn').classList.add('hidden');
     }
+});
 
-    // ====== SUBMIT OLDIDAN ======
-    function prepareSubmit() {
-        const type = document.getElementById('question_type_input').value;
+// ── Savol turi ────────────────────────────────────────────────────────────
+function setType(val, btn) {
+    document.getElementById('question_type_input').value = val;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
 
-        // togri_variant ni to'g'ri nomga o'tkazish
-        const form = document.getElementById('questionForm');
+    document.getElementById('abcd_variants').classList.toggle('hidden', !['ABCD','MATCH'].includes(val));
+    document.getElementById('tfng_variants').classList.toggle('hidden', val !== 'TFNG');
+    document.getElementById('fill_variants').classList.toggle('hidden', !['FILL','MAP'].includes(val));
 
-        if (type === 'TFNG') {
-            const val = form.querySelector('[name="togri_variant_tfng"]').value;
-            form.querySelector('[name="togri_variant"]').value = val;
-        } else if (type === 'FILL' || type === 'MAP') {
-            const val = form.querySelector('[name="togri_variant_fill"]').value;
-            form.querySelector('[name="togri_variant"]').value = val;
-        }
+    document.getElementById('abcd_answer').classList.toggle('hidden', ['TFNG','FILL','MAP'].includes(val));
+    document.getElementById('tfng_answer').classList.toggle('hidden', val !== 'TFNG');
+    document.getElementById('fill_answer_display').classList.toggle('hidden', !['FILL','MAP'].includes(val));
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────
+function prepareSubmit() {
+    const type = document.getElementById('question_type_input').value;
+    const form = document.getElementById('questionForm');
+    const tv   = form.querySelector('[name="togri_variant"]');
+
+    if (type === 'TFNG') {
+        tv.value = form.querySelector('[name="togri_variant_tfng"]').value;
+    } else if (['FILL','MAP'].includes(type)) {
+        tv.value = form.querySelector('[name="togri_variant_fill"]').value;
     }
+}
 </script>
 </body>
 </html>

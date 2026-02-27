@@ -150,7 +150,7 @@
 <div class="test-container" id="main-test-area" style="display:none;">
     <div class="header-flex">
         <h2 style="color: #1e3a8a;">Part 1</h2>
-        <div class="timer" id="timer-display">40:00</div>
+        <div class="timer" id="timer-display">60:00</div>
     </div>
 
     <div class="instruction-box">
@@ -258,114 +258,163 @@ function showPart(partNum){
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
+/* ===================== ELEMENTLAR ===================== */
+
 const startBtn = document.getElementById("start-test-btn");
 const testArea = document.getElementById("main-test-area");
 const form = document.getElementById("listening-form");
 const timerEl = document.getElementById("timer-display");
 const audios = Array.from(document.querySelectorAll(".test-audio"));
 
-const totalSeconds = 2400;
-let seconds = totalSeconds;
+/* ===================== SOZLAMALAR ===================== */
+
+// IELTS Listening = 60 minut
+const totalSeconds = 3600;
+
 let timerInterval;
-let currentIdx = 0;
 let submitted = false;
+let currentAudioIndex = 0;
 
-/* ================= SAFE LOCAL STORAGE CHECK ================= */
+/* ===================== TIMER DISPLAY ===================== */
 
-const savedStart = localStorage.getItem("listeningStart");
-
-if(savedStart){
-
-    const startTime = parseFloat(savedStart);
-    const elapsed = Math.floor((Date.now() - startTime)/1000);
-    seconds = totalSeconds - elapsed;
-
-    if(seconds > 0){
-        currentIdx = parseInt(localStorage.getItem("listeningAudioIdx")) || 0;
-        testArea.style.display="block";
-        startBtn.style.display="none";
-        startTimer();
-        playAudio(currentIdx);
-    }else{
-        localStorage.removeItem("listeningStart");
-        localStorage.removeItem("listeningAudioIdx");
-    }
+function updateDisplay(seconds){
+    const m = String(Math.floor(seconds/60)).padStart(2,'0');
+    const s = String(seconds%60).padStart(2,'0');
+    timerEl.textContent = `${m}:${s}`;
 }
 
-/* ================= START BUTTON ================= */
-
-startBtn.addEventListener("click", function(){
-    testArea.style.display="block";
-    startBtn.style.display="none";
-
-    localStorage.setItem("listeningStart", Date.now());
-    localStorage.setItem("listeningAudioIdx", 0);
-
-    seconds = totalSeconds;
-    startTimer();
-    playAudio(0);
-});
-
-/* ================= TIMER ================= */
+/* ===================== TIMER START ===================== */
 
 function startTimer(){
+
     timerInterval = setInterval(()=>{
 
-        if(seconds <= 0){
+        const savedEnd = localStorage.getItem("listeningEndTime");
+
+        if(!savedEnd){
+            clearInterval(timerInterval);
+            return;
+        }
+
+        const remaining = Math.floor((savedEnd - Date.now()) / 1000);
+
+        if(remaining <= 0){
             clearInterval(timerInterval);
 
             if(!submitted){
                 submitted = true;
-                localStorage.removeItem("listeningStart");
-                localStorage.removeItem("listeningAudioIdx");
+                localStorage.removeItem("listeningEndTime");
+                localStorage.removeItem("listeningAudioIndex");
                 form.submit();
             }
             return;
         }
 
-        seconds--;
-
-        const m = String(Math.floor(seconds/60)).padStart(2,'0');
-        const s = String(seconds%60).padStart(2,'0');
-        timerEl.textContent = `${m}:${s}`;
+        updateDisplay(remaining);
 
     },1000);
 }
 
-/* ================= AUDIO ================= */
+/* ===================== AUDIO ===================== */
 
-function playAudio(idx){
-    if(idx >= audios.length) return;
+function playAudio(index){
 
-    const audio = audios[idx];
+    if(index >= audios.length) return;
+
+    currentAudioIndex = index;
+    localStorage.setItem("listeningAudioIndex", index);
+
+    const audio = audios[index];
     const block = audio.closest(".form-row");
 
+    // highlight
     document.querySelectorAll('.form-row')
         .forEach(b=>b.classList.remove('active-question'));
 
-    block.classList.add('active-question');
-    block.scrollIntoView({behavior:'smooth', block:'center'});
+    if(block){
+        block.classList.add('active-question');
+        block.scrollIntoView({behavior:'smooth', block:'center'});
+    }
 
     audio.play().catch(()=>{
+        // browser autoplay block qilsa
         window.addEventListener('click', ()=>audio.play(), {once:true});
     });
 
     audio.onended = function(){
-        idx++;
-        localStorage.setItem("listeningAudioIdx", idx);
-        playAudio(idx);
+        playAudio(index + 1);
     }
 }
 
-/* ================= SAFE SUBMIT ================= */
+/* ===================== START BUTTON ===================== */
+
+startBtn.addEventListener("click", function(){
+
+    testArea.style.display = "block";
+    startBtn.style.display = "none";
+
+    const endTime = Date.now() + totalSeconds * 1000;
+    localStorage.setItem("listeningEndTime", endTime);
+    localStorage.setItem("listeningAudioIndex", 0);
+
+    updateDisplay(totalSeconds);
+    startTimer();
+    playAudio(0);
+});
+
+/* ===================== PAGE RELOAD CHECK ===================== */
+
+const savedEnd = localStorage.getItem("listeningEndTime");
+
+if(savedEnd){
+
+    const remaining = Math.floor((savedEnd - Date.now()) / 1000);
+
+    if(remaining > 0){
+
+        testArea.style.display = "block";
+        startBtn.style.display = "none";
+
+        updateDisplay(remaining);
+        startTimer();
+
+        currentAudioIndex = parseInt(localStorage.getItem("listeningAudioIndex")) || 0;
+        playAudio(currentAudioIndex);
+
+    } else {
+        localStorage.removeItem("listeningEndTime");
+        localStorage.removeItem("listeningAudioIndex");
+    }
+}
+
+/* ===================== SAFE SUBMIT ===================== */
 
 form.addEventListener("submit", function(){
     if(!submitted){
         submitted = true;
-        localStorage.removeItem("listeningStart");
-        localStorage.removeItem("listeningAudioIdx");
+        localStorage.removeItem("listeningEndTime");
+        localStorage.removeItem("listeningAudioIndex");
     }
 });
+
+/* ===================== PART NAVIGATION ===================== */
+
+window.showPart = function(partNum){
+
+    document.querySelectorAll('.part-section')
+        .forEach(s => s.style.display = 'none');
+
+    document.querySelectorAll('#part-section-' + partNum)
+        .forEach(s => s.style.display = 'block');
+
+    document.querySelectorAll('.nav-btn')
+        .forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.innerText.includes(partNum)){
+                btn.classList.add('active');
+            }
+        });
+};
 
 });
 </script>

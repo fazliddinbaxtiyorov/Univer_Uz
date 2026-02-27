@@ -11,7 +11,6 @@ from .views import (
 )
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import news_list, news_detail
 urlpatterns = [
     path('', fanlar_view, name='home'),
     path('reading/', ielts_reading_view, name='ielts_reading'),
@@ -36,8 +35,6 @@ urlpatterns = [
     path('analytics/', student_analytics, name='analytics'),
     path('buy_coins/', buy_coins, name='buy_coins'),
     path('explain-error/<int:submission_id>/', explain_error_view, name='explain_error'),
-    path('news/', news_list, name='news_list'),
-    path('news/<slug:slug>/', news_detail, name='news_detail'),
 
     # ✅ Do'stlik URL lari
     path('friends/', my_friends, name='my_friends'),

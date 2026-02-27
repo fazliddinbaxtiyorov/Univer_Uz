@@ -7,7 +7,7 @@ from .forms import (
 from .models import (
     IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion,
     SATQuestion, Davlat_Univer, Xususiy_Univer, Xorijiy_Univer,
-    ContactMessage, UserTestResult, ReadingTest, ListeningTest, Sat, TestAccess,
+    ContactMessage, UserTestResult, ReadingTest, ListeningTest, Sat, TestAccess, DTM_Majburiy
 
 )
 from user.models import Friendship
@@ -148,8 +148,7 @@ def fanlar_view(request):
     form = FanlarForm(request.POST or None)
     if form.is_valid():
         form.save()
-    news_list = News.objects.filter(is_active=True).order_by('-created_at')
-    return render(request, "home.html", {"form": form, 'news_list': news_list})
+    return render(request, "home.html", {"form": form, 'news_items': News.objects.filter(is_active=True).order_by('-created_at')[:6]})
 
 
 def writing(request):
@@ -315,11 +314,12 @@ def ielts_reading_view(request, test_id=None):
     test_data = []
     for part_num in sorted(parts_dict.keys()):
         qs = parts_dict[part_num]
+        title, text = reading_test.get_passage(part_num)  # ← YANGI
         test_data.append({
             "part": part_num,
             "part_label": f"Part {part_num}",
-            "passage_text": reading_test.passage_text,
-            "passage_title": reading_test.passage_title,
+            "passage_title": title,  # ← YANGI
+            "passage_text": text,  # ← har part o'z matni
             "questions": [{"model": q, "field": form[f"q_{q.id}"]} for q in qs]
         })
 
@@ -518,10 +518,7 @@ def dtm_select_view(request):
         ikkinchi_fan = request.POST.get('ikkinchi_fan')
 
         if birinchi_fan and ikkinchi_fan and birinchi_fan != ikkinchi_fan:
-            tanlangan = [birinchi_fan, ikkinchi_fan]
-            majburiy = ['Ona Tili', 'Matematika', 'Tarix']
-            fanlar = tanlangan + majburiy[:3]
-            request.session['selected_subjects'] = fanlar
+            request.session['selected_subjects'] = [birinchi_fan, ikkinchi_fan]
             request.session['start_time'] = time.time()
             return redirect('dtm_test')
 
@@ -540,46 +537,54 @@ def dtm_test_view(request):
     if 'selected_subjects' not in request.session:
         return redirect('dtm_select')
 
-    fanlar = request.session['selected_subjects']
+    tanlangan = request.session['selected_subjects']
+    majburiy_fanlar = ['Ona Tili', 'Matematika', 'Tarix']
 
     all_questions = []
-    for step, fan in enumerate(fanlar, 1):
+    for step, fan in enumerate(tanlangan, 1):
         qs = list(Milliy_Sertifikat.objects.filter(fan=fan))
-        if len(qs) > 30:
+        if len(qs) > 40:
             qs = random.sample(qs, 30)
         for q in qs:
             q.step = step
             q.fan_nomi = fan
+            q.ball_per_q = 3.1 if step == 1 else 2.1
+            q.model_name = 'milliy'
         all_questions.extend(qs)
 
-    random.shuffle(all_questions)
+    # Majburiy — DTM_Majburiy dan
+    for step, fan in enumerate(majburiy_fanlar, 3):
+        qs = list(DTM_Majburiy.objects.filter(fan=fan))
+        if len(qs) > 10:
+            qs = random.sample(qs, 30)
+        for q in qs:
+            q.step = step
+            q.fan_nomi = fan
+            q.ball_per_q = 1.1
+            q.model_name = 'majburiy'
+        all_questions.extend(qs)
+
     total_questions = len(all_questions)
 
     if request.method == "POST":
         total_score = 0
         for q in all_questions:
-            user_javob = request.POST.get(f'q_{q.id}')
+            user_javob = request.POST.get(f'q_{q.model_name}_{q.id}')
             if user_javob == q.togri_variant:
-                if q.step == 1:
-                    total_score += 3.1
-                elif q.step == 2:
-                    total_score += 2.1
-                else:
-                    total_score += 1.1
+                total_score += q.ball_per_q
 
         start_time = request.session.get('start_time', time.time())
         spent_seconds = int(time.time() - start_time)
-        minutes = spent_seconds // 60
-        seconds = spent_seconds % 60
-        percentage = round(total_score / (total_questions * 3.1) * 100, 1) if total_questions else 0
+
+        max_ball = 0
+        for step, _ in enumerate(tanlangan, 1):
+            max_ball += 30 * (3.1 if step == 1 else 2.1)
+        max_ball += 30 * 1.1 * len(majburiy_fanlar)
+
+        percentage = round(total_score / max_ball * 100, 1) if max_ball else 0
 
         coins_returned = coins_back_if_perfect(request.user, percentage)
-
-        UserTestResult.objects.create(
-            user=request.user,
-            test_name="DTM Test",
-            score=percentage
-        )
+        UserTestResult.objects.create(user=request.user, test_name="DTM Test", score=percentage)
 
         results = [{
             "savol": q.savol,
@@ -592,13 +597,12 @@ def dtm_test_view(request):
             "image_b": q.image_b.url if q.image_b else None,
             "image_c": q.image_c.url if q.image_c else None,
             "image_d": q.image_d.url if q.image_d else None,
-            "user_answer": request.POST.get(f'q_{q.id}'),
+            "user_answer": request.POST.get(f'q_{q.model_name}_{q.id}'),
             "correct": q.togri_variant,
-            "is_correct": request.POST.get(f'q_{q.id}') == q.togri_variant,
-            "question_id": q.id,
-            "category": "MILLIY",
+            "is_correct": request.POST.get(f'q_{q.model_name}_{q.id}') == q.togri_variant,
             "fan": q.fan,
-            "step": q.step
+            "step": q.step,
+            "ball": q.ball_per_q,
         } for q in all_questions]
 
         request.session.flush()
@@ -607,37 +611,36 @@ def dtm_test_view(request):
             "results": results,
             "total": round(total_score, 1),
             "total_questions": total_questions,
-            "minutes": minutes,
-            "seconds": seconds,
+            "minutes": spent_seconds // 60,
+            "seconds": spent_seconds % 60,
             "percentage": percentage,
             "coins_returned": coins_returned,
             "test_type": "DTM Test",
-            "fanlar": fanlar
+            "max_ball": round(max_ball, 1),
         })
 
-    fan_groups = {}
-    for q in all_questions:
-        fan_groups.setdefault(q.fan, []).append(q)
-
     fanlar_data = []
-    for step, fan in enumerate(fanlar, 1):
-        qs = fan_groups.get(fan, [])
+
+    for step, fan in enumerate(tanlangan, 1):
+        qs = [q for q in all_questions if q.fan_nomi == fan and q.model_name == 'milliy']
         fanlar_data.append({
-            'fan': fan,
-            'step': step,
-            'questions': qs,
-            'ball': 3.1 if step == 1 else (2.1 if step == 2 else 1.1)
+            'fan': fan, 'step': step, 'questions': qs,
+            'ball': 3.1 if step == 1 else 2.1,
+            'turi': 'Ixtisoslik fani',
+        })
+
+    for step, fan in enumerate(majburiy_fanlar, 3):
+        qs = [q for q in all_questions if q.fan_nomi == fan and q.model_name == 'majburiy']
+        fanlar_data.append({
+            'fan': fan, 'step': step, 'questions': qs,
+            'ball': 1.1,
+            'turi': 'Majburiy fan',
         })
 
     return render(request, 'test_process.html', {
-        'all_questions': all_questions,
         'fanlar_data': fanlar_data,
-        'timer_seconds': 3600,
-        'fanlar': fanlar,
         'total_questions': total_questions,
     })
-
-
 # ======================== SAT ========================
 
 @login_required
@@ -872,6 +875,7 @@ def student_analytics(request):
         'listening': get_category_data('Listening'),
         'sat': get_category_data('SAT'),
         'dtm': get_category_data('DTM'),
+        'milliy': get_category_data('Milliy'),  # ← QO'SHILDI
         'recent_results': results.order_by('-date_taken')[:10]
     })
 
@@ -1046,113 +1050,130 @@ def manage_tests(request):
     if request.method == "POST":
         action = request.POST.get("action")
 
+        # ── GURUH YARATISH ────────────────────────────────────────────────────
         if action == "create_group":
-            g_type = request.POST.get("group_category")
-            title = request.POST.get("group_title")
-            content = request.POST.get("passage_content", "")
-            is_paid = request.POST.get("is_paid") == "on"
-            price = request.POST.get("price", 25)
+            g_type   = request.POST.get("group_category")
+            title    = request.POST.get("group_title", "")
+            is_paid  = request.POST.get("is_paid") == "on"
+            price    = request.POST.get("price", 25)
 
             try:
                 if g_type == "READING":
                     ReadingTest.objects.create(
-                        passage_text=content, category='READING',
-                        is_paid=is_paid, price=price
+                        # Part 1
+                        passage_title   = request.POST.get("passage_title_1", ""),
+                        passage_text    = request.POST.get("passage_text_1", ""),
+                        # Part 2
+                        passage_title_2 = request.POST.get("passage_title_2", ""),
+                        passage_text_2  = request.POST.get("passage_text_2", ""),
+                        # Part 3
+                        passage_title_3 = request.POST.get("passage_title_3", ""),
+                        passage_text_3  = request.POST.get("passage_text_3", ""),
+                        category = 'READING',
+                        is_paid  = is_paid,
+                        price    = price,
                     )
                 elif g_type == "LISTENING":
                     ListeningTest.objects.create(
-                        title=title, category='LISTENING',
-                        is_paid=is_paid, price=price
+                        title    = title,
+                        category = 'LISTENING',
+                        is_paid  = is_paid,
+                        price    = price,
                     )
                 elif g_type == "SAT":
                     Sat.objects.create(
-                        title=title, category='SAT',
-                        is_paid=is_paid, price=price
+                        title    = title,
+                        category = 'SAT',
+                        is_paid  = is_paid,
+                        price    = price,
                     )
-                messages.success(request, "Guruh yaratildi!")
+                messages.success(request, "✅ Guruh muvaffaqiyatli yaratildi!")
             except Exception as e:
                 messages.error(request, f"Xatolik: {e}")
 
+        # ── SAVOL QO'SHISH ────────────────────────────────────────────────────
         elif action == "add_question":
-            cat = request.POST.get("category")
-            group_id = request.POST.get("test_group")
+            cat        = request.POST.get("category")
+            group_id   = request.POST.get("test_group")
             savol_matni = request.POST.get("savol")
 
             try:
                 if cat == "IELTS_READING":
                     IELTS_Reading.objects.create(
-                        test_group_id=group_id,
-                        savol=savol_matni,
-                        question_type=request.POST.get("question_type", "ABCD"),
-                        part=request.POST.get("part", 1),
-                        variant_a=request.POST.get("variant_a", ""),
-                        variant_b=request.POST.get("variant_b", ""),
-                        variant_c=request.POST.get("variant_c", ""),
-                        variant_d=request.POST.get("variant_d", ""),
-                        togri_variant=request.POST.get("togri_variant"),
-                        question_image=request.FILES.get("question_image"),
-                        image_a=request.FILES.get("image_a"),
-                        image_b=request.FILES.get("image_b"),
-                        image_c=request.FILES.get("image_c"),
-                        image_d=request.FILES.get("image_d"),
+                        test_group_id  = group_id,
+                        savol          = savol_matni,
+                        question_type  = request.POST.get("question_type", "ABCD"),
+                        part           = request.POST.get("part", 1),
+                        variant_a      = request.POST.get("variant_a", ""),
+                        variant_b      = request.POST.get("variant_b", ""),
+                        variant_c      = request.POST.get("variant_c", ""),
+                        variant_d      = request.POST.get("variant_d", ""),
+                        togri_variant  = request.POST.get("togri_variant", ""),
+                        question_image = request.FILES.get("question_image"),
+                        image_a        = request.FILES.get("image_a"),
+                        image_b        = request.FILES.get("image_b"),
+                        image_c        = request.FILES.get("image_c"),
+                        image_d        = request.FILES.get("image_d"),
                     )
                 elif cat == "IELTS_LISTENING":
                     IELTSListeningQuestion.objects.create(
-                        test_group_id=group_id,
-                        savol=savol_matni,
-                        question_type=request.POST.get("question_type", "ABCD"),
-                        variant_a=request.POST.get("variant_a", ""),
-                        variant_b=request.POST.get("variant_b", ""),
-                        variant_c=request.POST.get("variant_c", ""),
-                        variant_d=request.POST.get("variant_d", ""),
-                        togri_variant=request.POST.get("togri_variant"),
-                        audio=request.FILES.get("audio"),
-                        map_image=request.FILES.get("map_image"),
-                        part=request.POST.get("part", 1),
+                        test_group_id = group_id,
+                        savol         = savol_matni,
+                        question_type = request.POST.get("question_type", "ABCD"),
+                        variant_a     = request.POST.get("variant_a", ""),
+                        variant_b     = request.POST.get("variant_b", ""),
+                        variant_c     = request.POST.get("variant_c", ""),
+                        variant_d     = request.POST.get("variant_d", ""),
+                        togri_variant = request.POST.get("togri_variant", ""),
+                        audio         = request.FILES.get("audio"),
+                        map_image     = request.FILES.get("map_image"),
+                        part          = request.POST.get("part", 1),
                     )
                 elif cat == "SAT":
                     SATQuestion.objects.create(
-                        test_group_id=group_id,
-                        savol=savol_matni,
-                        variant_a=request.POST.get("variant_a", ""),
-                        variant_b=request.POST.get("variant_b", ""),
-                        variant_c=request.POST.get("variant_c", ""),
-                        variant_d=request.POST.get("variant_d", ""),
-                        togri_variant=request.POST.get("togri_variant"),
-                        question_image=request.FILES.get("question_image"),
-                        image_a=request.FILES.get("image_a"),
-                        image_b=request.FILES.get("image_b"),
-                        image_c=request.FILES.get("image_c"),
-                        image_d=request.FILES.get("image_d"),
+                        test_group_id  = group_id,
+                        savol          = savol_matni,
+                        variant_a      = request.POST.get("variant_a", ""),
+                        variant_b      = request.POST.get("variant_b", ""),
+                        variant_c      = request.POST.get("variant_c", ""),
+                        variant_d      = request.POST.get("variant_d", ""),
+                        togri_variant  = request.POST.get("togri_variant", ""),
+                        question_image = request.FILES.get("question_image"),
+                        image_a        = request.FILES.get("image_a"),
+                        image_b        = request.FILES.get("image_b"),
+                        image_c        = request.FILES.get("image_c"),
+                        image_d        = request.FILES.get("image_d"),
                     )
                 elif cat == "MILL_NATIONAL":
                     Milliy_Sertifikat.objects.create(
-                        fan=request.POST.get("fan"),
-                        savol=savol_matni,
-                        variant_a=request.POST.get("variant_a", ""),
-                        variant_b=request.POST.get("variant_b", ""),
-                        variant_c=request.POST.get("variant_c", ""),
-                        variant_d=request.POST.get("variant_d", ""),
-                        togri_variant=request.POST.get("togri_variant"),
-                        savol_rasm=request.FILES.get("savol_rasm"),
-                        image_a=request.FILES.get("image_a"),
-                        image_b=request.FILES.get("image_b"),
-                        image_c=request.FILES.get("image_c"),
-                        image_d=request.FILES.get("image_d"),
+                        fan           = request.POST.get("fan"),
+                        savol         = savol_matni,
+                        variant_a     = request.POST.get("variant_a", ""),
+                        variant_b     = request.POST.get("variant_b", ""),
+                        variant_c     = request.POST.get("variant_c", ""),
+                        variant_d     = request.POST.get("variant_d", ""),
+                        togri_variant = request.POST.get("togri_variant", ""),
+                        savol_rasm    = request.FILES.get("savol_rasm"),
+                        image_a       = request.FILES.get("image_a"),
+                        image_b       = request.FILES.get("image_b"),
+                        image_c       = request.FILES.get("image_c"),
+                        image_d       = request.FILES.get("image_d"),
                     )
-
-                messages.success(request, "Savol muvaffaqiyatli saqlandi!")
+                messages.success(request, "✅ Savol muvaffaqiyatli saqlandi!")
             except Exception as e:
                 messages.error(request, f"Xatolik: {e}")
 
         return redirect("manage_tests")
 
+    # ── GET ───────────────────────────────────────────────────────────────────
     return render(request, "manage_tests.html", {
-        "reading_tests": ReadingTest.objects.all().order_by('-id'),
-        "listening_tests": ListeningTest.objects.all().order_by('-id'),
-        "sat_tests": Sat.objects.all().order_by('-id'),
+        "reading_tests":      ReadingTest.objects.all().order_by('-id'),
+        "listening_tests":    ListeningTest.objects.all().order_by('-id'),
+        "sat_tests":          Sat.objects.all().order_by('-id'),
         "milliy_fan_choices": Milliy_Sertifikat.FAN_CHOICES,
     })
+
+
 
 
 # ======================== AI EXPLANATION ========================
@@ -1207,16 +1228,3 @@ def explain_error_view(request, submission_id):
 
     except Exception as e:
         return JsonResponse({'explanation': f"Savol topilmadi: {str(e)}"}, status=200)
-
-
-def home(request):
-    news_list = News.objects.filter(is_active=True).order_by('-created_at')
-    return render(request, 'home.html', {'news_list': news_list})
-
-def news_list(request):
-    news_list = News.objects.filter(is_active=True).order_by('-created_at')
-    return render(request, 'news_list.html', {'news_list': news_list})
-
-def news_detail(request, slug):
-    news = get_object_or_404(News, slug=slug, is_active=True)
-    return render(request, 'news_detail.html', {'news': news})

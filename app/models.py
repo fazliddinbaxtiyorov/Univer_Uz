@@ -60,9 +60,27 @@ class IELTS_writing(models.Model):
 
 
 class ReadingTest(PaidTestMixin):
-    passage_text = models.TextField(verbose_name="Passage matni")
+    # ── Part 1 (eski fieldlar — o'zgarmadi) ──
     passage_title = models.CharField(max_length=255, blank=True, default='')
+    passage_text  = models.TextField(verbose_name="Passage 1 matni")
+
+    # ── Part 2 (YANGI) ──
+    passage_title_2 = models.CharField(max_length=255, blank=True, default='', verbose_name="Passage 2 sarlavha")
+    passage_text_2  = models.TextField(blank=True, default='', verbose_name="Passage 2 matni")
+
+    # ── Part 3 (YANGI) ──
+    passage_title_3 = models.CharField(max_length=255, blank=True, default='', verbose_name="Passage 3 sarlavha")
+    passage_text_3  = models.TextField(blank=True, default='', verbose_name="Passage 3 matni")
+
     category = models.CharField(max_length=15, choices=[('READING', 'Reading')], default='READING')
+
+    def get_passage(self, part_num):
+        """Part raqami bo'yicha (title, text) qaytaradi"""
+        return {
+            1: (self.passage_title,   self.passage_text),
+            2: (self.passage_title_2, self.passage_text_2),
+            3: (self.passage_title_3, self.passage_text_3),
+        }.get(part_num, ('', ''))
 
     def __str__(self):
         return f"Reading Test #{self.id} | {self.passage_title[:40]}"
@@ -152,7 +170,7 @@ class IELTSListeningQuestion(models.Model):
         return f"Part {self.part} | {self.savol[:40]}"
 
 
-class Milliy_Sertifikat(PaidTestMixin):
+class Milliy_Sertifikat(models.Model):
     FAN_CHOICES = (
         ('Matematika', 'Matematika'),
         ('Ona Tili', 'Ona Tili'),
@@ -195,6 +213,27 @@ class Sat(PaidTestMixin):
     def __str__(self):
         return self.title
 
+class DTM_Majburiy(models.Model):
+    FAN_CHOICES = (
+        ('Ona Tili', 'Ona Tili'),
+        ('Matematika', 'Matematika'),
+        ('Tarix', 'Tarix'),
+    )
+    fan = models.CharField(max_length=20, choices=FAN_CHOICES)
+    savol = models.TextField()
+    savol_rasm = models.ImageField(upload_to='dtm_majburiy/questions/', blank=True, null=True)
+    variant_a = models.CharField(max_length=255, default='')
+    variant_b = models.CharField(max_length=255, default='')
+    variant_c = models.CharField(max_length=255, default='')
+    variant_d = models.CharField(max_length=255, default='')
+    image_a = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    image_b = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    image_c = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    image_d = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
+
+    def __str__(self):
+        return f"{self.fan} | {self.savol[:30]}"
 
 class SATQuestion(models.Model):
     QUESTION_TYPES = [

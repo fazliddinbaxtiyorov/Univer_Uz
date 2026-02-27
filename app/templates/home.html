@@ -1,145 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load static%}
+{% load static %}
 <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="stylesheet" href="{% static 'dark-mode.css' %}">
 <style>
      html, body {
     max-width: 100%;
-    overflow-x: hidden; /* Gorizontal suzishni butunlay taqiqlaydi */
+    overflow-x: hidden;
     margin: 0;
     padding: 0;
 }
-    /* --- MOBIL SIDEBAR DIZAYNI (Rasm f2ceb9 ga asosan) --- */
 @media (max-width: 768px) {
     .nav-menu {
-        position: fixed;
-        top: 0;
-        right: -100%; /* Dastlab yashirin */
-        width: 280px;
-        height: 100vh;
-        background: #1a3a5a; /* To'q ko'k fon */
-        flex-direction: column;
-        padding: 80px 40px;
-        transition: 0.4s ease-in-out;
-        z-index: 999;
-        display: block !important; /* Flex'dan Block'ga */
+        position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
+        background: #1a3a5a; flex-direction: column; padding: 80px 40px;
+        transition: 0.4s ease-in-out; z-index: 999; display: block !important;
     }
-
-    .nav-menu.active {
-        right: 0; /* Menyu ochilganda */
-    }
-
-    .nav-menu ul {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 35px;
-    }
-
-    .nav-menu ul li a {
-        font-size: 18px;
-        color: white;
-    }
-
-    .auth-links {
-        margin-top: 40px;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .btn-secondary {
-        border: 2px solid white !important;
-        background: transparent !important;
-        text-align: center;
-    }
+    .nav-menu.active { right: 0; }
+    .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 35px; }
+    .nav-menu ul li a { font-size: 18px; color: white; }
+    .auth-links { margin-top: 40px; flex-direction: column; width: 100%; }
+    .btn-secondary { border: 2px solid white !important; background: transparent !important; text-align: center; }
 }
-
-/* --- TEST KARTALARI DIZAYNI (Rasm e70098 ga asosan) --- */
 .ielts-card {
     background-color: #ffffff;
-    background-image: radial-gradient(#e5e7eb 1px, transparent 1px); /* Katak fon */
-    background-size: 20px 20px; /* Katak o'lchami */
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;
+    display: flex; flex-direction: column; gap: 15px;
 }
-
-.card-stats-row {
-    display: flex;
-    gap: 15px;
-    margin: 15px 0;
-}
-
-.stat-box {
-    background: #f8fafc;
-    border: 1px solid #f1f5f9;
-    padding: 12px;
-    border-radius: 8px;
-    flex: 1;
-}
-
+.card-stats-row { display: flex; gap: 15px; margin: 15px 0; }
+.stat-box { background: #f8fafc; border: 1px solid #f1f5f9; padding: 12px; border-radius: 8px; flex: 1; }
 .stat-label { font-size: 12px; color: #64748b; }
 .stat-value { font-size: 18px; font-weight: 700; color: #1e293b; }
-
 .btn-discuss {
-    background: white;
-    border: 1px solid #e2e8f0;
-    color: #1e293b;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-decoration: none;
+    background: white; border: 1px solid #e2e8f0; color: #1e293b; padding: 10px;
+    border-radius: 8px; text-align: center; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
 }
-    .hero {
+.hero {
     background: linear-gradient(135deg, rgba(30, 58, 95, 0.85) 0%, rgba(21, 43, 71, 0.9) 100%),
         url('../../media/media/hero-background.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: var(--color-white);
-    padding: var(--spacing-3xl) 0;
-    text-align: center;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    background-attachment: fixed; color: var(--color-white);
+    padding: var(--spacing-3xl) 0; text-align: center; position: relative;
+}
+.hero-title { font-size: var(--font-size-5xl); color: var(--color-white); margin-bottom: var(--spacing-lg); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.hero-subtitle { font-size: var(--font-size-xl); color: var(--color-gray-200); margin-bottom: var(--spacing-2xl); max-width: 700px; margin-left: auto; margin-right: auto; }
+.hero-actions { display: flex; gap: var(--spacing-lg); justify-content: center; flex-wrap: wrap; }
+
+/* ── NEWS SECTION ─────────────────────────────────────── */
+.news-section {
+    background: #f8fafc;
+    padding: 80px 0;
+}
+.section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1e293b;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px; left: 50%; transform: translateX(-50%);
+    width: 48px; height: 3px;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    border-radius: 2px;
+}
+.section-subtitle {
+    color: #64748b;
+    font-size: 15px;
+    margin-top: 18px;
+    margin-bottom: 48px;
+}
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+.news-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+}
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(99,102,241,.12);
+}
+.news-img-wrap {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e0e7ff, #f5f3ff);
+    flex-shrink: 0;
     position: relative;
 }
-
-.hero-title {
-    font-size: var(--font-size-5xl);
-    color: var(--color-white);
-    margin-bottom: var(--spacing-lg);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.news-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
 }
-
-.hero-subtitle {
-    font-size: var(--font-size-xl);
-    color: var(--color-gray-200);
-    margin-bottom: var(--spacing-2xl);
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+.news-card:hover .news-img-wrap img { transform: scale(1.05); }
+.news-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; color: #a5b4fc;
 }
-
-.hero-actions {
-    display: flex;
-    gap: var(--spacing-lg);
-    justify-content: center;
-    flex-wrap: wrap;
+.news-body {
+    padding: 20px 22px 22px;
+    display: flex; flex-direction: column; flex: 1;
 }
+.news-meta {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+}
+.news-cat {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px;
+    background: #eef2ff; color: #6366f1;
+    padding: 3px 10px; border-radius: 20px;
+}
+.news-date {
+    font-size: 12px; color: #94a3b8;
+    display: flex; align-items: center; gap: 4px;
+}
+.news-card-title {
+    font-size: 16px; font-weight: 700; color: #1e293b;
+    margin: 0 0 10px; line-height: 1.45;
+}
+.news-excerpt {
+    font-size: 13px; color: #64748b;
+    line-height: 1.65; flex: 1;
+}
+.news-read-more {
+    margin-top: 16px;
+    font-size: 13px; font-weight: 700; color: #6366f1;
+    display: flex; align-items: center; gap: 4px;
+}
+.news-read-more svg { transition: transform .2s; }
+.news-card:hover .news-read-more svg { transform: translateX(4px); }
+
+.news-empty {
+    grid-column: span 3; text-align: center;
+    padding: 60px 20px; color: #94a3b8;
+}
+.news-empty span { font-size: 48px; display: block; margin-bottom: 12px; }
+.news-empty p { font-size: 15px; }
+
+@media (max-width: 900px) { .news-grid { grid-template-columns: 1fr 1fr; } .news-empty { grid-column: span 2; } }
+@media (max-width: 580px) { .news-grid { grid-template-columns: 1fr; } .news-empty { grid-column: span 1; } .news-img-wrap { height: 180px; } }
 </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="UniBase - Exam preparation platform for SAT, IELTS, DTM, Milliy Certificate, and IQ tests">
+    <meta name="description" content="UniBase - Exam preparation platform for SAT, IELTS, DTM, Milliy Certificate, and IQ tests">
     <title>UniBase - Preparation Like a Real Exam</title>
 </head>
 
@@ -152,13 +175,9 @@
                 <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
                 <span class="logo-text">UniBase</span>
             </a>
-
             <button class="mobile-menu-btn" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
-
             <nav class="nav-menu">
                 <ul>
                     <li><a href="{% url 'home' %}#tests" data-translate="nav_tests">Tests</a></li>
@@ -166,7 +185,6 @@
                     <li><a href="{% url 'home' %}#news" data-translate="nav_news">News</a></li>
                     <li><a href="{% url 'home' %}#features" data-translate="nav_features">Features</a></li>
                     <li><a href="https://t.me/unibase_support_bot" data-translate="nav_support">Support</a></li>
-
                     <li>
                         <select id="language-selector" class="language-selector">
                             <option value="en">English</option>
@@ -189,111 +207,139 @@
             </nav>
         </div>
     </div>
-</header>
+    </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <h1 class="hero-title" data-translate="hero_title">Preparation Like a Real Exam</h1>
-            <p class="hero-subtitle" data-translate="hero_subtitle">IELTS, SAT, Milliy certificate, IQ, DTM — timed
-                practice tests in a realistic exam
-                environment</p>
-            {% if user.is_authenticated %}
-
-            {%else%}
+            <p class="hero-subtitle" data-translate="hero_subtitle">IELTS, SAT, Milliy certificate, IQ, DTM — timed practice tests in a realistic exam environment</p>
+            {% if not user.is_authenticated %}
                 <div class="hero-actions">
                     <a href="{% url 'sign' %}" class="btn btn-primary btn-lg" data-translate="hero_btn_start">Start Free</a>
                     <a href="#tests" class="btn btn-secondary btn-lg" data-translate="hero_btn_view">View Tests</a>
                 </div>
-            {%endif%}
+            {% endif %}
         </div>
     </section>
 
     <!-- Tests Section -->
     <section id="tests" class="section">
-    <div class="container">
-        <h2 class="text-center mb-4" data-translate="tests_title">Choose Your Test</h2>
-        <div class="grid grid-4" id="tests-grid">
-
-            <div class="test-card">
-                <span class="test-card-badge" data-translate="test_badge_english">ENGLISH</span>
-                <h3 class="card-title" data-translate="test_ielts_title">IELTS</h3>
-                <p class="card-description" data-translate="test_ielts_desc">Comprehensive IELTS practice across all sections with realistic exam conditions.</p>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'ielts' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% endif %}
-            </div>
-
-            <div class="test-card">
-                <span class="test-card-badge" data-translate="test_badge_academic">ACADEMIC</span>
-                <h3 class="card-title" data-translate="test_sat_title">SAT</h3>
-                <p class="card-description" data-translate="test_sat_desc">Prepare for SAT with Math and English sections in a timed environment.</p>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'sat' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% endif %}
-            </div>
-
-            <div class="test-card">
-                <span class="test-card-badge" data-translate="test_badge_national">NATIONAL</span>
-                <h3 class="card-title" data-translate="test_milliy_title">Milliy certificate</h3>
-                <p class="card-description" data-translate="test_milliy_desc">National certification exam practice with comprehensive question bank.</p>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'fan_tanlash' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% endif %}
-            </div>
-
-            <div class="test-card">
-                <span class="test-card-badge" data-translate="test_badge_entrance">ENTRANCE</span>
-                <h3 class="card-title" data-translate="test_dtm_title">DTM</h3>
-                <p class="card-description" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic test simulations.</p>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'dtm_select' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-  <section id="features" class="section features-bg"> <div class="container">
-        <h2 class="text-center mb-4" data-translate="features_title">Why Choose UniBase?</h2>
-        <div class="grid grid-3">
-            <div class="card feature-card">
-                <div class="card-header">
-                    <h3 class="card-title" data-translate="feature_realistic_title">🎯 Realistic Exam Environment</h3>
+        <div class="container">
+            <h2 class="text-center mb-4" data-translate="tests_title">Choose Your Test</h2>
+            <div class="grid grid-4" id="tests-grid">
+                <div class="test-card">
+                    <span class="test-card-badge" data-translate="test_badge_english">ENGLISH</span>
+                    <h3 class="card-title" data-translate="test_ielts_title">IELTS</h3>
+                    <p class="card-description" data-translate="test_ielts_desc">Comprehensive IELTS practice across all sections with realistic exam conditions.</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'ielts' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% endif %}
                 </div>
-                <div class="card-body">
-                    <p data-translate="feature_realistic_desc">Experience the pressure and atmosphere of real exams with authentic interfaces, timers, and question formats.</p>
+                <div class="test-card">
+                    <span class="test-card-badge" data-translate="test_badge_academic">ACADEMIC</span>
+                    <h3 class="card-title" data-translate="test_sat_title">SAT</h3>
+                    <p class="card-description" data-translate="test_sat_desc">Prepare for SAT with Math and English sections in a timed environment.</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'sat' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% endif %}
                 </div>
-            </div>
-
-            <div class="card feature-card">
-                <div class="card-header">
-                    <h3 class="card-title" data-translate="feature_analytics_title">📊 Detailed Analytics</h3>
+                <div class="test-card">
+                    <span class="test-card-badge" data-translate="test_badge_national">NATIONAL</span>
+                    <h3 class="card-title" data-translate="test_milliy_title">Milliy certificate</h3>
+                    <p class="card-description" data-translate="test_milliy_desc">National certification exam practice with comprehensive question bank.</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'fan_tanlash' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% endif %}
                 </div>
-                <div class="card-body">
-                    <p data-translate="feature_analytics_desc">Track your performance with comprehensive analysis of your strengths, weaknesses, and progress over time.</p>
-                </div>
-            </div>
-
-            <div class="card feature-card">
-                <div class="card-header">
-                    <h3 class="card-title" data-translate="feature_progress_title">📈 Track Your Progress</h3>
-                </div>
-                <div class="card-body">
-                    <p data-translate="feature_progress_desc">Monitor your improvement with dynamic progress tracking, personalized recommendations, and goal setting.</p>
+                <div class="test-card">
+                    <span class="test-card-badge" data-translate="test_badge_entrance">ENTRANCE</span>
+                    <h3 class="card-title" data-translate="test_dtm_title">DTM</h3>
+                    <p class="card-description" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic test simulations.</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dtm_select' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         NEWS SECTION
+    ══════════════════════════════════════════ -->
+    <section id="news" class="news-section">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-title" data-translate="nav_news">Latest News</h2>
+            </div>
+
+            <div class="news-grid">
+                {% for item in news_items %}
+                <a class="news-card" href="#">
+                    <div class="news-img-wrap">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                        {% else %}
+                            <div class="news-img-placeholder">📰</div>
+                        {% endif %}
+                    </div>
+                    <div class="news-body">
+                        <div class="news-meta">
+                            {% if item.category %}
+                                <span class="news-cat">{{ item.category }}</span>
+                            {% endif %}
+                            <span class="news-date">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                {{ item.created_at|date:"M d, Y" }}
+                            </span>
+                        </div>
+                        <h3 class="news-card-title">{{ item.title }}</h3>
+                        <h5 class="news-card-title">{{ item.content }}</h5>
+                        <p class="news-excerpt">
+                            {% if item.excerpt %}{{ item.excerpt|truncatewords:18 }}
+                            {% else %}{{ item.content|truncatewords:18 }}{% endif %}
+                        </p>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="news-empty">
+                    <span>📭</span>
+                    <p>No news available at the moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section features-bg">
+        <div class="container">
+            <h2 class="text-center mb-4" data-translate="features_title">Why Choose UniBase?</h2>
+            <div class="grid grid-3">
+                <div class="card feature-card">
+                    <div class="card-header"><h3 class="card-title" data-translate="feature_realistic_title">🎯 Realistic Exam Environment</h3></div>
+                    <div class="card-body"><p data-translate="feature_realistic_desc">Experience the pressure and atmosphere of real exams with authentic interfaces, timers, and question formats.</p></div>
+                </div>
+                <div class="card feature-card">
+                    <div class="card-header"><h3 class="card-title" data-translate="feature_analytics_title">📊 Detailed Analytics</h3></div>
+                    <div class="card-body"><p data-translate="feature_analytics_desc">Track your performance with comprehensive analysis of your strengths, weaknesses, and progress over time.</p></div>
+                </div>
+                <div class="card feature-card">
+                    <div class="card-header"><h3 class="card-title" data-translate="feature_progress_title">📈 Track Your Progress</h3></div>
+                    <div class="card-body"><p data-translate="feature_progress_desc">Monitor your improvement with dynamic progress tracking, personalized recommendations, and goal setting.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -309,9 +355,8 @@
         </div>
     </footer>
 
-  <script src="{% static 'language.js' %}"></script>
+    <script src="{% static 'language.js' %}"></script>
     <script src="{% static 'theme.js' %}"></script>
     <script src="{% static 'main.js' %}"></script>
 </body>
-
 </html>

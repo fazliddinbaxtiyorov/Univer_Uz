@@ -7,8 +7,6 @@
     <title>DTM Test - UniBase</title>
     <style>
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f8; color: #333; }
-
-        /* ===== TOPBAR ===== */
         .topbar {
             position: sticky; top: 0; z-index: 1000;
             background: #0f2742; color: #fff;
@@ -30,27 +28,23 @@
         .topbar-submit {
             background: #4cc9f0; border: none; padding: 9px 18px;
             border-radius: 9px; font-weight: 700; cursor: pointer;
-            font-size: 13px; color: #0f2742; transition: all 0.2s;
-            white-space: nowrap;
+            font-size: 13px; color: #0f2742; transition: all 0.2s; white-space: nowrap;
         }
         .topbar-submit:hover { background: #38b8e0; transform: translateY(-1px); }
-
-        /* ===== LAYOUT ===== */
         .layout {
             display: grid; grid-template-columns: 1fr 290px;
             gap: 22px; max-width: 1200px; margin: 26px auto; padding: 0 20px;
             align-items: start;
         }
-
-        /* ===== FAN SARLAVHASI ===== */
         .fan-header {
             display: flex; align-items: center; gap: 14px;
-            background: linear-gradient(135deg, #0f2742 0%, #1c3f6e 100%);
             border-radius: 14px; padding: 15px 22px;
             margin-bottom: 12px; margin-top: 28px;
             box-shadow: 0 4px 18px rgba(15,39,66,0.2);
             position: relative; overflow: hidden;
         }
+        .fan-header.ixtisoslik { background: linear-gradient(135deg, #0f2742 0%, #1c3f6e 100%); }
+        .fan-header.majburiy { background: linear-gradient(135deg, #1a4731 0%, #166534 100%); }
         .fan-header:first-child { margin-top: 0; }
         .fan-header::after {
             content: ''; position: absolute; right: -15px; top: -15px;
@@ -65,19 +59,15 @@
         }
         .fan-info { flex: 1; }
         .fan-title { font-size: 1.05rem; font-weight: 800; color: #fff; margin-bottom: 2px; }
-        .fan-meta { display: flex; gap: 14px; }
+        .fan-meta { display: flex; gap: 14px; flex-wrap: wrap; }
         .fan-badge {
             font-size: 11px; font-weight: 600; padding: 2px 10px;
             border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;
         }
         .fan-badge-count { background: rgba(76,201,240,0.15); color: #4cc9f0; border: 1px solid rgba(76,201,240,0.3); }
         .fan-badge-ball { background: rgba(56,176,0,0.15); color: #4ade80; border: 1px solid rgba(56,176,0,0.3); }
-        .fan-step {
-            font-size: 11px; color: rgba(255,255,255,0.4);
-            margin-left: auto; font-weight: 500; align-self: center;
-        }
-
-        /* ===== SAVOL KARTASI ===== */
+        .fan-badge-turi { background: rgba(255,200,0,0.15); color: #fbbf24; border: 1px solid rgba(255,200,0,0.3); }
+        .fan-step { font-size: 11px; color: rgba(255,255,255,0.4); margin-left: auto; font-weight: 500; align-self: center; }
         .question-card {
             background: #fff; border-radius: 13px; padding: 20px 22px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.04); border: 1px solid #e8ecf1;
@@ -93,11 +83,9 @@
         }
         .q-text { font-size: 0.97rem; font-weight: 600; color: #1a202c; line-height: 1.55; padding-top: 7px; }
         .savol-rasm { max-width: 100%; max-height: 240px; border-radius: 9px; margin-bottom: 13px; border: 1px solid #e0e6ed; object-fit: contain; }
-
-        /* ===== VARIANTLAR ===== */
         .options-list { list-style: none; padding: 0; margin: 0; }
         .option-item {
-            display: flex; align-items: center; gap: 0;
+            display: flex; align-items: center;
             border: 1.5px solid #e2e8f0; border-radius: 10px;
             margin-bottom: 8px; cursor: pointer; transition: all 0.15s; overflow: hidden;
         }
@@ -116,8 +104,6 @@
         }
         .option-item:has(input:checked) .option-letter { background: #0f2742; color: #fff; }
         .variant-rasm { max-width: 150px; max-height: 100px; border-radius: 7px; border: 1px solid #e0e6ed; object-fit: contain; }
-
-        /* ===== NAVIGATOR ===== */
         .navigator {
             position: sticky; top: 76px; background: #fff;
             border-radius: 14px; padding: 18px 16px; border: 1px solid #e3e8f1;
@@ -125,7 +111,6 @@
         }
         .nav-title { font-size: 14px; font-weight: 800; color: #0f2742; margin-bottom: 2px; }
         .nav-subtitle { font-size: 11px; color: #94a3b8; margin-bottom: 14px; }
-
         .nav-fan-block { margin-bottom: 14px; }
         .nav-fan-label {
             font-size: 10px; font-weight: 700; color: #0f2742;
@@ -142,28 +127,19 @@
         }
         .nav-item.answered { background: #e8fff1; border-color: #38b000; color: #1a7a00; }
         .nav-item:hover { background: #eef2f8; border-color: #0f2742; }
-
         .nav-divider { height: 1px; background: #f1f5f9; margin: 10px 0; }
-
         .nav-legend { margin-top: 10px; font-size: 11px; color: #888; }
         .nav-legend-row { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
         .legend-box { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
-
-        .nav-stats {
-            background: #f8fafc; border-radius: 9px; padding: 10px 12px;
-            margin-top: 12px; font-size: 12px; color: #64748b;
-        }
+        .nav-stats { background: #f8fafc; border-radius: 9px; padding: 10px 12px; margin-top: 12px; font-size: 12px; color: #64748b; }
         .nav-stats-row { display: flex; justify-content: space-between; margin-top: 4px; }
         .nav-stats-val { font-weight: 700; color: #0f2742; }
-
         .submit-btn {
             width: 100%; padding: 12px; margin-top: 14px; border-radius: 10px;
             border: none; background: #0f2742; color: #fff; font-weight: 700;
             font-size: 14px; cursor: pointer; transition: all 0.2s;
         }
         .submit-btn:hover { background: #1a3a5a; transform: translateY(-1px); }
-
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
             .layout { grid-template-columns: 1fr; }
             .navigator { position: relative; top: 0; max-height: none; }
@@ -175,11 +151,10 @@
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
     <a href="/" class="logo">UniBase</a>
     <div class="progress-wrap">
-        <div class="progress-label" id="progress-label">0 / {{ total_questions }} savol</div>
+        <div class="progress-label">0 / {{ total_questions }} savol</div>
         <div class="progress-bar-bg">
             <div class="progress-bar" id="p-bar"></div>
         </div>
@@ -188,82 +163,77 @@
     <button type="button" class="topbar-submit" onclick="submitConfirm()">✅ Yakunlash</button>
 </div>
 
-<!-- LAYOUT -->
 <div class="layout">
     <main>
         <form method="post" id="main-form">
             {% csrf_token %}
 
             {% for fanlar_item in fanlar_data %}
-            <!-- ===== FAN SARLAVHASI ===== -->
-            <div class="fan-header" id="fan-section-{{ forloop.counter }}">
+            <div class="fan-header {% if fanlar_item.turi == 'Majburiy fan' %}majburiy{% else %}ixtisoslik{% endif %}">
                 <div class="fan-icon">
                     {% with fan=fanlar_item.fan %}
-                        {% if "Matem" in fan or "matem" in fan %}📐
-                        {% elif "Fizika" in fan or "fizika" in fan %}⚡
-                        {% elif "Kimyo" in fan or "kimyo" in fan %}🧪
-                        {% elif "Biologiya" in fan or "bio" in fan %}🧬
-                        {% elif "Tarix" in fan or "tarix" in fan %}📜
-                        {% elif "Ingliz" in fan or "ingliz" in fan %}🌐
-                        {% elif "Ona til" in fan or "ona" in fan %}📖
-                        {% elif "Geografiya" in fan or "geo" in fan %}🌍
+                        {% if "Matem" in fan %}📐
+                        {% elif "Fizika" in fan %}⚡
+                        {% elif "Kimyo" in fan %}🧪
+                        {% elif "Biologiya" in fan %}🧬
+                        {% elif "Tarix" in fan %}📜
+                        {% elif "Ingliz" in fan %}🌐
+                        {% elif "Ona" in fan %}📖
+                        {% elif "Geo" in fan %}🌍
                         {% elif "Adabiyot" in fan %}✍️
-                        {% elif "Informatika" in fan or "info" in fan %}💻
-                        {% elif "Huquq" in fan or "huquq" in fan %}⚖️
-                        {% elif "Iqtisod" in fan or "iqtisod" in fan %}📊
+                        {% elif "Informatika" in fan %}💻
                         {% else %}📚{% endif %}
                     {% endwith %}
                 </div>
                 <div class="fan-info">
-                    <div class="fan-title">{{ fanlar_item.fan }} testlari</div>
+                    <div class="fan-title">{{ fanlar_item.fan }}</div>
                     <div class="fan-meta">
                         <span class="fan-badge fan-badge-count">📝 {{ fanlar_item.questions|length }} ta savol</span>
                         <span class="fan-badge fan-badge-ball">⭐ {{ fanlar_item.ball }} ball/savol</span>
+                        <span class="fan-badge fan-badge-turi">{{ fanlar_item.turi }}</span>
                     </div>
                 </div>
                 <div class="fan-step">{{ fanlar_item.step }}-fan</div>
             </div>
 
-            <!-- ===== SAVOLLAR ===== -->
             {% for q in fanlar_item.questions %}
-            <div class="question-card" id="q-card-{{ q.id }}">
+            {# q.model_name = 'milliy' yoki 'majburiy' — view dan keladi #}
+            <div class="question-card" id="q-card-{{ q.model_name }}-{{ q.id }}">
                 <div class="q-header">
                     <div class="q-num">{{ forloop.counter }}</div>
                     <div class="q-text">{{ q.savol }}</div>
                 </div>
-
                 {% if q.savol_rasm %}
                     <img src="{{ q.savol_rasm.url }}" alt="Savol rasmi" class="savol-rasm">
                 {% endif %}
-
                 <ul class="options-list">
                     <li class="option-item">
-                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_a" value="A">
-                        <label for="q{{ q.id }}_a">
+                        <input type="radio" name="q_{{ q.model_name }}_{{ q.id }}" id="q_{{ q.model_name }}_{{ q.id }}_a" value="A">
+                        <label for="q_{{ q.model_name }}_{{ q.id }}_a">
                             <span class="option-letter">A</span>
                             {% if q.image_a %}<img src="{{ q.image_a.url }}" alt="A" class="variant-rasm">
                             {% else %}{{ q.variant_a }}{% endif %}
                         </label>
                     </li>
                     <li class="option-item">
-                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_b" value="B">
-                        <label for="q{{ q.id }}_b">
+                        <input type="radio" name="q_{{ q.model_name }}_{{ q.id }}" id="q_{{ q.model_name }}_{{ q.id }}_b" value="B">
+                        <label for="q_{{ q.model_name }}_{{ q.id }}_b">
                             <span class="option-letter">B</span>
                             {% if q.image_b %}<img src="{{ q.image_b.url }}" alt="B" class="variant-rasm">
                             {% else %}{{ q.variant_b }}{% endif %}
                         </label>
                     </li>
                     <li class="option-item">
-                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_c" value="C">
-                        <label for="q{{ q.id }}_c">
+                        <input type="radio" name="q_{{ q.model_name }}_{{ q.id }}" id="q_{{ q.model_name }}_{{ q.id }}_c" value="C">
+                        <label for="q_{{ q.model_name }}_{{ q.id }}_c">
                             <span class="option-letter">C</span>
                             {% if q.image_c %}<img src="{{ q.image_c.url }}" alt="C" class="variant-rasm">
                             {% else %}{{ q.variant_c }}{% endif %}
                         </label>
                     </li>
                     <li class="option-item">
-                        <input type="radio" name="q_{{ q.id }}" id="q{{ q.id }}_d" value="D">
-                        <label for="q{{ q.id }}_d">
+                        <input type="radio" name="q_{{ q.model_name }}_{{ q.id }}" id="q_{{ q.model_name }}_{{ q.id }}_d" value="D">
+                        <label for="q_{{ q.model_name }}_{{ q.id }}_d">
                             <span class="option-letter">D</span>
                             {% if q.image_d %}<img src="{{ q.image_d.url }}" alt="D" class="variant-rasm">
                             {% else %}{{ q.variant_d }}{% endif %}
@@ -278,7 +248,6 @@
         </form>
     </main>
 
-    <!-- NAVIGATOR -->
     <aside class="navigator">
         <div class="nav-title">Savollar Paneli</div>
         <div class="nav-subtitle">Savolga o'tish uchun bosing</div>
@@ -296,7 +265,9 @@
             </div>
             <div class="nav-grid">
                 {% for q in fanlar_item.questions %}
-                    <a href="#q-card-{{ q.id }}" class="nav-item" id="nav-{{ q.id }}">
+                    <a href="#q-card-{{ q.model_name }}-{{ q.id }}"
+                       class="nav-item"
+                       id="nav-{{ q.model_name }}-{{ q.id }}">
                         {{ forloop.counter }}
                     </a>
                 {% endfor %}
@@ -330,48 +301,34 @@
 </div>
 
 <script>
-    // ===== SUBMIT CONFIRM =====
     function submitConfirm() {
-        const answered = new Set(
-            [...allRadios].filter(r => r.checked).map(r => r.name)
-        ).size;
-        const unanswered = totalQuestions - answered;
-
+        const allRadios = document.querySelectorAll('input[type="radio"]');
+        const answered = new Set([...allRadios].filter(r => r.checked).map(r => r.name)).size;
+        const unanswered = {{ total_questions }} - answered;
         if (unanswered > 0) {
-            const ok = confirm(
-                `⚠️ Hali ${unanswered} ta savol javobsiz!\n\nBaribir yakunlashni xohlaysizmi?`
-            );
+            const ok = confirm(`⚠️ Hali ${unanswered} ta savol javobsiz!\n\nBaribir yakunlashni xohlaysizmi?`);
             if (!ok) return;
         }
         document.getElementById('main-form').submit();
     }
-</script>
-<script>
-    // 180 daqiqa soniyalarda
+
     const TOTAL_TIME = 180 * 60;
     const timerEl = document.getElementById("timer-display");
     const mainForm = document.getElementById('main-form');
 
-    // 1. Vaqtni aniqlash (Xotiradan olish yoki yangi boshlash)
     let timeLeft;
     const savedTime = localStorage.getItem('test_timer_seconds');
-    const startTime = localStorage.getItem('test_start_timestamp');
+    const savedStart = localStorage.getItem('test_start_timestamp');
 
-    if (savedTime && startTime) {
-        // Agar avval saqlangan bo'lsa, o'tgan vaqtni hisoblab chiqamiz
-        const currentTime = Math.floor(Date.now() / 1000);
-        const passedTime = currentTime - parseInt(startTime);
-        timeLeft = parseInt(savedTime) - passedTime;
-
-        if (timeLeft <= 0) timeLeft = 0;
+    if (savedTime && savedStart) {
+        const passed = Math.floor(Date.now() / 1000) - parseInt(savedStart);
+        timeLeft = Math.max(0, parseInt(savedTime) - passed);
     } else {
-        // Agar birinchi marta kirayotgan bo'lsa
         timeLeft = TOTAL_TIME;
         localStorage.setItem('test_timer_seconds', timeLeft);
         localStorage.setItem('test_start_timestamp', Math.floor(Date.now() / 1000));
     }
 
-    // 2. Taymer funksiyasi
     const timerInterval = setInterval(() => {
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
@@ -380,42 +337,36 @@
             mainForm.submit();
             return;
         }
-
         timeLeft--;
-
-        // Har 5 soniyada xotirani yangilab turish (zaxira uchun)
         if (timeLeft % 5 === 0) {
             localStorage.setItem('test_timer_seconds', timeLeft);
             localStorage.setItem('test_start_timestamp', Math.floor(Date.now() / 1000));
         }
-
-        // Vaqtni formatlash (MM:SS)
         const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
         const s = String(timeLeft % 60).padStart(2, '0');
         timerEl.textContent = `${m}:${s}`;
-
-        // 5 daqiqa qolganda ogohlantirish (vizual)
         if (timeLeft < 300) {
             timerEl.style.color = "#ff4d4d";
             timerEl.style.borderColor = "#ff4d4d";
         }
     }, 1000);
 
-    // 3. Test yakunlanganda xotirani tozalash
     mainForm.addEventListener('submit', () => {
         localStorage.removeItem('test_timer_seconds');
         localStorage.removeItem('test_start_timestamp');
     });
 
-    // --- Progress Bar va Navigator kodi ---
     const allRadios = document.querySelectorAll('input[type="radio"]');
     const pBar = document.getElementById('p-bar');
-    const totalQuestions = {{ total_questions }}; // Django o'zgaruvchisi
+    const totalQuestions = {{ total_questions }};
 
     allRadios.forEach(radio => {
         radio.addEventListener('change', () => {
-            const qId = radio.name.replace('q_', '');
-            const navItem = document.getElementById(`nav-${qId}`);
+            // name = "q_milliy_5" → split: ["q", "milliy", "5"]
+            const parts = radio.name.split('_');
+            const modelName = parts[1];      // milliy yoki majburiy
+            const qId = parts[2];            // id raqami
+            const navItem = document.getElementById(`nav-${modelName}-${qId}`);
             if (navItem) navItem.classList.add('answered');
 
             const answered = new Set([...allRadios].filter(r => r.checked).map(r => r.name)).size;

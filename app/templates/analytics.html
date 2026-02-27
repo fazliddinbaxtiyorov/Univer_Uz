@@ -182,6 +182,7 @@
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('listening')">🎧 Listening</button>
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('sat')">🎓 SAT</button>
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('dtm')">🏛️ DTM</button>
+                    <button class="btn btn-light text-start p-3 border-0" onclick="updateView('milliy')">🎓 Milliy Sertifikat</button>
                 </div>
             </div>
         </div>
@@ -192,13 +193,15 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const store = {
-        writing: { title: "IELTS Writing", avg: "{{ writing.avg }}", count: "{{ writing.count }}", max: "{{ writing.max }}", scores: {{ writing.scores|safe }}, dates: {{ writing.dates|safe }} },
-        reading: { title: "IELTS Reading", avg: "{{ reading.avg }}", count: "{{ reading.count }}", max: "{{ reading.max }}", scores: {{ reading.scores|safe }}, dates: {{ reading.dates|safe }} },
-        listening: { title: "IELTS Listening", avg: "{{ listening.avg }}", count: "{{ listening.count }}", max: "{{ listening.max }}", scores: {{ listening.scores|safe }}, dates: {{ listening.dates|safe }} },
-        sat: { title: "SAT Test", avg: "{{ sat.avg }}", count: "{{ sat.count }}", max: "{{ sat.max }}", scores: {{ sat.scores|safe }}, dates: {{ sat.dates|safe }} },
-        dtm: { title: "DTM Test", avg: "{{ dtm.avg }}", count: "{{ dtm.count }}", max: "{{ dtm.max }}", scores: {{ dtm.scores|safe }}, dates: {{ dtm.dates|safe }} }
-    };
+   // store obyektida dtm dan keyin:
+const store = {
+    writing:   { title: "IELTS Writing",       avg: "{{ writing.avg }}",   count: "{{ writing.count }}",   max: "{{ writing.max }}",   scores: {{ writing.scores|safe }},   dates: {{ writing.dates|safe }} },
+    reading:   { title: "IELTS Reading",        avg: "{{ reading.avg }}",   count: "{{ reading.count }}",   max: "{{ reading.max }}",   scores: {{ reading.scores|safe }},   dates: {{ reading.dates|safe }} },
+    listening: { title: "IELTS Listening",      avg: "{{ listening.avg }}", count: "{{ listening.count }}", max: "{{ listening.max }}", scores: {{ listening.scores|safe }}, dates: {{ listening.dates|safe }} },
+    sat:       { title: "SAT Test",             avg: "{{ sat.avg }}",       count: "{{ sat.count }}",       max: "{{ sat.max }}",       scores: {{ sat.scores|safe }},       dates: {{ sat.dates|safe }} },
+    dtm:       { title: "DTM Test",             avg: "{{ dtm.avg }}",       count: "{{ dtm.count }}",       max: "{{ dtm.max }}",       scores: {{ dtm.scores|safe }},       dates: {{ dtm.dates|safe }} },
+    milliy:    { title: "Milliy Sertifikat",    avg: "{{ milliy.avg }}",    count: "{{ milliy.count }}",    max: "{{ milliy.max }}",    scores: {{ milliy.scores|safe }},    dates: {{ milliy.dates|safe }} }
+};
 
     const ctx = document.getElementById('analyticsChart').getContext('2d');
 
