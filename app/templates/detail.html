@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Writing Mobile Ready</title>
+    <title>IELTS Writing - {{ question.get_task_type_display }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
@@ -20,7 +20,6 @@
             height: 100vh;
         }
 
-        /* Header - Har doim tepada qat'iy turadi */
         .header {
             background: var(--ielts-navy);
             color: white;
@@ -41,14 +40,12 @@
             font-family: monospace;
         }
 
-        /* Asosiy konteyner */
         .main-container {
             display: flex;
             flex: 1;
-            overflow: hidden; /* Desktopda scrollingni boshqarish uchun */
+            overflow: hidden;
         }
 
-        /* Savol qismi */
         .task-pane {
             flex: 1;
             background: white;
@@ -57,7 +54,6 @@
             border-right: 2px solid #ddd;
         }
 
-        /* Editor qismi */
         .editor-pane {
             flex: 1.5;
             display: flex;
@@ -66,7 +62,6 @@
             background: #fff;
         }
 
-        /* TEXTAREA - Editor */
         .essay-input {
             flex: 1;
             width: 100%;
@@ -96,21 +91,20 @@
             font-size: 0.95rem;
         }
 
-        /* MOBILE UCHUN MOSLASHUV (Responsive) */
         @media (max-width: 768px) {
             .main-container {
-                flex-direction: column; /* Ustma-ust joylashish */
+                flex-direction: column;
                 overflow-y: auto;
             }
             .task-pane {
                 flex: none;
                 border-right: none;
                 border-bottom: 2px solid #ddd;
-                max-height: 40%; /* Savol ko'p joy egallamasligi uchun */
+                max-height: 40%;
             }
             .editor-pane {
                 flex: none;
-                height: 500px; /* Telefonda editor balandligi */
+                height: 500px;
             }
             .header {
                 padding: 10px;
@@ -125,45 +119,67 @@
             border-radius: 30px;
             font-weight: bold;
             border: none;
-            width: 100%; /* Mobil versiyada tugma keng bo'ladi */
+            width: 100%;
             margin-top: 10px;
         }
+
+        /* Task 1 uchun ko'k, Task 2 uchun to'q sariq badge */
+        .task-badge-1 { color: #3498db; }
+        .task-badge-2 { color: #f39c12; }
     </style>
 </head>
 <body>
 
 <header class="header shadow-sm">
     <div class="fw-bold">UniBase <span class="d-none d-sm-inline">Writing</span></div>
-    <div id="timer">40:00</div>
-    <div class="small fw-bold text-info">Task 2</div>
+    <div id="timer">
+        {% if question.task_type == 'task1' %}20:00{% else %}40:00{% endif %}
+    </div>
+    <div class="small fw-bold {% if question.task_type == 'task1' %}task-badge-1{% else %}task-badge-2{% endif %}">
+        {% if question.task_type == 'task1' %}Task 1{% else %}Task 2{% endif %}
+    </div>
 </header>
 
 <div class="main-container">
     <div class="task-pane">
-        <h5 class="text-primary fw-bold">Writing Task 2</h5>
+        <h5 class="text-primary fw-bold">
+            Writing {% if question.task_type == 'task1' %}Task 1{% else %}Task 2{% endif %}
+        </h5>
         <div class="task-card">
             {{ question.question_text }}
             <div class="task-image-container" style="width: 100%; text-align: center; margin-bottom: 20px;">
-    {% if question.question_image %}
-        <img src="{{ question.question_image.url }}"
-             alt="{{ question.title }}"
-             style="max-width: 100%; height: auto; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-    {% else %}
-        <div style="padding: 20px; color: #7f8c8d; background: #f8f9fa; border-radius: 8px; border: 1px dashed #ccc;">
-            Rasm mavjud emas (IELTS Task 2 odatda rasmga ega bo'lmaydi)
-        </div>
-    {% endif %}
-</div>
+                {% if question.question_image %}
+                    <img src="{{ question.question_image.url }}"
+                         alt="{{ question.title }}"
+                         style="max-width: 100%; height: auto; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                {% else %}
+                    {% if question.task_type == 'task1' %}
+                        <div style="padding: 20px; color: #7f8c8d; background: #f8f9fa; border-radius: 8px; border: 1px dashed #ccc;">
+                            Grafik / diagramma tasviri mavjud emas
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
         <p class="small text-muted">
-            Write at least 250 words. Give reasons and examples.
+            {% if question.task_type == 'task1' %}
+                Write at least <strong>150 words</strong>. Describe the visual information objectively.
+            {% else %}
+                Write at least <strong>250 words</strong>. Give reasons and examples.
+            {% endif %}
         </p>
     </div>
 
     <div class="editor-pane">
         <div class="status-bar">
             <span>Essay Area</span>
-            <span>Words: <span id="word-count" class="text-primary">0</span></span>
+            <span>Words: <span id="word-count" class="text-primary">0</span>
+                {% if question.task_type == 'task1' %}
+                    <span class="text-muted">/150+</span>
+                {% else %}
+                    <span class="text-muted">/250+</span>
+                {% endif %}
+            </span>
         </div>
 
         <form method="POST" id="writingForm" class="h-100 d-flex flex-column">
@@ -184,22 +200,24 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Task turiga qarab vaqtni belgilash
+const TASK_TYPE = "{{ question.task_type }}";
+const INITIAL_MINUTES = TASK_TYPE === 'task1' ? 20 : 40;
+
 const STORAGE_KEY = 'ielts_essay_backup_{{ question.id }}';
 const TIMER_KEY = 'ielts_timer_left_{{ question.id }}';
 const form = document.getElementById('writingForm');
 const essayTextarea = document.getElementById('essay-text');
 const timerDisplay = document.getElementById('timer');
 
-// 1️⃣ Har yangi test ochilganda eski timerni tozalash
-// Bu satr timerni yangi test uchun reset qiladi
+// Har yangi test ochilganda eski timerni tozalash
 if (!sessionStorage.getItem('new_test_started_{{ question.id }}')) {
-    localStorage.removeItem(TIMER_KEY); // eski timer o'chirildi
+    localStorage.removeItem(TIMER_KEY);
     sessionStorage.setItem('new_test_started_{{ question.id }}', 'true');
 }
 
-// 2️⃣ Sahifa yuklanganda insho va so'z sanashni tiklash
+// Sahifa yuklanganda inshoni tiklash
 window.onload = () => {
     const savedEssay = localStorage.getItem(STORAGE_KEY);
     if (savedEssay) {
@@ -208,7 +226,7 @@ window.onload = () => {
     }
 };
 
-// 3️⃣ So'z sanash va xotiraga saqlash
+// So'z sanash va xotiraga saqlash
 function updateWordCount() {
     const text = essayTextarea.value.trim();
     const words = text ? text.split(/\s+/).length : 0;
@@ -216,12 +234,11 @@ function updateWordCount() {
     localStorage.setItem(STORAGE_KEY, essayTextarea.value);
 }
 
-// 4️⃣ Timer: 40 daqiqa
-const initialTime = 40 * 60; // 40 daqiqa
+// Timer
+const initialTime = INITIAL_MINUTES * 60;
 let savedTime = localStorage.getItem(TIMER_KEY);
 let timeLeft = savedTime !== null ? parseInt(savedTime) : initialTime;
 
-// Timer funksiyasi
 function updateTimer() {
     if (timeLeft <= 0) {
         clearInterval(timerInterval);
@@ -231,21 +248,21 @@ function updateTimer() {
         let s = timeLeft % 60;
         timerDisplay.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
 
-        // Qizil rang 5 daqiqa qolsa
-        if (timeLeft <= 300) {
+        // Task 1: 3 daqiqa qolsa qizil; Task 2: 5 daqiqa qolsa qizil
+        const warningTime = TASK_TYPE === 'task1' ? 180 : 300;
+        if (timeLeft <= warningTime) {
             timerDisplay.style.background = "#e74c3c";
         }
 
         timeLeft--;
-        localStorage.setItem(TIMER_KEY, timeLeft); // qolgan vaqtni saqlash
+        localStorage.setItem(TIMER_KEY, timeLeft);
     }
 }
 
-// Darhol timerni render va interval ishga tushurish
 updateTimer();
 const timerInterval = setInterval(updateTimer, 1000);
 
-// 5️⃣ Avtomatik topshirish
+// Avtomatik topshirish
 function autoSubmit() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(TIMER_KEY);
@@ -261,7 +278,7 @@ function autoSubmit() {
     }).then(() => form.submit());
 }
 
-// 6️⃣ Qo'lda topshirish tugmasi
+// Qo'lda topshirish
 function confirmSubmit() {
     Swal.fire({
         title: 'Tayyormisiz?',
@@ -281,7 +298,7 @@ function confirmSubmit() {
     });
 }
 
-// 7️⃣ Chiqib ketishga himoya
+// Chiqib ketishga himoya
 window.onbeforeunload = function() {
     if (timeLeft > 0) {
         return "Sizda tugallanmagan test bor. Chiqib ketmoqchimisiz?";

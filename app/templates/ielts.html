@@ -386,7 +386,9 @@
                     {% if test.task_type == 'task1' %}Task 1 — Graph / Chart / Diagram{% else %}Task 2 — Essay{% endif %}
                 </span>
                 <div class="card-info-row">
-                    <div class="info-detail"><span>⏱️</span> Duration: 60 min</div>
+                    {% if test.task_type == 'task1' %}
+                    <div class="info-detail"><span>⏱️</span> Duration: 20 min</div>
+                    {% else %}<div class="info-detail"><span>⏱️</span> Duration: 40 min</div>{% endif %}
                     <div class="info-detail"><span>🤖</span> AI baholash</div>
                     <div class="info-detail"><span>📝</span>
                         {% if test.task_type == 'task1' %}Min 150 words{% else %}Min 250 words{% endif %}
