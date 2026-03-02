@@ -284,9 +284,11 @@ def ielts_reading_view(request, test_id=None):
             score=percentage
         )
 
+        # answers_match funksiyasi allaqachon bor, YNNG ham shu orqali ishlaydi
+        # faqat result.html da question_type ni ko'rsatish uchun results ga qo'shing:
         results = [{
             "savol": q.savol,
-            "question_type": q.question_type,
+            "question_type": q.question_type,  # ← bor
             "user_answer": form.cleaned_data.get(f'q_{q.id}'),
             "correct": q.togri_variant,
             "is_correct": answers_match(form.cleaned_data.get(f'q_{q.id}'), q.togri_variant),
