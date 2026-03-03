@@ -6,35 +6,33 @@ from django.utils.text import slugify
 class PaidTestMixin(models.Model):
     is_paid = models.BooleanField(default=False)
     price = models.PositiveIntegerField(default=25)
-
     class Meta:
         abstract = True
 
 
 class Fanlar(models.Model):
     Fan_CHOICES = (
-        ('Matematika', 'Matematika'), ('Ona Tili', 'Ona Tili'),
-        ('Tarix', 'Tarix'), ('Kimyo', 'Kimyo'), ('Biologiya', 'Biologiya'),
-        ('Fizika', 'Fizika'), ('Ingliz Tili', 'Ingliz Tili'),
+        ('Matematika','Matematika'),('Ona Tili','Ona Tili'),('Tarix','Tarix'),
+        ('Kimyo','Kimyo'),('Biologiya','Biologiya'),('Fizika','Fizika'),('Ingliz Tili','Ingliz Tili'),
     )
-    birinchi_fan = models.CharField(max_length=30, choices=Fan_CHOICES)
-    ikkinchi_fan = models.CharField(max_length=30, choices=Fan_CHOICES)
-    uchinchi_fan = models.CharField(max_length=30, default='Ona Tili')
-    tortinchi_fan = models.CharField(max_length=30, default='Matematika')
+    birinchi_fan     = models.CharField(max_length=30, choices=Fan_CHOICES)
+    ikkinchi_fan     = models.CharField(max_length=30, choices=Fan_CHOICES)
+    uchinchi_fan     = models.CharField(max_length=30, default='Ona Tili')
+    tortinchi_fan    = models.CharField(max_length=30, default='Matematika')
     beshinchichi_fan = models.CharField(max_length=20, default='Tarix')
 
 
 class DTM_Practise(models.Model):
     variant_choise = (('A','A'),('B','B'),('C','C'),('D','D'))
-    fan = models.CharField(max_length=30)
-    savol = models.TextField()
+    fan        = models.CharField(max_length=30)
+    savol      = models.TextField()
     savol_rasm = models.ImageField(upload_to='dtm/questions/', blank=True, null=True)
     togri_javob = models.CharField(max_length=1, choices=variant_choise)
-    ball = models.FloatField(blank=True, null=True)
-    image_a = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
-    image_b = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
-    image_c = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
-    image_d = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
+    ball       = models.FloatField(blank=True, null=True)
+    image_a    = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
+    image_b    = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
+    image_c    = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
+    image_d    = models.ImageField(upload_to='dtm/variants/', blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.fan == "birinchi": self.ball = 3.1
@@ -72,29 +70,30 @@ class ReadingTest(PaidTestMixin):
 
 class IELTS_Reading(models.Model):
     QUESTION_TYPES = [
-        ('ABCD',  'Multiple Choice'),
-        ('TFNG',  'True / False / Not Given'),
-        ('YNNG',  'Yes / No / Not Given'),       # ← YANGI
-        ('MATCH', 'Matching Headings'),
-        ('FILL',  'Fill in the Blank'),
+        ('ABCD',    'Multiple Choice'),
+        ('TFNG',    'True / False / Not Given'),
+        ('YNNG',    'Yes / No / Not Given'),
+        ('MATCH',   'Matching Headings'),
+        ('FILL',    'Fill in the Blank'),
+        ('FILLBOX', 'Fill in the Blank with Word Box'),
     ]
     PART_CHOICES = [
         (1,'Part 1'),(2,'Part 2'),(3,'Part 3'),(4,'Part 4'),
     ]
 
-    test_group    = models.ForeignKey(ReadingTest, on_delete=models.CASCADE, related_name='questions')
-    part          = models.IntegerField(choices=PART_CHOICES, default=1)
-    savol         = models.TextField()
+    test_group     = models.ForeignKey(ReadingTest, on_delete=models.CASCADE, related_name='questions')
+    part           = models.IntegerField(choices=PART_CHOICES, default=1)
+    savol          = models.TextField()
     question_image = models.ImageField(upload_to='reading/questions/', blank=True, null=True)
-    question_type = models.CharField(max_length=10, choices=QUESTION_TYPES, default='ABCD')
+    question_type  = models.CharField(max_length=10, choices=QUESTION_TYPES, default='ABCD')
 
-    # ABCD / MATCH — asosiy 4 ta variant
+    # ABCD / MATCH asosiy 4 ta variant (MATCH da i–iv headinglar)
     variant_a = models.CharField(max_length=500, blank=True)
     variant_b = models.CharField(max_length=500, blank=True)
     variant_c = models.CharField(max_length=500, blank=True)
     variant_d = models.CharField(max_length=500, blank=True)
 
-    # MATCH — qo'shimcha 8 ta heading (v–xii)
+    # MATCH qo'shimcha headinglar (v–xii)
     variant_e = models.CharField(max_length=500, blank=True, verbose_name="Heading v")
     variant_f = models.CharField(max_length=500, blank=True, verbose_name="Heading vi")
     variant_g = models.CharField(max_length=500, blank=True, verbose_name="Heading vii")
@@ -104,66 +103,107 @@ class IELTS_Reading(models.Model):
     variant_k = models.CharField(max_length=500, blank=True, verbose_name="Heading xi")
     variant_l = models.CharField(max_length=500, blank=True, verbose_name="Heading xii")
 
-    # ABCD uchun rasm variantlari
+    # ABCD rasm variantlar
     image_a = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
     image_b = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
     image_c = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
     image_d = models.ImageField(upload_to='reading/variants/', blank=True, null=True)
 
-    togri_variant = models.CharField(max_length=100)
+    # FILLBOX — so'zlar qutisi (vergul bilan ajratilgan)
+    word_box = models.TextField(
+        blank=True, default='',
+        verbose_name="Word Box (vergul bilan ajrating)",
+        help_text="Faqat FILLBOX turida. Masalan: Mexicans,random,rotating,despite,preserve"
+    )
+
+    # togri_variant:
+    # ABCD/MATCH → "A" / "xi"
+    # TFNG → "TRUE" / "FALSE" / "NOT GIVEN"
+    # YNNG → "YES" / "NO" / "NOT GIVEN"
+    # FILL → erkin matn
+    # FILLBOX → vergul bilan: "preserve,realising,friction,rotating,Eskimos,despite"
+    togri_variant = models.CharField(max_length=1000)
+
+    def get_word_box_list(self):
+        if not self.word_box:
+            return []
+        return [w.strip() for w in self.word_box.split(',') if w.strip()]
+
+    def get_correct_list(self):
+        """FILLBOX uchun to'g'ri javoblar listi"""
+        if not self.togri_variant:
+            return []
+        return [a.strip().lower() for a in self.togri_variant.split(',') if a.strip()]
 
     def __str__(self):
         return f"Part {self.part} | {self.question_type} | {self.savol[:40]}"
 
 
 class ListeningTest(PaidTestMixin):
-    title = models.CharField(max_length=200)
+    title       = models.CharField(max_length=200)
     description = models.TextField(default="Practice your listening skills.")
-    duration = models.IntegerField(default=40)
-    category = models.CharField(max_length=20, choices=[('LISTENING','Listening')], default='LISTENING')
+    duration    = models.IntegerField(default=40)
+    category    = models.CharField(max_length=20, choices=[('LISTENING','Listening')], default='LISTENING')
 
     def __str__(self):
         return self.title
 
 
 class IELTSListeningQuestion(models.Model):
-    PART_CHOICES = [(1,'Part 1'),(2,'Part 2'),(3,'Part 3'),(4,'Part 4')]
+    PART_CHOICES   = [(1,'Part 1'),(2,'Part 2'),(3,'Part 3'),(4,'Part 4')]
     QUESTION_TYPES = [
-        ('ABCD','Multiple Choice'),('FILL','Fill in the Blank'),
-        ('MATCH','Matching'),('MAP','Map / Diagram Labelling'),
+        ('ABCD',  'Multiple Choice'),
+        ('FILL',  'Fill in the Blank'),
+        ('MATCH', 'Matching'),
+        ('MAP',   'Map / Diagram / Image'),
+        ('CHECK', 'Checkbox (Multiple Select)'),  # ← YANGI
     ]
     test_group    = models.ForeignKey(ListeningTest, on_delete=models.CASCADE, related_name='questions')
     part          = models.IntegerField(choices=PART_CHOICES, default=1)
     question_type = models.CharField(max_length=10, choices=QUESTION_TYPES, default='ABCD')
     savol         = models.TextField()
-    variant_a     = models.CharField(max_length=255, blank=True, default='')
-    variant_b     = models.CharField(max_length=255, blank=True, default='')
-    variant_c     = models.CharField(max_length=255, blank=True, default='')
-    variant_d     = models.CharField(max_length=255, blank=True, default='')
+
+    # ABCD / MATCH / CHECK variantlari
+    variant_a = models.CharField(max_length=255, blank=True, default='')
+    variant_b = models.CharField(max_length=255, blank=True, default='')
+    variant_c = models.CharField(max_length=255, blank=True, default='')
+    variant_d = models.CharField(max_length=255, blank=True, default='')
+    variant_e = models.CharField(max_length=255, blank=True, default='', verbose_name="Variant E")
+    variant_f = models.CharField(max_length=255, blank=True, default='', verbose_name="Variant F")
+    variant_g = models.CharField(max_length=255, blank=True, default='', verbose_name="Variant G")
+    variant_h = models.CharField(max_length=255, blank=True, default='', verbose_name="Variant H")
+    variant_i = models.CharField(max_length=255, blank=True, default='', verbose_name="Variant I")
+
     map_image     = models.ImageField(upload_to='listening/maps/', blank=True, null=True)
-    togri_variant = models.CharField(max_length=100)
-    audio         = models.FileField(upload_to="listening_audio/", blank=True, null=True)
+    togri_variant = models.CharField(
+        max_length=200,
+        help_text="ABCD → 'A'; CHECK → 'A,C,F' (vergul bilan); FILL → erkin matn"
+    )
+    audio = models.FileField(upload_to="listening_audio/", blank=True, null=True)
+
+    def get_correct_list(self):
+        """CHECK uchun to'g'ri javoblar listi"""
+        return [x.strip().upper() for x in self.togri_variant.split(',') if x.strip()]
 
     def __str__(self):
-        return f"Part {self.part} | {self.savol[:40]}"
-
+        return f"Part {self.part} | {self.question_type} | {self.savol[:40]}"
 
 class Milliy_Sertifikat(models.Model):
     FAN_CHOICES = (
         ('Matematika','Matematika'),('Ona Tili','Ona Tili'),('Tarix','Tarix'),
         ('Kimyo','Kimyo'),('Biologiya','Biologiya'),('Fizika','Fizika'),('Ingliz Tili','Ingliz Tili'),
     )
-    fan       = models.CharField(max_length=20, choices=FAN_CHOICES)
-    savol     = models.TextField()
+    fan        = models.CharField(max_length=20, choices=FAN_CHOICES)
+    savol      = models.TextField()
     savol_rasm = models.ImageField(upload_to='milliy/questions/', blank=True, null=True)
-    variant_a = models.CharField(max_length=255, default='')
-    variant_b = models.CharField(max_length=255, default='')
-    variant_c = models.CharField(max_length=255, default='')
-    variant_d = models.CharField(max_length=255, default='')
-    image_a   = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
-    image_b   = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
-    image_c   = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
-    image_d   = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
+    variant_a  = models.CharField(max_length=255, default='')
+    variant_b  = models.CharField(max_length=255, default='')
+    variant_c  = models.CharField(max_length=255, default='')
+    variant_d  = models.CharField(max_length=255, default='')
+    image_a    = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
+    image_b    = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
+    image_c    = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
+    image_d    = models.ImageField(upload_to='milliy/variants/', blank=True, null=True)
     togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
 
     def __str__(self):
@@ -182,17 +222,17 @@ class Sat(PaidTestMixin):
 
 class DTM_Majburiy(models.Model):
     FAN_CHOICES = (('Ona Tili','Ona Tili'),('Matematika','Matematika'),('Tarix','Tarix'))
-    fan       = models.CharField(max_length=20, choices=FAN_CHOICES)
-    savol     = models.TextField()
+    fan        = models.CharField(max_length=20, choices=FAN_CHOICES)
+    savol      = models.TextField()
     savol_rasm = models.ImageField(upload_to='dtm_majburiy/questions/', blank=True, null=True)
-    variant_a = models.CharField(max_length=255, default='')
-    variant_b = models.CharField(max_length=255, default='')
-    variant_c = models.CharField(max_length=255, default='')
-    variant_d = models.CharField(max_length=255, default='')
-    image_a   = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
-    image_b   = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
-    image_c   = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
-    image_d   = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    variant_a  = models.CharField(max_length=255, default='')
+    variant_b  = models.CharField(max_length=255, default='')
+    variant_c  = models.CharField(max_length=255, default='')
+    variant_d  = models.CharField(max_length=255, default='')
+    image_a    = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    image_b    = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    image_c    = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
+    image_d    = models.ImageField(upload_to='dtm_majburiy/variants/', blank=True, null=True)
     togri_variant = models.CharField(max_length=1, choices=[('A','A'),('B','B'),('C','C'),('D','D')])
 
     def __str__(self):
@@ -225,12 +265,10 @@ class Davlat_Univer(models.Model):
     text = models.CharField(max_length=255)
     def __str__(self): return self.text
 
-
 class Xususiy_Univer(models.Model):
     logo = models.ImageField(upload_to='media/')
     text = models.CharField(max_length=255)
     def __str__(self): return self.text
-
 
 class Xorijiy_Univer(models.Model):
     logo = models.ImageField(upload_to='media/')
@@ -256,7 +294,7 @@ class UserTestResult(models.Model):
 
 
 class WritingQuestion(PaidTestMixin):
-    TASK_CHOICES = (('task1','Task 1'),('task2','Task 2'))
+    TASK_CHOICES   = (('task1','Task 1'),('task2','Task 2'))
     title          = models.CharField(max_length=255)
     task_type      = models.CharField(max_length=10, choices=TASK_CHOICES)
     question_text  = models.TextField()

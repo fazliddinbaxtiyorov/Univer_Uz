@@ -8,209 +8,453 @@
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --navy: #0f2742;
-            --accent: #4cc9f0;
-            --gold: #f4a261;
-            --green: #38b000;
-            --red: #e63946;
-            --bg: #f0f4f8;
-            --border: #dde3ec;
-            --text: #1a202c;
-        }
+    --primary:    #0ea5e9;
+    --primary-dk: #0284c7;
+    --primary-lt: #f0f9ff;
+    --primary-md: #bae6fd;
+    --accent:     #38bdf8;
+    --green:      #16a34a;
+    --green-lt:   #dcfce7;
+    --red:        #dc2626;
+    --red-lt:     #fee2e2;
+    --gold:       #d97706;
+    --gold-lt:    #fef3c7;
+    --purple:     #0284c7;
+    --purple-lt:  #e0f2fe;
+    --bg:         #f0f8ff;
+    --surface:    #ffffff;
+    --border:     #e0f2fe;
+    --border-md:  #7dd3fc;
+    --text:       #0c4a6e;
+    --text-2:     #0369a1;
+    --text-3:     #7dd3fc;
+    --shadow-sm:  0 1px 3px rgba(14,165,233,0.07), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:  0 4px 16px rgba(14,165,233,0.10);
+    --radius:     10px;
+}
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; overflow: hidden; background: var(--bg); color: var(--text); }
 
+        /* ══ HEADER ══ */
         .header {
-            background: var(--navy); height: 60px; display: flex; align-items: center;
-            padding: 0 24px; justify-content: space-between; position: fixed;
-            width: 100%; top: 0; z-index: 1000; border-bottom: 2px solid rgba(76,201,240,0.3);
+            background: var(--surface);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            justify-content: space-between;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
-        .logo { font-size: 1.2rem; font-weight: 800; color: #fff; }
-        .logo span { font-weight: 300; color: var(--accent); }
+        .logo { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.3px; }
+        .logo span {
+            background: var(--primary-lt);
+            color: var(--primary);
+            border: 1px solid var(--primary-md);
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
 
-        .passage-tabs { display: flex; gap: 4px; }
+        .passage-tabs { display: flex; gap: 6px; }
         .ptab {
-            padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;
-            cursor: pointer; border: 1.5px solid rgba(255,255,255,0.2);
-            color: rgba(255,255,255,0.6); background: transparent; transition: 0.2s;
+            padding: 6px 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--border);
+            color: var(--text-2);
+            background: var(--bg);
+            transition: all 0.18s;
         }
-        .ptab:hover { background: rgba(255,255,255,0.1); }
-        .ptab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .ptab:hover { background: var(--primary-lt); border-color: var(--accent); color: var(--primary); }
+        .ptab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(13,148,136,0.25);
+        }
 
-        #timer {
-            font-size: 1.35rem; font-weight: 700; background: rgba(231,76,60,0.9);
-            padding: 5px 16px; border-radius: 8px; font-family: 'Courier New', monospace;
+        /* Timer */
+        .timer-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        #timer.warning { background: #c0392b; animation: pulse 1s infinite; }
+        .timer-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 3px rgba(22,163,74,0.2);
+            animation: blink 2s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        #timer {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'Inter', monospace;
+            letter-spacing: 1px;
+        }
+        .timer-wrap.warning .timer-dot { background: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,0.2); }
+        .timer-wrap.warning #timer { color: var(--red); animation: pulse 1s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
 
+        /* ══ LAYOUT ══ */
         .test-wrapper { display: flex; height: calc(100vh - 60px); margin-top: 60px; }
         .step-container { display: none; width: 100%; height: 100%; }
         .step-container.active { display: flex; }
 
-        /* ── PASSAGE ── */
+        /* ══ PASSAGE ══ */
         .passage-pane {
-            flex: 1.1; overflow-y: auto; background: #fff;
-            border-right: 2px solid var(--border);
+            flex: 1.15;
+            overflow-y: auto;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
         }
         .passage-header {
-            padding: 16px 32px 12px; border-bottom: 1px solid var(--border);
-            background: #fafbfc; position: sticky; top: 0; z-index: 5;
+            padding: 16px 32px 13px;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         }
         .passage-meta {
-            font-size: 10px; font-weight: 700; color: var(--accent);
-            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
         }
         .passage-title-text {
-            font-family: 'Merriweather', serif; font-size: 1.3rem;
-            font-weight: 700; color: var(--navy);
+            font-family: 'Merriweather', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
         }
-        .passage-body { padding: 24px 32px 60px; }
-        .para-block { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+        .passage-body { padding: 26px 32px 80px; }
+        .para-block { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; }
         .para-label {
-            flex-shrink: 0; width: 26px; height: 26px; background: var(--navy);
-            color: #fff; border-radius: 6px; display: flex; align-items: center;
-            justify-content: center; font-size: 11px; font-weight: 700; margin-top: 3px;
+            flex-shrink: 0;
+            width: 27px; height: 27px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700;
+            margin-top: 3px;
+            box-shadow: 0 2px 6px rgba(13,148,136,0.2);
         }
         .para-text {
-            flex: 1; font-family: 'Merriweather', serif; font-size: 14.5px;
-            line-height: 1.95; color: #2d3748; text-align: justify;
+            flex: 1;
+            font-family: 'Merriweather', serif;
+            font-size: 14.5px;
+            line-height: 2.0;
+            color: #1e3a38;
+            text-align: justify;
         }
 
-        /* ── QUESTIONS ── */
+        /* ══ QUESTIONS ══ */
         .questions-pane { flex: 1; overflow-y: auto; background: var(--bg); }
         .questions-header {
-            padding: 14px 28px; border-bottom: 1px solid var(--border);
-            background: #fff; position: sticky; top: 0; z-index: 5;
+            padding: 13px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         }
         .q-range-badge {
-            background: var(--navy); color: #fff; padding: 5px 14px;
-            border-radius: 20px; font-size: 12px; font-weight: 600;
+            background: var(--primary-lt);
+            color: var(--primary);
+            padding: 5px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid var(--primary-md);
         }
-        .questions-body { padding: 20px 28px 80px; }
+        .questions-body { padding: 18px 22px 80px; }
 
-        .q-section { margin-bottom: 24px; }
+        /* Section */
+        .q-section { margin-bottom: 18px; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-sm); }
         .q-section-header {
-            background: var(--navy); color: #fff; padding: 10px 16px;
-            border-radius: 10px 10px 0 0; font-size: 12px; font-weight: 700;
+            background: var(--primary);
+            color: #fff;
+            padding: 11px 18px;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
         }
         .q-section-instructions {
-            background: #fffbea; border: 1px solid #fde68a; border-top: none;
-            padding: 10px 16px; font-size: 12px; color: #7c6300; line-height: 1.6;
+            background: #fefce8;
+            border: 1px solid #fde68a;
+            border-top: none;
+            padding: 10px 18px;
+            font-size: 12px;
+            color: #78350f;
+            line-height: 1.65;
         }
         .q-section-body {
-            background: #fff; border: 1px solid var(--border); border-top: none;
-            border-radius: 0 0 10px 10px; padding: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: none;
+            padding: 14px 18px;
         }
 
-        .q-card { border-bottom: 1px solid #f0f4f8; padding: 14px 0; }
+        /* Card */
+        .q-card {
+            border-bottom: 1px solid #f0f9f8;
+            padding: 14px 0;
+            transition: background 0.1s;
+        }
         .q-card:last-child { border-bottom: none; }
-        .q-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+        .q-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 11px; }
         .q-num {
-            flex-shrink: 0; width: 28px; height: 28px; background: var(--navy);
-            color: #fff; border-radius: 7px; display: flex; align-items: center;
-            justify-content: center; font-size: 12px; font-weight: 700;
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700;
+            box-shadow: 0 2px 6px rgba(13,148,136,0.2);
         }
-        .q-text { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.5; padding-top: 3px; }
+        .q-text { font-size: 13.5px; font-weight: 500; color: var(--text); line-height: 1.55; padding-top: 4px; }
 
-        /* ABCD */
-        .option-list { display: flex; flex-direction: column; gap: 6px; padding-left: 38px; }
+        /* ── ABCD ── */
+        .option-list { display: flex; flex-direction: column; gap: 7px; padding-left: 38px; }
         .option-label {
-            display: flex; align-items: center; gap: 10px; padding: 9px 12px;
-            border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer;
-            transition: 0.15s; font-size: 13.5px;
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13.5px;
+            background: var(--bg);
         }
-        .option-label:hover { background: #f0f7ff; border-color: var(--navy); }
+        .option-label:hover { background: var(--primary-lt); border-color: var(--accent); }
         .option-label input[type="radio"] { display: none; }
-        .option-label.selected { background: #e8f0fe; border-color: var(--navy); }
-        .opt-letter {
-            flex-shrink: 0; width: 24px; height: 24px; background: #eef2f8;
-            border-radius: 5px; display: flex; align-items: center;
-            justify-content: center; font-size: 11px; font-weight: 700; color: var(--navy);
+        .option-label.selected {
+            background: var(--primary-lt);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
         }
-        .option-label.selected .opt-letter { background: var(--navy); color: #fff; }
+        .opt-letter {
+            flex-shrink: 0;
+            width: 26px; height: 26px;
+            background: var(--surface);
+            border: 1.5px solid var(--border-md);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11.5px; font-weight: 700;
+            color: var(--text-2);
+            transition: all 0.15s;
+        }
+        .option-label.selected .opt-letter { background: var(--primary); border-color: var(--primary); color: #fff; }
 
-        /* TFNG & YNNG */
-        .toggle-group { display: flex; gap: 8px; padding-left: 38px; }
+        /* ── TFNG / YNNG ── */
+        .toggle-group { display: flex; gap: 8px; padding-left: 38px; flex-wrap: wrap; }
         .toggle-btn { flex: 1; min-width: 90px; }
         .toggle-btn input { display: none; }
         .toggle-label {
-            display: flex; align-items: center; justify-content: center;
-            padding: 10px 6px; border: 2px solid var(--border); border-radius: 9px;
-            cursor: pointer; font-size: 12.5px; font-weight: 600; transition: 0.15s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+            padding: 10px 8px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12.5px; font-weight: 600;
+            transition: all 0.15s;
+            background: var(--bg);
+            color: var(--text-2);
         }
-        .toggle-label:hover { border-color: #aaa; background: #f8f9fa; }
-        .btn-green .toggle-label { color: var(--green); }
-        .btn-green input:checked + .toggle-label { background: var(--green); border-color: var(--green); color: #fff; }
-        .btn-red .toggle-label { color: var(--red); }
-        .btn-red input:checked + .toggle-label { background: var(--red); border-color: var(--red); color: #fff; }
-        .btn-gold .toggle-label { color: var(--gold); }
-        .btn-gold input:checked + .toggle-label { background: var(--gold); border-color: var(--gold); color: #fff; }
+        .toggle-label:hover { background: #f1f5f9; border-color: var(--border-md); }
+        .btn-green input:checked + .toggle-label {
+            background: var(--green-lt); border-color: var(--green);
+            color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,0.08);
+        }
+        .btn-red input:checked + .toggle-label {
+            background: var(--red-lt); border-color: var(--red);
+            color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
+        }
+        .btn-gold input:checked + .toggle-label {
+            background: var(--gold-lt); border-color: var(--gold);
+            color: var(--gold); box-shadow: 0 0 0 3px rgba(217,119,6,0.08);
+        }
 
-        /* MATCH */
+        /* ── MATCH ── */
         .heading-list {
-            background: #f5f0ff; border: 1px solid #c4b5fd;
-            border-radius: 10px; padding: 14px; margin-bottom: 16px;
+            background: var(--purple-lt);
+            border: 1.5px solid #a5f3fc;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
         }
         .heading-list-title {
-            font-size: 11px; font-weight: 700; color: #6d28d9;
-            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+            font-size: 10.5px; font-weight: 700; color: var(--purple);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
         }
-        .heading-item { display: flex; gap: 8px; margin-bottom: 7px; font-size: 13px; line-height: 1.4; }
+        .heading-item { display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; line-height: 1.45; align-items: flex-start; }
         .hi-num {
-            flex-shrink: 0; min-width: 28px; height: 22px; background: #7c3aed;
-            color: #fff; border-radius: 5px; display: flex; align-items: center;
-            justify-content: center; font-size: 11px; font-weight: 700; padding: 0 4px;
+            flex-shrink: 0; min-width: 30px; height: 22px;
+            background: var(--purple); color: #fff;
+            border-radius: 5px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700; padding: 0 5px;
         }
+        .hi-text { color: var(--text); }
         .match-select {
-            display: block; width: calc(100% - 38px); margin-left: 38px;
-            padding: 9px 32px 9px 12px; border: 2px solid var(--border); border-radius: 8px;
-            font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text);
-            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230f2742' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 12px center;
-            appearance: none; cursor: pointer; transition: 0.15s;
+            display: block;
+            width: calc(100% - 38px);
+            margin-left: 38px;
+            padding: 9px 36px 9px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%230d9488' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 13px center;
+            appearance: none; cursor: pointer; transition: all 0.15s;
         }
-        .match-select:focus { outline: none; border-color: #7c3aed; }
-        .match-select.conflict { border-color: var(--red); background-color: #fff5f5; }
+        .match-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); background-color: #fff; }
+        .match-select.conflict { border-color: var(--red); background-color: var(--red-lt); }
 
-        /* FILL */
+        /* ── FILL ── */
         .fill-wrap { padding-left: 38px; }
         .fill-input {
-            width: 100%; padding: 10px 14px; font-size: 14px;
-            border: 2px solid var(--border); border-radius: 8px;
-            outline: none; font-family: 'Inter', sans-serif; transition: 0.15s;
+            width: 100%; padding: 10px 14px;
+            font-size: 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            transition: all 0.15s;
+            color: var(--text);
         }
-        .fill-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(76,201,240,0.12); }
+        .fill-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); background: #fff; }
 
-        /* NAV */
+        /* ── FILLBOX ── */
+        .summary-text {
+            font-size: 14px; line-height: 2.5; color: var(--text);
+            background: #f8fffe;
+            border: 1.5px solid var(--primary-md);
+            border-radius: 10px;
+            padding: 18px 22px; margin-bottom: 14px;
+            font-family: 'Merriweather', serif;
+        }
+        .blank-slot {
+            display: inline-block; min-width: 110px;
+            border-bottom: 2.5px solid var(--primary);
+            color: var(--primary); font-weight: 700;
+            text-align: center; padding: 1px 6px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer; transition: all 0.15s; font-size: 13.5px;
+        }
+        .blank-slot:hover { background: var(--primary-lt); border-radius: 4px; }
+        .blank-slot.active-slot { background: var(--primary-md); border-color: var(--accent); border-radius: 4px; }
+        .blank-slot.filled { color: var(--green); border-color: var(--green); }
+        .word-box-container {
+            background: #f0fdfa;
+            border: 1.5px solid var(--primary-md);
+            border-radius: 10px; padding: 14px 16px; margin-bottom: 14px;
+        }
+        .word-box-title {
+            font-size: 10.5px; font-weight: 700; color: var(--primary-dk);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
+        }
+        .word-box-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        .word-chip {
+            padding: 6px 15px;
+            background: var(--surface);
+            border: 1.5px solid var(--accent);
+            border-radius: 20px;
+            font-size: 13px; font-weight: 500; color: var(--primary-dk);
+            cursor: pointer; transition: all 0.15s; user-select: none;
+        }
+        .word-chip:hover { background: var(--primary-lt); }
+        .word-chip.used { background: var(--green-lt); border-color: var(--green); color: #14532d; cursor: default; }
+        .word-chip.selected-chip { background: var(--primary); border-color: var(--primary-dk); color: #fff; font-weight: 700; box-shadow: 0 2px 8px rgba(13,148,136,0.3); }
+        .fillbox-hint { font-size: 12px; color: var(--text-3); margin-bottom: 10px; }
+
+        /* ── NAV ── */
         .nav-area {
             display: flex; justify-content: space-between; align-items: center;
-            margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
+            margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border);
         }
+        .btn-nav-back {
+            padding: 10px 24px;
+            border: 1.5px solid var(--border-md);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text-2);
+            font-size: 13.5px; font-weight: 600;
+            cursor: pointer; transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-nav-back:hover { background: var(--primary-lt); border-color: var(--primary); color: var(--primary); }
+        .btn-nav-next {
+            padding: 11px 32px;
+            border: none; border-radius: 10px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 2px 10px rgba(13,148,136,0.3);
+        }
+        .btn-nav-next:hover { background: var(--primary-dk); box-shadow: 0 4px 16px rgba(13,148,136,0.4); transform: translateY(-1px); }
+        .btn-submit {
+            padding: 12px 36px;
+            border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            color: #fff;
+            font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: all 0.15s;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 2px 12px rgba(13,148,136,0.35);
+        }
+        .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,148,136,0.45); }
 
+        /* Scrollbars */
         .passage-pane::-webkit-scrollbar,
         .questions-pane::-webkit-scrollbar { width: 5px; }
         .passage-pane::-webkit-scrollbar-thumb,
-        .questions-pane::-webkit-scrollbar-thumb { background: #c8d0da; border-radius: 3px; }
+        .questions-pane::-webkit-scrollbar-thumb { background: var(--primary-md); border-radius: 3px; }
     </style>
 </head>
 <body>
 
 <header class="header">
-    <div class="logo">UniBase <span>IELTS Reading</span></div>
+    <div class="logo">UniBase <span>Part 1</span></div>
     <div style="display:flex;align-items:center;gap:16px;">
         <div class="passage-tabs">
             {% for item in test_data %}
             <button class="ptab {% if forloop.first %}active{% endif %}" type="button"
                     onclick="showStep({{ forloop.counter }})"
                     id="ptab-{{ forloop.counter }}">
-                Passage {{ forloop.counter }}
+                PART {{ forloop.counter }}
             </button>
             {% endfor %}
         </div>
-        <div id="timer">60:00</div>
     </div>
-    <div style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;">
-        60 min &nbsp;·&nbsp; 40 questions
+    <div class="timer-wrap" id="timer-wrap">
+        <div class="timer-dot"></div>
+        <span id="timer">60:00</span>
     </div>
 </header>
 
@@ -221,10 +465,10 @@
 {% for item in test_data %}
 <div class="step-container {% if forloop.first %}active{% endif %}" id="step-{{ forloop.counter }}">
 
-    <!-- ══════════ PASSAGE ══════════ -->
+    <!-- PASSAGE -->
     <div class="passage-pane">
         <div class="passage-header">
-            <div class="passage-meta">📖 Reading Passage {{ forloop.counter }}</div>
+            <div class="passage-meta">Reading Passage {{ forloop.counter }}</div>
             {% if item.passage_title %}
             <div class="passage-title-text">{{ item.passage_title }}</div>
             {% endif %}
@@ -236,10 +480,10 @@
         </div>
     </div>
 
-    <!-- ══════════ QUESTIONS ══════════ -->
+    <!-- QUESTIONS -->
     <div class="questions-pane">
         <div class="questions-header">
-            <span class="q-range-badge">📝 Questions — Passage {{ forloop.counter }}</span>
+            <span class="q-range-badge">Questions — Passage {{ forloop.counter }}</span>
         </div>
         <div class="questions-body">
 
@@ -248,216 +492,198 @@
         {% for group in type_groups %}
         <div class="q-section">
 
-            <!-- Section sarlavha va ko'rsatma -->
             {% if group.grouper == 'ABCD' %}
-                <div class="q-section-header">🔘 Multiple Choice</div>
+                <div class="q-section-header">Multiple Choice</div>
                 <div class="q-section-instructions">
                     Choose the correct letter <strong>A, B, C</strong> or <strong>D</strong>.
                 </div>
-
             {% elif group.grouper == 'TFNG' %}
-                <div class="q-section-header">✅ True / False / Not Given</div>
+                <div class="q-section-header">True / False / Not Given</div>
                 <div class="q-section-instructions">
                     Do the following statements agree with the <strong>information</strong> given in the passage?<br>
-                    <strong>TRUE</strong> — agrees with the information &nbsp;|&nbsp;
-                    <strong>FALSE</strong> — contradicts the information &nbsp;|&nbsp;
-                    <strong>NOT GIVEN</strong> — there is no information on this
+                    <strong>TRUE</strong> — agrees &nbsp;·&nbsp; <strong>FALSE</strong> — contradicts &nbsp;·&nbsp; <strong>NOT GIVEN</strong> — no information
                 </div>
-
             {% elif group.grouper == 'YNNG' %}
-                <div class="q-section-header">💬 Yes / No / Not Given</div>
+                <div class="q-section-header">Yes / No / Not Given</div>
                 <div class="q-section-instructions">
                     Do the following statements agree with the <strong>views of the writer</strong>?<br>
-                    <strong>YES</strong> — agrees with the writer's views &nbsp;|&nbsp;
-                    <strong>NO</strong> — contradicts the writer's views &nbsp;|&nbsp;
-                    <strong>NOT GIVEN</strong> — impossible to say what the writer thinks
+                    <strong>YES</strong> — agrees &nbsp;·&nbsp; <strong>NO</strong> — contradicts &nbsp;·&nbsp; <strong>NOT GIVEN</strong> — impossible to say
                 </div>
-
             {% elif group.grouper == 'MATCH' %}
-                <div class="q-section-header">🔗 Matching Headings</div>
+                <div class="q-section-header">Matching Headings</div>
                 <div class="q-section-instructions">
-                    Choose the correct heading <strong>i–xii</strong> for each paragraph from the list below.<br>
-                    <strong>NB</strong> There are more headings than paragraphs — you will <strong>not</strong> use all of them.
+                    Choose the correct heading <strong>i–xii</strong> for each paragraph.
+                    <strong>NB</strong> There are more headings than paragraphs.
                 </div>
-
             {% elif group.grouper == 'FILL' %}
-                <div class="q-section-header">✏️ Fill in the Blanks</div>
+                <div class="q-section-header">Fill in the Blanks</div>
                 <div class="q-section-instructions">
-                    Complete the sentences. Use <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.
+                    Use <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.
+                </div>
+            {% elif group.grouper == 'FILLBOX' %}
+                <div class="q-section-header">Fill in the Blanks — Word Box</div>
+                <div class="q-section-instructions">
+                    Complete the summary using words from the box.
+                    <strong>NB</strong> There are more words than spaces. You may use any word <strong>more than once</strong>.
                 </div>
             {% endif %}
 
-            <!-- ─── MATCHING HEADINGS ─── -->
+            <!-- MATCHING HEADINGS -->
             {% if group.grouper == 'MATCH' %}
             <div class="q-section-body">
                 {% with fq=group.list.0.model %}
                 <div class="heading-list">
                     <div class="heading-list-title">List of Headings</div>
-                    {% if fq.variant_a %}<div class="heading-item"><span class="hi-num">i</span><span>{{ fq.variant_a }}</span></div>{% endif %}
-                    {% if fq.variant_b %}<div class="heading-item"><span class="hi-num">ii</span><span>{{ fq.variant_b }}</span></div>{% endif %}
-                    {% if fq.variant_c %}<div class="heading-item"><span class="hi-num">iii</span><span>{{ fq.variant_c }}</span></div>{% endif %}
-                    {% if fq.variant_d %}<div class="heading-item"><span class="hi-num">iv</span><span>{{ fq.variant_d }}</span></div>{% endif %}
-                    {% if fq.variant_e %}<div class="heading-item"><span class="hi-num">v</span><span>{{ fq.variant_e }}</span></div>{% endif %}
-                    {% if fq.variant_f %}<div class="heading-item"><span class="hi-num">vi</span><span>{{ fq.variant_f }}</span></div>{% endif %}
-                    {% if fq.variant_g %}<div class="heading-item"><span class="hi-num">vii</span><span>{{ fq.variant_g }}</span></div>{% endif %}
-                    {% if fq.variant_h %}<div class="heading-item"><span class="hi-num">viii</span><span>{{ fq.variant_h }}</span></div>{% endif %}
-                    {% if fq.variant_i %}<div class="heading-item"><span class="hi-num">ix</span><span>{{ fq.variant_i }}</span></div>{% endif %}
-                    {% if fq.variant_j %}<div class="heading-item"><span class="hi-num">x</span><span>{{ fq.variant_j }}</span></div>{% endif %}
-                    {% if fq.variant_k %}<div class="heading-item"><span class="hi-num">xi</span><span>{{ fq.variant_k }}</span></div>{% endif %}
-                    {% if fq.variant_l %}<div class="heading-item"><span class="hi-num">xii</span><span>{{ fq.variant_l }}</span></div>{% endif %}
+                    {% if fq.variant_a %}<div class="heading-item"><span class="hi-num">i</span><span class="hi-text">{{ fq.variant_a }}</span></div>{% endif %}
+                    {% if fq.variant_b %}<div class="heading-item"><span class="hi-num">ii</span><span class="hi-text">{{ fq.variant_b }}</span></div>{% endif %}
+                    {% if fq.variant_c %}<div class="heading-item"><span class="hi-num">iii</span><span class="hi-text">{{ fq.variant_c }}</span></div>{% endif %}
+                    {% if fq.variant_d %}<div class="heading-item"><span class="hi-num">iv</span><span class="hi-text">{{ fq.variant_d }}</span></div>{% endif %}
+                    {% if fq.variant_e %}<div class="heading-item"><span class="hi-num">v</span><span class="hi-text">{{ fq.variant_e }}</span></div>{% endif %}
+                    {% if fq.variant_f %}<div class="heading-item"><span class="hi-num">vi</span><span class="hi-text">{{ fq.variant_f }}</span></div>{% endif %}
+                    {% if fq.variant_g %}<div class="heading-item"><span class="hi-num">vii</span><span class="hi-text">{{ fq.variant_g }}</span></div>{% endif %}
+                    {% if fq.variant_h %}<div class="heading-item"><span class="hi-num">viii</span><span class="hi-text">{{ fq.variant_h }}</span></div>{% endif %}
+                    {% if fq.variant_i %}<div class="heading-item"><span class="hi-num">ix</span><span class="hi-text">{{ fq.variant_i }}</span></div>{% endif %}
+                    {% if fq.variant_j %}<div class="heading-item"><span class="hi-num">x</span><span class="hi-text">{{ fq.variant_j }}</span></div>{% endif %}
+                    {% if fq.variant_k %}<div class="heading-item"><span class="hi-num">xi</span><span class="hi-text">{{ fq.variant_k }}</span></div>{% endif %}
+                    {% if fq.variant_l %}<div class="heading-item"><span class="hi-num">xii</span><span class="hi-text">{{ fq.variant_l }}</span></div>{% endif %}
                 </div>
                 {% endwith %}
-
-                {% for q_data in group.list %}
-                {% with q=q_data.model %}
+                {% for q_data in group.list %}{% with q=q_data.model %}
                 <div class="q-card">
                     <div class="q-row">
                         <span class="q-num">{{ forloop.counter }}</span>
-                        <span class="q-text">
-                            Paragraph
-                            <strong style="font-size:15px;color:var(--navy);">{{ q.savol }}</strong>
-                        </span>
+                        <span class="q-text">Paragraph <strong style="color:var(--primary);">{{ q.savol }}</strong></span>
                     </div>
                     <select name="q_{{ q.id }}" class="match-select" onchange="checkDuplicate(this)">
                         <option value="">— Select heading —</option>
-                        <option value="i">i</option>
-                        <option value="ii">ii</option>
-                        <option value="iii">iii</option>
-                        <option value="iv">iv</option>
-                        <option value="v">v</option>
-                        <option value="vi">vi</option>
-                        <option value="vii">vii</option>
-                        <option value="viii">viii</option>
-                        <option value="ix">ix</option>
-                        <option value="x">x</option>
-                        <option value="xi">xi</option>
-                        <option value="xii">xii</option>
+                        <option value="i">i</option><option value="ii">ii</option>
+                        <option value="iii">iii</option><option value="iv">iv</option>
+                        <option value="v">v</option><option value="vi">vi</option>
+                        <option value="vii">vii</option><option value="viii">viii</option>
+                        <option value="ix">ix</option><option value="x">x</option>
+                        <option value="xi">xi</option><option value="xii">xii</option>
                     </select>
                 </div>
-                {% endwith %}
-                {% endfor %}
+                {% endwith %}{% endfor %}
             </div>
 
-            <!-- ─── BOSHQA TURLAR ─── -->
+            <!-- FILLBOX -->
+            {% elif group.grouper == 'FILLBOX' %}
+            <div class="q-section-body">
+                {% for q_data in group.list %}{% with q=q_data.model %}
+                <div class="q-card">
+                    <div class="q-row">
+                        <span class="q-num">{{ forloop.counter }}</span>
+                        <span class="q-text" style="color:var(--text-2);font-weight:600;">Summary completion</span>
+                    </div>
+                    <div class="word-box-container">
+                        <div class="word-box-title">Word Box — select a word, then click a blank</div>
+                        <div class="word-box-grid" id="wbox-{{ q.id }}">
+                            {% for word in q.get_word_box_list %}
+                            <span class="word-chip" onclick="chipClick(this,'{{ q.id }}')" data-word="{{ word }}">{{ word }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <p class="fillbox-hint">Select a word above, then click the blank to fill it.</p>
+                    <div class="summary-text" id="summary-{{ q.id }}" data-raw="{{ q.savol }}" data-qid="{{ q.id }}"></div>
+                    <input type="hidden" name="q_{{ q.id }}" id="answer-{{ q.id }}" value="">
+                </div>
+                {% endwith %}{% endfor %}
+            </div>
+
+            <!-- BOSHQA TURLAR -->
             {% else %}
             <div class="q-section-body">
-            {% for q_data in group.list %}
-            {% with q=q_data.model %}
+            {% for q_data in group.list %}{% with q=q_data.model %}
             <div class="q-card">
                 <div class="q-row">
                     <span class="q-num">{{ forloop.counter }}</span>
                     <span class="q-text">{{ q.savol }}</span>
                 </div>
-
                 {% if q.question_image %}
                 <img src="{{ q.question_image.url }}" class="img-fluid mb-2 rounded"
-                     style="max-height:220px; border:1px solid var(--border); margin-left:38px;">
+                     style="max-height:220px;border:1.5px solid var(--border);margin-left:38px;">
                 {% endif %}
 
-                <!-- ABCD -->
                 {% if q.question_type == 'ABCD' %}
                 <div class="option-list">
                     <label class="option-label" onclick="selectOpt(this)">
                         <input type="radio" name="q_{{ q.id }}" value="A">
                         <span class="opt-letter">A</span>
-                        {% if q.image_a %}
-                            <img src="{{ q.image_a.url }}" style="max-height:60px;border-radius:4px;">
-                        {% else %}{{ q.variant_a }}{% endif %}
+                        {% if q.image_a %}<img src="{{ q.image_a.url }}" style="max-height:60px;border-radius:5px;">{% else %}{{ q.variant_a }}{% endif %}
                     </label>
                     <label class="option-label" onclick="selectOpt(this)">
                         <input type="radio" name="q_{{ q.id }}" value="B">
                         <span class="opt-letter">B</span>
-                        {% if q.image_b %}
-                            <img src="{{ q.image_b.url }}" style="max-height:60px;border-radius:4px;">
-                        {% else %}{{ q.variant_b }}{% endif %}
+                        {% if q.image_b %}<img src="{{ q.image_b.url }}" style="max-height:60px;border-radius:5px;">{% else %}{{ q.variant_b }}{% endif %}
                     </label>
                     <label class="option-label" onclick="selectOpt(this)">
                         <input type="radio" name="q_{{ q.id }}" value="C">
                         <span class="opt-letter">C</span>
-                        {% if q.image_c %}
-                            <img src="{{ q.image_c.url }}" style="max-height:60px;border-radius:4px;">
-                        {% else %}{{ q.variant_c }}{% endif %}
+                        {% if q.image_c %}<img src="{{ q.image_c.url }}" style="max-height:60px;border-radius:5px;">{% else %}{{ q.variant_c }}{% endif %}
                     </label>
                     <label class="option-label" onclick="selectOpt(this)">
                         <input type="radio" name="q_{{ q.id }}" value="D">
                         <span class="opt-letter">D</span>
-                        {% if q.image_d %}
-                            <img src="{{ q.image_d.url }}" style="max-height:60px;border-radius:4px;">
-                        {% else %}{{ q.variant_d }}{% endif %}
+                        {% if q.image_d %}<img src="{{ q.image_d.url }}" style="max-height:60px;border-radius:5px;">{% else %}{{ q.variant_d }}{% endif %}
                     </label>
                 </div>
 
-                <!-- TRUE / FALSE / NOT GIVEN -->
                 {% elif q.question_type == 'TFNG' %}
                 <div class="toggle-group">
                     <div class="toggle-btn btn-green">
                         <input type="radio" name="q_{{ q.id }}" id="tf_{{ q.id }}_T" value="TRUE">
-                        <label class="toggle-label" for="tf_{{ q.id }}_T">✅ TRUE</label>
+                        <label class="toggle-label" for="tf_{{ q.id }}_T">✓ TRUE</label>
                     </div>
                     <div class="toggle-btn btn-red">
                         <input type="radio" name="q_{{ q.id }}" id="tf_{{ q.id }}_F" value="FALSE">
-                        <label class="toggle-label" for="tf_{{ q.id }}_F">❌ FALSE</label>
+                        <label class="toggle-label" for="tf_{{ q.id }}_F">✕ FALSE</label>
                     </div>
                     <div class="toggle-btn btn-gold">
                         <input type="radio" name="q_{{ q.id }}" id="tf_{{ q.id }}_NG" value="NOT GIVEN">
-                        <label class="toggle-label" for="tf_{{ q.id }}_NG">❓ NOT GIVEN</label>
+                        <label class="toggle-label" for="tf_{{ q.id }}_NG">? NOT GIVEN</label>
                     </div>
                 </div>
 
-                <!-- YES / NO / NOT GIVEN -->
                 {% elif q.question_type == 'YNNG' %}
                 <div class="toggle-group">
                     <div class="toggle-btn btn-green">
                         <input type="radio" name="q_{{ q.id }}" id="yn_{{ q.id }}_Y" value="YES">
-                        <label class="toggle-label" for="yn_{{ q.id }}_Y">✅ YES</label>
+                        <label class="toggle-label" for="yn_{{ q.id }}_Y">✓ YES</label>
                     </div>
                     <div class="toggle-btn btn-red">
                         <input type="radio" name="q_{{ q.id }}" id="yn_{{ q.id }}_N" value="NO">
-                        <label class="toggle-label" for="yn_{{ q.id }}_N">❌ NO</label>
+                        <label class="toggle-label" for="yn_{{ q.id }}_N">✕ NO</label>
                     </div>
                     <div class="toggle-btn btn-gold">
                         <input type="radio" name="q_{{ q.id }}" id="yn_{{ q.id }}_NG" value="NOT GIVEN">
-                        <label class="toggle-label" for="yn_{{ q.id }}_NG">❓ NOT GIVEN</label>
+                        <label class="toggle-label" for="yn_{{ q.id }}_NG">? NOT GIVEN</label>
                     </div>
                 </div>
 
-                <!-- FILL IN THE BLANK -->
                 {% elif q.question_type == 'FILL' %}
                 <div class="fill-wrap">
                     <input type="text" name="q_{{ q.id }}" class="fill-input"
-                           placeholder="Write your answer here..." autocomplete="off">
+                           placeholder="Javobingiz..." autocomplete="off">
                 </div>
                 {% endif %}
 
             </div>
-            {% endwith %}
-            {% endfor %}
+            {% endwith %}{% endfor %}
             </div>
             {% endif %}
 
         </div>
         {% endfor %}
 
-        <!-- NAVIGATION -->
         <div class="nav-area">
             {% if not forloop.first %}
-            <button type="button" class="btn btn-outline-secondary px-4"
-                    onclick="showStep({{ forloop.counter|add:-1 }})">
-                ← Back
-            </button>
+            <button type="button" class="btn-nav-back" onclick="showStep({{ forloop.counter|add:-1 }})">← Back</button>
             {% else %}<div></div>{% endif %}
-
             {% if not forloop.last %}
-            <button type="button"
-                    class="btn btn-primary btn-lg px-5 fw-bold"
-                    style="background:var(--navy);border-color:var(--navy);"
-                    onclick="showStep({{ forloop.counter|add:1 }})">
-                Next Passage →
-            </button>
+            <button type="button" class="btn-nav-next" onclick="showStep({{ forloop.counter|add:1 }})">Next Passage →</button>
             {% else %}
-            <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow">
-                ✅ Submit Test
-            </button>
+            <button type="submit" class="btn-submit">✓ Submit Test</button>
             {% endif %}
         </div>
 
@@ -470,25 +696,18 @@
 </div>
 
 <script>
-// ── Passage navigation ──
 function showStep(n) {
     document.querySelectorAll('.step-container').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
     const step = document.getElementById('step-' + n);
     const tab  = document.getElementById('ptab-' + n);
-    if (step) {
-        step.classList.add('active');
-        step.querySelectorAll('.passage-pane, .questions-pane').forEach(p => p.scrollTop = 0);
-    }
+    if (step) { step.classList.add('active'); step.querySelectorAll('.passage-pane,.questions-pane').forEach(p => p.scrollTop = 0); }
     if (tab) tab.classList.add('active');
 }
 
-// ── ABCD visual selection ──
 function selectOpt(label) {
     const name = label.querySelector('input').name;
-    document.querySelectorAll(`input[name="${name}"]`).forEach(i => {
-        i.closest('.option-label').classList.remove('selected');
-    });
+    document.querySelectorAll(`input[name="${name}"]`).forEach(i => i.closest('.option-label').classList.remove('selected'));
     label.classList.add('selected');
 }
 document.querySelectorAll('.option-label input[type="radio"]').forEach(inp => {
@@ -496,58 +715,95 @@ document.querySelectorAll('.option-label input[type="radio"]').forEach(inp => {
     inp.addEventListener('change', () => selectOpt(inp.closest('.option-label')));
 });
 
-// ── MATCH: duplicate heading ogohlantirish ──
 function checkDuplicate(sel) {
-    sel.classList.remove('conflict');
-    sel.title = '';
-    const val = sel.value;
-    if (!val) return;
+    sel.classList.remove('conflict'); sel.title = '';
+    const val = sel.value; if (!val) return;
     document.querySelectorAll('.match-select').forEach(other => {
         if (other !== sel && other.value === val) {
             sel.classList.add('conflict');
-            sel.title = `⚠️ "${val}" heading allaqachon ishlatilgan!`;
+            sel.title = `⚠ "${val}" already used!`;
         }
     });
 }
 
-// ── Paragraph auto-label (A, B, C...) ──
+const fbState = {};
+document.querySelectorAll('[id^="summary-"]').forEach(el => {
+    const qid = el.dataset.qid;
+    const raw = el.dataset.raw;
+    if (!raw) return;
+    fbState[qid] = { selectedChip: null, selectedBlankIdx: null, answers: [] };
+    let blankIdx = 0;
+    const html = raw.replace(/___+|\(\d+\)/g, () => {
+        const idx = blankIdx++;
+        fbState[qid].answers.push('');
+        return `<span class="blank-slot" data-qid="${qid}" data-idx="${idx}" onclick="blankClick(this)">___</span>`;
+    });
+    el.innerHTML = html;
+});
+
+function chipClick(chip, qid) {
+    if (chip.classList.contains('used')) return;
+    const state = fbState[qid];
+    if (state.selectedChip) state.selectedChip.classList.remove('selected-chip');
+    if (state.selectedBlankIdx !== null) { fillBlank(qid, state.selectedBlankIdx, chip); return; }
+    chip.classList.add('selected-chip');
+    state.selectedChip = chip;
+}
+
+function blankClick(slot) {
+    const qid = slot.dataset.qid;
+    const idx = parseInt(slot.dataset.idx);
+    const state = fbState[qid];
+    if (state.selectedChip) { fillBlank(qid, idx, state.selectedChip); return; }
+    document.querySelectorAll(`[data-qid="${qid}"].blank-slot`).forEach(s => s.classList.remove('active-slot'));
+    slot.classList.add('active-slot');
+    state.selectedBlankIdx = idx;
+}
+
+function fillBlank(qid, idx, chip) {
+    const state = fbState[qid];
+    const word  = chip.dataset.word;
+    const oldWord = state.answers[idx];
+    if (oldWord) {
+        const oldChip = document.querySelector(`#wbox-${qid} [data-word="${oldWord}"]`);
+        if (oldChip) oldChip.classList.remove('used');
+    }
+    state.answers[idx] = word;
+    const slot = document.querySelector(`[data-qid="${qid}"][data-idx="${idx}"]`);
+    if (slot) { slot.textContent = word; slot.classList.add('filled'); slot.classList.remove('active-slot'); }
+    chip.classList.remove('selected-chip');
+    chip.classList.add('used');
+    state.selectedChip = null;
+    state.selectedBlankIdx = null;
+    updateAnswer(qid);
+}
+
+function updateAnswer(qid) {
+    const hidden = document.getElementById(`answer-${qid}`);
+    if (hidden) hidden.value = fbState[qid].answers.join(',');
+}
+
 document.querySelectorAll('[id^="passage-"]').forEach(el => {
-    const parts = el.innerHTML
-        .split(/<br>/gi)
-        .map(p => p.trim())
-        .filter(p => p.replace(/<[^>]+>/g, '').trim().length > 50);
+    const parts = el.innerHTML.split(/<br>/gi).map(p => p.trim()).filter(p => p.replace(/<[^>]+>/g,'').trim().length > 50);
     if (parts.length < 2) return;
     const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    el.innerHTML = parts.map((p, i) => `
-        <div class="para-block">
-            <div class="para-label">${L[i] || (i + 1)}</div>
-            <div class="para-text">${p}</div>
-        </div>
-    `).join('');
+    el.innerHTML = parts.map((p,i) =>
+        `<div class="para-block"><div class="para-label">${L[i]||i+1}</div><div class="para-text">${p}</div></div>`
+    ).join('');
 });
 
-// ── Timer ──
-let timeLeft = {{ duration|default:60 }} * 60;
-const timerEl = document.getElementById('timer');
+let t = {{ duration|default:60 }} * 60;
+const tEl = document.getElementById('timer');
+const tWrap = document.getElementById('timer-wrap');
 const tick = setInterval(() => {
-    const m = Math.floor(timeLeft / 60);
-    const s = timeLeft % 60;
-    timerEl.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
-    if (timeLeft <= 300) timerEl.classList.add('warning');
-    if (timeLeft <= 0) {
-        clearInterval(tick);
-        window.onbeforeunload = null;
-        document.getElementById('mainTestForm').submit();
-    }
-    timeLeft--;
+    const m = Math.floor(t/60), s = t%60;
+    tEl.textContent = `${m}:${s<10?'0':''}${s}`;
+    if (t <= 300) tWrap.classList.add('warning');
+    if (t-- <= 0) { clearInterval(tick); window.onbeforeunload=null; document.getElementById('mainTestForm').submit(); }
 }, 1000);
 
-// ── Sahifadan chiqish ogohlantirisih ──
-window.onbeforeunload = () => "Test tugallanmadi! Chiqib ketsangiz natijalar saqlanmaydi.";
-document.getElementById('mainTestForm').addEventListener('submit', () => {
-    window.onbeforeunload = null;
-});
+window.onbeforeunload = () => "Test is not completed!";
+document.getElementById('mainTestForm').addEventListener('submit', () => window.onbeforeunload = null);
 </script>
-
 </body>
 </html>
