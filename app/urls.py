@@ -7,7 +7,7 @@ from .views import (
     writing_result, student_analytics, test_list_listening, buy_coins,
     leaderboard, dtm_select_view, explain_error_view,
     # ✅ Do'stlik viewlari
-    friend_profile, add_friend, accept_friend, reject_friend, my_friends,
+    friend_profile, add_friend, accept_friend, reject_friend, my_friends,university_proxy
 )
 from django.conf.urls.static import static
 from django.conf import settings
@@ -22,6 +22,7 @@ urlpatterns = [
     path('sat_test/<int:test_id>/', sat_test_view, name='sat_test'),
     path('sat/', test_list_sat, name='sat'),
     path('ielts/', ielts_main_dashboard, name='ielts'),
+    path('api/universities/', university_proxy, name='university_proxy'),
     path('univers/', univerlar, name='univers'),
     path('leaderboard/', leaderboard, name='leaderboard'),
     path('dtm_test/', dtm_test_view, name='dtm_test'),

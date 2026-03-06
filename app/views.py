@@ -187,12 +187,46 @@ def fan_tanlash(request):
         "selected_fan": selected_fan,
     })
 
+
+import requests
+from django.http import JsonResponse
+from django.shortcuts import render
+import json
+
+# GitHub raw JSON — universities.hipolabs.com o'rniga
+GITHUB_URL = "https://raw.githubusercontent.com/Hipo/university-domains-list/master/world_universities_and_domains.json"
+
+_cached_data = None  # xotirada saqlaymiz, har safar yuklamaymiz
+
+def get_university_data():
+    global _cached_data
+    if _cached_data is None:
+        r = requests.get(GITHUB_URL, timeout=15)
+        _cached_data = r.json()
+    return _cached_data
+
+def university_proxy(request):
+    name    = request.GET.get('name', '').strip().lower()
+    country = request.GET.get('country', '').strip().lower()
+
+    try:
+        data = get_university_data()
+
+        # ✅ Agar hech narsa kiritilmasa — birinchi 100 tasini qaytaradi
+        results = []
+        for uni in data:
+            name_match    = name    in uni.get('name', '').lower()    if name    else True
+            country_match = country in uni.get('country', '').lower() if country else True
+            if name_match and country_match:
+                results.append(uni)
+
+        return JsonResponse(results[:200], safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
 def univerlar(request):
-    return render(request, 'univerlar.html', {
-        'davlat':  Davlat_Univer.objects.all(),
-        'xususiy': Xususiy_Univer.objects.all(),
-        'xorijiy': Xorijiy_Univer.objects.all(),
-    })
+    return render(request, 'univerlar.html')
 
 def contact_view(request):
     if request.method == 'POST':
@@ -534,7 +568,7 @@ def dtm_test_view(request):
 
     for step, fan in enumerate(majburiy_fanlar, 3):
         qs = list(DTM_Majburiy.objects.filter(fan=fan))
-        if len(qs) > 30: qs = random.sample(qs, 30)
+        if len(qs) > 10: qs = random.sample(qs, 10)
         for q in qs:
             q.step = step; q.fan_nomi = fan
             q.ball_per_q = 1.1; q.model_name = 'majburiy'

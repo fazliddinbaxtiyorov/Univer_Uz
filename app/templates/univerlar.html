@@ -1,635 +1,336 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universities - UniBase</title>
-   <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <link rel="icon" href="/media/logo.png" type="image/jpeg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        html, body {
-    max-width: 100%;
-    overflow-x: hidden; /* Gorizontal suzishni butunlay taqiqlaydi */
-    margin: 0;
-    padding: 0;
-}
-       /* Mobil menyu uchun asosiy uslublar */
-@media (max-width: 991px) {
-    .nav-menu {
-        position: fixed;
-        top: 0;
-        right: -100%; /* Menyu o'ng tarafda berkingan holda turadi */
-        width: 75%;    /* Ekran kengligining 75% qismini egallaydi */
-        height: 100vh;
-        background-color: #274766;
-        transition: 0.4s ease-in-out; /* Animatsiya tezligi */
-        padding: 100px 40px;
-        z-index: 2100;
-        box-shadow: -5px 0 15px rgba(0,0,0,0.3); /* Chap tarafga soya beradi */
-    }
-
-    /* Menyu faollashganda o'ng tarafdan nolga keladi */
-    .nav-menu.active {
-        right: 0;
-    }
-}
-
-.mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 3001; /* Menyudan tepada turishi uchun */
-            padding: 5px;
+        :root {
+            --navy: #0f2742;
+            --navy-mid: #1a3a5c;
+            --navy-light: #274766;
+            --accent: #4cc9f0;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-400: #94a3b8;
+            --gray-600: #475569;
+            --gray-800: #1e293b;
+            --radius: 14px;
+            --shadow: 0 4px 24px rgba(15,39,66,0.08);
+            --shadow-lg: 0 12px 40px rgba(15,39,66,0.14);
         }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { max-width: 100%; overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--gray-800); }
 
-        .mobile-menu-btn span {
-            width: 25px;
-            height: 3px;
-            background: #fff;
-            display: block;
-            transition: 0.4s;
-            border-radius: 2px;
-        }
-
-        /* MOBILE STYLES */
-        @media (max-width: 991px) {
-            .mobile-menu-btn { display: flex; }
-
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%; /* Dastlab yashirin */
-                width: 75%;
-                height: 100vh;
-                background-color: var(--nav-dark);
-                transition: 0.4s ease-in-out;
-                padding: 100px 40px;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-                z-index: 3000;
-            }
-            @media (max-width: 991px) {
-            .mobile-menu-btn { display: flex; }
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 70%;
-                height: 100vh;
-                background: var(--color-primary);
-                transition: 0.4s;
-                padding: 100px 30px;
-            }
-            .nav-menu.active { right: 0; }
-            .nav-menu ul { flex-direction: column; align-items: flex-start; }
-            .search-row { grid-template-columns: 1fr; }
-        }
-
-        .loading-spinner {
-            width: 40px; height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--color-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-
-            .nav-menu.active { right: 0; }
-
-            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; }
-            .nav-menu ul li a { font-size: 1.3rem; }
-
-            /* Burger X animatsiyasi */
-            .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
-            .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
-            .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-        }
-/* HEADER */
-        header {
-            background: #274766;
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
+        /* HEADER */
+        header { background: var(--navy); padding: 14px 0; position: sticky; top: 0; z-index: 2000; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         .header-container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; text-decoration: none; color: white; }
-        .logo-img { width: 40px; border-radius: 50%; margin-right: 10px; }
-        .logo-text { font-weight: 700; font-size: 1.2rem; }
+        .logo { display: flex; align-items: center; text-decoration: none; color: white; gap: 10px; }
+        .logo-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+        .logo-text { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.25rem; }
+        .nav-menu ul { display: flex; list-style: none; gap: 8px; align-items: center; }
+        .nav-menu ul li a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; padding: 6px 12px; border-radius: 8px; transition: 0.2s; }
+        .nav-menu ul li a:hover { background: rgba(255,255,255,0.1); color: white; }
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 0.875rem; text-decoration: none; border: none; cursor: pointer; transition: 0.2s; font-family: 'DM Sans', sans-serif; }
+        .btn-primary { background: var(--accent); color: var(--navy); }
+        .btn-primary:hover { background: #3ab8e0; }
+        .btn-secondary { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+        .btn-danger { background: rgba(247,37,133,0.15); color: #f72585; border: 1px solid rgba(247,37,133,0.3); }
 
-        /* BURGER MENU ANIMATSIYASI */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 2101;
-            padding: 5px;
-        }
-        .mobile-menu-btn span {
-            width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s;
-        }
-
-        /* Burger bosilganda X shakli */
+        /* BURGER */
+        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; z-index: 3001; padding: 5px; }
+        .mobile-menu-btn span { width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s; border-radius: 2px; }
         .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
         .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
         .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-
-        /* NAV MENU */
-        .nav-menu ul { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
-        .nav-menu ul li a { color: rgba(255,255,255,0.9); text-decoration: none; transition: 0.3s; }
-
         @media (max-width: 991px) {
             .mobile-menu-btn { display: flex; }
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 75%;
-                height: 100vh;
-                background-color: #274766;
-                transition: 0.4s ease-in-out;
-                padding: 100px 40px;
-                z-index: 2100;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.3);
-            }
+            .nav-menu { position: fixed; top: 0; right: -100%; width: 75%; height: 100vh; background: var(--navy); transition: 0.4s ease-in-out; padding: 100px 40px; z-index: 3000; box-shadow: -5px 0 30px rgba(0,0,0,0.3); }
             .nav-menu.active { right: 0; }
-            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; }
-            .nav-menu ul li a { font-size: 1.3rem; }
+            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .nav-menu ul li a { font-size: 1.1rem; }
         }
 
-        /* HERO & SEARCH */
-        .universities-hero {
-            background: linear-gradient(135deg, #1e293b 0%, #274766 100%);
-            color: white;
-            padding: 3rem 1rem;
-            text-align: center;
-        }
+        /* HERO */
+        .hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); color: white; padding: 60px 0 80px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(76,201,240,0.12) 0%, transparent 70%); pointer-events: none; }
+        .hero h1 { font-family: 'Sora', sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+        .hero p { font-size: 1.05rem; opacity: 0.8; max-width: 500px; margin: 0 auto; }
 
-        .search-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius-xl);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            margin: -2rem auto 2rem;
-            max-width: 900px;
-            width: 92%;
-            position: relative;
-        }
+        /* SEARCH */
+        .search-section { background: white; padding: 24px 28px; border-radius: var(--radius); box-shadow: var(--shadow-lg); margin: -36px auto 32px; max-width: 860px; position: relative; z-index: 10; border: 1px solid var(--gray-200); }
+        .search-row { display: grid; grid-template-columns: 1fr 220px auto; gap: 14px; align-items: end; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.82rem; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 0.95rem; font-family: 'DM Sans', sans-serif; transition: 0.2s; background: var(--gray-50); color: var(--gray-800); }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(76,201,240,0.12); }
+        .btn-search { padding: 12px 28px; background: var(--navy); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; font-family: 'Sora', sans-serif; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+        .btn-search:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(15,39,66,0.25); }
 
-        .search-row {
-            display: grid;
-            grid-template-columns: 1fr 200px auto;
-            gap: 1rem;
-            align-items: end;
-        }
+        /* STATS */
+        .stats-banner { display: none; background: var(--navy); color: white; padding: 14px 22px; border-radius: var(--radius); margin-bottom: 24px; align-items: center; justify-content: space-between; }
+        .stats-banner.visible { display: flex; }
+        .stats-banner h2 { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; }
 
-        .search-row input, .search-row select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
+        /* LOADING */
+        .loading { text-align: center; padding: 60px 20px; display: none; }
+        .loading.visible { display: block; }
+        .spinner { width: 44px; height: 44px; border: 4px solid var(--gray-200); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* CARD GRID */
-        .uni-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-            padding-bottom: 3rem;
-        }
+        /* ERROR */
+        .error-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 16px 20px; border-radius: var(--radius); color: #b91c1c; margin-bottom: 24px; display: none; font-weight: 500; }
+        .error-box.visible { display: block; }
 
-        .uni-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-            transition: transform 0.3s;
-        }
-        .uni-card:hover { transform: translateY(-5px); }
+        /* WELCOME */
+        .welcome-msg { text-align: center; padding: 60px 20px; }
+        .welcome-msg h2 { font-family: 'Sora', sans-serif; font-size: 1.5rem; color: var(--gray-600); margin-bottom: 10px; }
+        .welcome-msg p { color: var(--gray-400); line-height: 1.7; }
 
-        /* MOBIL MOSLASHUV */
+        /* GRID */
+        .uni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        .uni-card { background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1.5px solid var(--gray-200); transition: all 0.25s; animation: fadeUp 0.4s ease both; }
+        .uni-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .uni-card h3 { font-family: 'Sora', sans-serif; font-size: 0.98rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.4; }
+        .uni-location { display: flex; align-items: center; gap: 6px; color: var(--gray-400); font-size: 0.83rem; margin-bottom: 10px; }
+        .uni-domain { font-size: 0.78rem; color: var(--gray-600); background: var(--gray-100); padding: 3px 10px; border-radius: 6px; display: inline-block; margin-bottom: 10px; font-family: monospace; }
+        .uni-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .uni-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; background: var(--gray-100); color: var(--gray-600); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 500; transition: 0.2s; border: 1px solid var(--gray-200); }
+        .uni-link:hover { background: var(--navy); color: white; border-color: var(--navy); }
+        .no-results { grid-column: 1/-1; text-align: center; padding: 48px; background: white; border-radius: var(--radius); border: 1.5px dashed var(--gray-200); color: var(--gray-400); }
+        .no-results h3 { font-family: 'Sora', sans-serif; font-size: 1.1rem; margin-bottom: 8px; color: var(--gray-600); }
+
         @media (max-width: 768px) {
             .search-row { grid-template-columns: 1fr; }
-            .search-section { padding: 1rem; }
+            .search-section { margin: -30px 16px 24px; padding: 20px; }
             .uni-grid { grid-template-columns: 1fr; }
-        }
-
-        .universities-hero {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-            color: var(--color-white);
-            padding: 4rem 0;
-            text-align: center;
-        }
-
-        .search-section {
-            background: var(--color-white);
-            padding: 2rem;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-            margin: -2rem auto 3rem;
-            max-width: 800px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .search-row {
-            display: grid;
-            grid-template-columns: 1fr 200px auto;
-            gap: 1rem;
-            align-items: end;
-        }
-
-        .search-row input,
-        .search-row select {
-            padding: 0.875rem 1rem;
-            border: 2px solid var(--color-gray-200);
-            border-radius: var(--radius-md);
-            font-size: var(--font-size-base);
-            transition: border-color var(--transition-fast);
-        }
-
-        .search-row input:focus,
-        .search-row select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-        }
-
-        .uni-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .uni-card {
-            background: var(--color-white);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            transition: all var(--transition-normal);
-            border: 2px solid transparent;
-        }
-
-        .uni-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--color-primary);
-        }
-
-        .uni-card h3 {
-            margin: 0 0 0.5rem 0;
-            color: var(--color-gray-900);
-            font-size: var(--font-size-lg);
-        }
-
-        .uni-location {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--color-gray-600);
-            margin-bottom: 1rem;
-            font-size: var(--font-size-sm);
-        }
-
-        .uni-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .uni-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.375rem 0.75rem;
-            background-color: var(--color-gray-100);
-            color: var(--color-gray-700);
-            text-decoration: none;
-            border-radius: var(--radius-sm);
-            font-size: var(--font-size-sm);
-            transition: all var(--transition-fast);
-        }
-
-        .uni-link:hover {
-            background-color: var(--color-primary);
-            color: var(--color-white);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: var(--color-gray-600);
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--color-gray-200);
-            border-top-color: var(--color-primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-message {
-            background: #fee;
-            border-left: 4px solid #f66;
-            padding: 1rem;
-            border-radius: var(--radius-md);
-            color: #c33;
-            margin: 2rem 0;
-        }
-
-        .stats-banner {
-            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
-            color: var(--color-white);
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .stats-banner h2 {
-            margin: 0;
-            font-size: var(--font-size-2xl);
-        }
-
-        @media (max-width: 768px) {
-            .search-row {
-                grid-template-columns: 1fr;
-            }
-
-            .uni-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .universities-hero {
-                padding: 2rem 0;
-            }
+            .hero { padding: 44px 0 70px; }
+            .stats-banner { flex-direction: column; gap: 6px; text-align: center; }
         }
     </style>
 </head>
-
 <body>
-    <!-- Header -->
-     <header>
+
+<!-- HEADER -->
+<header>
     <div class="container">
         <div class="header-container">
             <a href="{% url 'home' %}" class="logo">
                 <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
                 <span class="logo-text">UniBase</span>
             </a>
-
-            <button class="mobile-menu-btn" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="mobile-menu-btn" id="menuBtn" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
             </button>
-
-            <nav class="nav-menu">
+            <nav class="nav-menu" id="navMenu">
                 <ul>
-                    <li><a href="{% url 'home' %}#tests" data-translate="nav_tests">Tests</a></li>
-                    <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
-                    <li><a href="{% url 'home' %}#news" data-translate="nav_news">News</a></li>
-                    <li><a href="{% url 'home' %}#features" data-translate="nav_features">Features</a></li>
-                    <li><a href="https://t.me/unibase_support_bot" data-translate="nav_support">Support</a></li>
-
+                    <li><a href="{% url 'home' %}#tests">Tests</a></li>
+                    <li><a href="{% url 'univers' %}">Universities</a></li>
+                    <li><a href="{% url 'home' %}#news">News</a></li>
+                    <li><a href="{% url 'home' %}#features">Features</a></li>
+                    <li><a href="https://t.me/unibase_support_bot">Support</a></li>
                     {% if user.is_authenticated %}
-                        <li class="auth-links">
-                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>
-                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
-                        </li>
+                        <li><a href="{% url 'profile' %}" class="btn btn-secondary">Dashboard</a></li>
+                        <li><a href="{% url 'logout' %}" class="btn btn-danger">Logout</a></li>
                     {% else %}
-                        <li class="auth-links">
-                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
-                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
-                        </li>
+                        <li><a href="{% url 'login' %}" class="btn btn-secondary">Login</a></li>
+                        <li><a href="{% url 'sign' %}" class="btn btn-primary">Register</a></li>
                     {% endif %}
                 </ul>
             </nav>
         </div>
     </div>
 </header>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const menuBtn = document.querySelector(".mobile-menu-btn");
-    const navMenu = document.querySelector(".nav-menu");
 
-    menuBtn.addEventListener("click", function () {
-        navMenu.classList.toggle("active");
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <h1>🎓 Explore Universities Worldwide</h1>
+        <p>Search and discover universities from around the globe — instant access to official websites.</p>
+    </div>
+</section>
+
+<!-- MAIN -->
+<section style="padding: 0 0 60px;">
+    <div class="container">
+
+        <div class="search-section">
+            <div class="search-row">
+                <div class="form-group">
+                    <label for="university-search">University Name</label>
+                    <input type="text" id="university-search" placeholder="e.g. Harvard, MIT, Oxford...">
+                </div>
+                <div class="form-group">
+                    <label for="country-select">Country</label>
+                    <select id="country-select">
+                        <option value="">All Countries</option>
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        <option value="China">China</option>
+                        <option value="Japan">Japan</option>
+                        <option value="South Korea">South Korea</option>
+                        <option value="India">India</option>
+                        <option value="Uzbekistan">Uzbekistan</option>
+                        <option value="Russia">Russia</option>
+                        <option value="Turkey">Turkey</option>
+                        <option value="Malaysia">Malaysia</option>
+                        <option value="Singapore">Singapore</option>
+                    </select>
+                </div>
+                <button class="btn-search" id="search-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div id="stats-banner" class="stats-banner">
+            <h2 id="results-count">0 Universities Found</h2>
+            <span style="opacity:0.6;font-size:0.82rem;">10,000+ universities database</span>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="color:var(--gray-400);">Fetching universities...</p>
+        </div>
+
+        <div id="error-message" class="error-box"></div>
+        <div id="universities-grid" class="uni-grid"></div>
+
+        <div id="welcome-message" class="welcome-msg">
+            <div style="font-size:3rem;margin-bottom:16px;">🌍</div>
+            <h2>Discover World Universities</h2>
+            <p>Type a university name or select a country.<br>10,000+ universities from around the world.</p>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    // Burger menu
+    document.getElementById('menuBtn').addEventListener('click', function () {
+        this.classList.toggle('open');
+        document.getElementById('navMenu').classList.toggle('active');
     });
-});
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const d = document.createElement('div');
+        d.textContent = text;
+        return d.innerHTML;
+    }
+
+    function showLoading()  { document.getElementById('loading').classList.add('visible'); }
+    function hideLoading()  { document.getElementById('loading').classList.remove('visible'); }
+    function showBanner()   { document.getElementById('stats-banner').classList.add('visible'); }
+    function hideBanner()   { document.getElementById('stats-banner').classList.remove('visible'); }
+    function showError(msg) { const el = document.getElementById('error-message'); el.innerHTML = msg; el.classList.add('visible'); }
+    function hideError()    { document.getElementById('error-message').classList.remove('visible'); }
+
+    async function searchUniversities() {
+        const name    = document.getElementById('university-search').value.trim();
+        const country = document.getElementById('country-select').value;
+
+        // Ikkalasi ham bo'sh bo'lsa to'xtat
+        if (!name && !country) {
+            showError('⚠️ Please enter a university name or select a country.');
+            return;
+        }
+
+        hideError();
+        hideBanner();
+        document.getElementById('welcome-message').style.display = 'none';
+        document.getElementById('universities-grid').innerHTML = '';
+        showLoading();
+
+        // ✅ Django proxy orqali — CORS muammo yo'q
+        let apiUrl = '/api/universities/?';
+        if (name)    apiUrl += `name=${encodeURIComponent(name)}`;
+        if (country) apiUrl += `${name ? '&' : ''}country=${encodeURIComponent(country)}`;
+
+        try {
+            const res = await fetch(apiUrl);
+            if (!res.ok) throw new Error(`Server xatosi: ${res.status}`);
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+            renderCards(data);
+        } catch (err) {
+            showError('❌ <strong>Xatolik:</strong> ' + err.message);
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function renderCards(unis) {
+        const grid = document.getElementById('universities-grid');
+
+        if (!unis.length) {
+            grid.innerHTML = `
+                <div class="no-results">
+                    <div style="font-size:2.5rem;margin-bottom:10px">🔍</div>
+                    <h3>No universities found</h3>
+                    <p>Try a different name or country.</p>
+                </div>`;
+            return;
+        }
+
+        document.getElementById('results-count').textContent =
+            `${unis.length} ${unis.length === 1 ? 'University' : 'Universities'} Found`;
+        showBanner();
+
+        grid.innerHTML = unis.map((uni, i) => `
+            <div class="uni-card" style="animation-delay:${Math.min(i * 0.04, 0.8)}s">
+                <h3>${escapeHtml(uni.name)}</h3>
+                <div class="uni-location">
+                    <span>📍</span>
+                    <span>${escapeHtml(uni.country)}${uni['state-province'] ? ' · ' + escapeHtml(uni['state-province']) : ''}</span>
+                </div>
+                ${uni.domains?.[0] ? `<span class="uni-domain">${escapeHtml(uni.domains[0])}</span>` : ''}
+                ${uni.web_pages?.length ? `
+                    <div class="uni-links">
+                        ${uni.web_pages.map(u => `
+                            <a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer" class="uni-link">
+                                🔗 Official Website
+                            </a>`).join('')}
+                    </div>` : ''}
+            </div>`).join('');
+    }
+
+    // Search button
+    document.getElementById('search-btn').addEventListener('click', searchUniversities);
+
+    // Enter tugmasi
+    document.getElementById('university-search').addEventListener('keypress', e => {
+        if (e.key === 'Enter') searchUniversities();
+    });
+
+    // ✅ Country o'zgarganda — name bo'sh bo'lsa ham qidirsin
+    document.getElementById('country-select').addEventListener('change', () => {
+        const country = document.getElementById('country-select').value;
+        if (country) {
+            searchUniversities();
+        }
+        // "All Countries" tanlansa welcome xabar ko'rsat
+        else {
+            hideBanner();
+            hideError();
+            document.getElementById('universities-grid').innerHTML = '';
+            document.getElementById('welcome-message').style.display = 'block';
+        }
+    });
 </script>
 
-    <!-- Hero Section -->
-    <section class="universities-hero">
-        <div class="container">
-            <h1>🎓 Explore Universities Worldwide</h1>
-            <p style="font-size: var(--font-size-lg); margin-top: 1rem; opacity: 0.95;">
-                Search and discover universities from around the globe
-            </p>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <section class="section">
-        <div class="container">
-            <!-- Search Section -->
-            <div class="search-section">
-                <div class="search-row">
-                    <div>
-                        <label for="university-search"
-                            style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Search University</label>
-                        <input type="text" id="university-search" placeholder="Enter university name...">
-                    </div>
-                    <div>
-                        <label for="country-select"
-                            style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Country</label>
-                        <select id="country-select">
-                            <option value="">All Countries</option>
-                            <option value="United States">United States</option>
-                            <option value="United Kingdom">United Kingdom</option>
-                            <option value="Canada">Canada</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Germany">Germany</option>
-                            <option value="France">France</option>
-                            <option value="China">China</option>
-                            <option value="Japan">Japan</option>
-                            <option value="South Korea">South Korea</option>
-                            <option value="India">India</option>
-                            <option value="Uzbekistan">Uzbekistan</option>
-                            <option value="Russia">Russia</option>
-                        </select>
-                    </div>
-                    <button id="search-btn" class="btn btn-primary" style="padding: 0.875rem 2rem;">🔍 Search</button>
-                </div>
-            </div>
-
-            <!-- Stats Banner -->
-            <div id="stats-banner" class="stats-banner" style="display: none;">
-                <h2 id="results-count">0 Universities Found</h2>
-            </div>
-
-            <!-- Loading State -->
-            <div id="loading" class="loading" style="display: none;">
-                <div class="loading-spinner"></div>
-                <p style="margin-top: 1rem;">Loading universities...</p>
-            </div>
-
-            <!-- Error Message -->
-            <div id="error-message" class="error-message" style="display: none;"></div>
-
-            <!-- Universities Grid -->
-            <div id="universities-grid" class="uni-grid"></div>
-
-            <!-- Welcome Message -->
-            <div id="welcome-message" class="text-center" style="padding: 3rem;">
-                <h2 style="color: var(--color-gray-700);">🌍 Discover World Universities</h2>
-                <p style="color: var(--color-gray-600); margin-top: 1rem;">
-                    Use the search above to find universities by name or filter by country.<br>
-                    Get instant access to official websites and domains.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Scripts -->
-    <script src="../static/language.js"></script>
-    <script>
-        const API_BASE_URL = 'http://universities.hipolabs.com';
-        let currentResults = [];
-
-        // Search universities
-        async function searchUniversities() {
-            const searchTerm = document.getElementById('university-search').value.trim();
-            const country = document.getElementById('country-select').value;
-
-            // Build API URL
-            let apiUrl = `${API_BASE_URL}/search?`;
-            if (searchTerm) {
-                apiUrl += `name=${encodeURIComponent(searchTerm)}`;
-            }
-            if (country) {
-                apiUrl += `${searchTerm ? '&' : ''}country=${encodeURIComponent(country)}`;
-            }
-
-            // Show loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('error-message').style.display = 'none';
-            document.getElementById('universities-grid').innerHTML = '';
-            document.getElementById('stats-banner').style.display = 'none';
-            document.getElementById('welcome-message').style.display = 'none';
-
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch universities');
-                }
-
-                const universities = await response.json();
-                currentResults = universities;
-                displayUniversities(universities);
-            } catch (error) {
-                console.error('Error fetching universities:', error);
-                document.getElementById('error-message').textContent = 'Failed to load universities. Please check your internet connection and try again.';
-                document.getElementById('error-message').style.display = 'block';
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
-
-        // Display universities
-        function displayUniversities(universities) {
-            const grid = document.getElementById('universities-grid');
-            const statsBanner = document.getElementById('stats-banner');
-            const resultsCount = document.getElementById('results-count');
-
-            if (universities.length === 0) {
-                grid.innerHTML = `
-                    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
-                        <h3>No universities found</h3>
-                        <p style="color: var(--color-gray-600); margin-top: 0.5rem;">
-                            Try adjusting your search criteria
-                        </p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Show stats
-            resultsCount.textContent = `${universities.length} ${universities.length === 1 ? 'University' : 'Universities'} Found`;
-            statsBanner.style.display = 'block';
-
-            // Render universities
-            grid.innerHTML = universities.map(uni => `
-                <div class="uni-card">
-                    <h3>${escapeHtml(uni.name)}</h3>
-                    <div class="uni-location">
-                        <span>🌍</span>
-                        <span>${escapeHtml(uni.country)}${uni['state-province'] ? ', ' + escapeHtml(uni['state-province']) : ''}</span>
-                    </div>
-                    ${uni.domains && uni.domains.length > 0 ? `
-                        <div style="margin-top: 0.75rem; font-size: var(--font-size-sm); color: var(--color-gray-600);">
-                            <strong>Domain:</strong> ${escapeHtml(uni.domains[0])}
-                        </div>
-                    ` : ''}
-                    ${uni.web_pages && uni.web_pages.length > 0 ? `
-                        <div class="uni-links">
-                            ${uni.web_pages.map(url => `
-                                <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="uni-link">
-                                    🔗 Website
-                                </a>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
-
-        // Escape HTML to prevent XSS
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Event listeners
-        document.getElementById('search-btn').addEventListener('click', searchUniversities);
-
-        // Enter key to search
-        document.getElementById('university-search').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                searchUniversities();
-            }
-        });
-
-        document.getElementById('country-select').addEventListener('change', () => {
-            const searchTerm = document.getElementById('university-search').value.trim();
-            const country = document.getElementById('country-select').value;
-            if (searchTerm || country) {
-                searchUniversities();
-            }
-        });
-    </script>
 </body>
-
 </html>
