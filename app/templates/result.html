@@ -341,8 +341,6 @@ function getCookie(n) {
     });
     return v;
 }
-window.onbeforeunload = () => '';
-document.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { window.onbeforeunload = null; }));
 </script>
 </body>
 </html>

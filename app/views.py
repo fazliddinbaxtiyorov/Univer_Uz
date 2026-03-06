@@ -603,7 +603,8 @@ def dtm_test_view(request):
             "fan": q.fan, "step": q.step, "ball": q.ball_per_q,
         } for q in all_questions]
 
-        request.session.flush()
+        request.session.pop('selected_subjects', None)
+        request.session.pop('start_time', None)
         return render(request, 'result.html', {
             "results": results, "total": round(total_score, 1),
             "total_questions": len(all_questions),
