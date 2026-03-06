@@ -1,0 +1,211 @@
+/* ===================================
+   UniBase - Responsive Styles
+   =================================== */
+
+/* Tablet Devices (768px and below) */
+@media (max-width: 768px) {
+
+    /* Typography adjustments */
+    h1 {
+        font-size: var(--font-size-4xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-3xl);
+    }
+
+    h3 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .hero-title {
+        font-size: var(--font-size-4xl);
+    }
+
+    /* Grid adjustments */
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Navigation */
+    .mobile-menu-btn {
+        display: block;
+        z-index: 1001;
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 400px;
+        height: 100vh;
+        background: rgba(30, 58, 95, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 80px 20px 20px;
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    .nav-menu ul {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .nav-menu a {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-xs);
+        border-radius: var(--radius-md);
+        /* Less rounded on mobile for stackability */
+    }
+
+    .header-container {
+        justify-content: space-between;
+    }
+
+    /* Logo responsive */
+    .logo-img {
+        height: 35px;
+        width: 35px;
+    }
+
+    .logo-text {
+        font-size: var(--font-size-xl);
+    }
+
+    /* Auth links responsive */
+    .auth-links {
+        width: 100%;
+        justify-content: center;
+        gap: var(--spacing-sm);
+    }
+
+    /* Hero section */
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    /* Spacing adjustments */
+    .section {
+        padding: var(--spacing-2xl) 0;
+    }
+
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+}
+
+/* Mobile Devices (480px and below) */
+@media (max-width: 480px) {
+
+    /* Further typography adjustments */
+    h1 {
+        font-size: var(--font-size-3xl);
+    }
+
+    h2 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .hero-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .hero-subtitle {
+        font-size: var(--font-size-base);
+    }
+
+    /* Logo mobile */
+    .logo-img {
+        height: 30px;
+        width: 30px;
+    }
+
+    .logo-text {
+        font-size: var(--font-size-lg);
+    }
+
+    /* Auth buttons mobile */
+    .auth-links {
+        flex-direction: row;
+        gap: var(--spacing-sm);
+        width: 100%;
+    }
+
+    .auth-links .btn {
+        flex: 1;
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+
+    /* Buttons */
+    .btn {
+        width: 100%;
+        padding: var(--spacing-md);
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+    }
+
+    /* Cards */
+    .card {
+        padding: var(--spacing-md);
+    }
+
+    .test-card {
+        padding: var(--spacing-md);
+    }
+
+    /* Question container */
+    .question-container {
+        padding: var(--spacing-lg);
+    }
+
+    .question-text {
+        font-size: var(--font-size-base);
+    }
+
+    /* Timer */
+    .timer {
+        font-size: var(--font-size-xl);
+        min-width: 150px;
+    }
+
+    /* Forms */
+    .form-input,
+    .form-select,
+    .form-textarea {
+        font-size: var(--font-size-base);
+    }
+}
