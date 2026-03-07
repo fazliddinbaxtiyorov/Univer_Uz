@@ -1,325 +1,308 @@
 <!DOCTYPE html>
+<html lang="uz">
 {% load static %}
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universities - UniBase</title>
-    <link rel="icon" href="/media/logo.png" type="image/jpeg">
-
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Milliy Sertifikat - UniBase</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <style>
-        :root {
-            --navy: #0f2742;
-            --navy-mid: #1a3a5c;
-            --navy-light: #274766;
-            --accent: #4cc9f0;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-400: #94a3b8;
-            --gray-600: #475569;
-            --gray-800: #1e293b;
-            --radius: 14px;
-            --shadow: 0 4px 24px rgba(15,39,66,0.08);
-            --shadow-lg: 0 12px 40px rgba(15,39,66,0.14);
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { max-width: 100%; overflow-x: hidden; font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--gray-800); }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #eef2f8; }
 
-        /* HEADER */
-        header { background: var(--navy); padding: 14px 0; position: sticky; top: 0; z-index: 2000; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        .header-container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; text-decoration: none; color: white; gap: 10px; }
-        .logo-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
-        .logo-text { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.25rem; }
-        .nav-menu ul { display: flex; list-style: none; gap: 8px; align-items: center; }
-        .nav-menu ul li a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; padding: 6px 12px; border-radius: 8px; transition: 0.2s; }
-        .nav-menu ul li a:hover { background: rgba(255,255,255,0.1); color: white; }
-        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-weight: 600; font-size: 0.875rem; text-decoration: none; border: none; cursor: pointer; transition: 0.2s; font-family: 'DM Sans', sans-serif; }
-        .btn-primary { background: var(--accent); color: var(--navy); }
-        .btn-primary:hover { background: #3ab8e0; }
-        .btn-secondary { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.2); }
-        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
-        .btn-danger { background: rgba(247,37,133,0.15); color: #f72585; border: 1px solid rgba(247,37,133,0.3); }
-
-        /* BURGER */
-        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; z-index: 3001; padding: 5px; }
-        .mobile-menu-btn span { width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s; border-radius: 2px; }
-        .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
-        .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
-        .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-        @media (max-width: 991px) {
-            .mobile-menu-btn { display: flex; }
-            .nav-menu { position: fixed; top: 0; right: -100%; width: 75%; height: 100vh; background: var(--navy); transition: 0.4s ease-in-out; padding: 100px 40px; z-index: 3000; box-shadow: -5px 0 30px rgba(0,0,0,0.3); }
-            .nav-menu.active { right: 0; }
-            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .nav-menu ul li a { font-size: 1.1rem; }
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 25px;
+            max-width: 1150px;
+            margin: 30px auto;
+            padding: 0 20px;
         }
 
-        /* HERO */
-        .hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); color: white; padding: 60px 0 80px; text-align: center; position: relative; overflow: hidden; }
-        .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(76,201,240,0.12) 0%, transparent 70%); pointer-events: none; }
-        .hero h1 { font-family: 'Sora', sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
-        .hero p { font-size: 1.05rem; opacity: 0.8; max-width: 500px; margin: 0 auto; }
+        /* TOPBAR */
+        .topbar {
+            position: sticky; top: 0; z-index: 1000;
+            background: #0f2742; color: #fff;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 30px;
+        }
+        .logo-text { font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; }
 
-        /* SEARCH */
-        .search-section { background: white; padding: 24px 28px; border-radius: var(--radius); box-shadow: var(--shadow-lg); margin: -36px auto 32px; max-width: 860px; position: relative; z-index: 10; border: 1px solid var(--gray-200); }
-        .search-row { display: grid; grid-template-columns: 1fr 220px auto; gap: 14px; align-items: end; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.82rem; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-size: 0.95rem; font-family: 'DM Sans', sans-serif; transition: 0.2s; background: var(--gray-50); color: var(--gray-800); }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(76,201,240,0.12); }
-        .btn-search { padding: 12px 28px; background: var(--navy); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; font-family: 'Sora', sans-serif; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-        .btn-search:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(15,39,66,0.25); }
+        .progress-box { width: 250px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; width: 0%; background: #4cc9f0; transition: 0.4s; }
 
-        /* STATS */
-        .stats-banner { display: none; background: var(--navy); color: white; padding: 14px 22px; border-radius: var(--radius); margin-bottom: 24px; align-items: center; justify-content: space-between; }
-        .stats-banner.visible { display: flex; }
-        .stats-banner h2 { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; }
+        .timer-display {
+            font-size: 18px; font-weight: 700; background: #122f52;
+            padding: 6px 15px; border-radius: 10px; border: 1px solid #4cc9f0;
+        }
+        .timer-display.danger { border-color: #e63946; color: #e63946; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-        /* LOADING */
-        .loading { text-align: center; padding: 60px 20px; display: none; }
-        .loading.visible { display: block; }
-        .spinner { width: 44px; height: 44px; border: 4px solid var(--gray-200); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* QUESTION CARD */
+        .question-card {
+            background: #fff; border-radius: 16px; padding: 25px;
+            margin-bottom: 22px; border: 1px solid #e3e8f1;
+            box-shadow: 0 6px 18px rgba(15,39,66,0.06);
+        }
+        .q-title {
+            font-size: 17px; font-weight: 600; margin-bottom: 18px;
+            display: block; color: #0f2742; line-height: 1.5;
+        }
+        .q-number { color: #4cc9f0; margin-right: 8px; }
 
-        /* ERROR */
-        .error-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 16px 20px; border-radius: var(--radius); color: #b91c1c; margin-bottom: 24px; display: none; font-weight: 500; }
-        .error-box.visible { display: block; }
+        /* Savol rasmi */
+        .savol-rasm { max-width: 100%; border-radius: 10px; margin-bottom: 15px; }
 
-        /* WELCOME */
-        .welcome-msg { text-align: center; padding: 60px 20px; }
-        .welcome-msg h2 { font-family: 'Sora', sans-serif; font-size: 1.5rem; color: var(--gray-600); margin-bottom: 10px; }
-        .welcome-msg p { color: var(--gray-400); line-height: 1.7; }
+        /* Variantlar */
+        .option-label {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; border: 1.5px solid #e4e9f3;
+            border-radius: 12px; margin-bottom: 10px; cursor: pointer;
+            transition: 0.2s; font-size: 15px;
+        }
+        .option-label:hover { background: #f0f6ff; border-color: #0f2742; }
+        .option-label input[type="radio"] { accent-color: #0f2742; width: 18px; height: 18px; }
+        .option-label.selected { background: #e8f0ff; border-color: #0f2742; }
 
-        /* GRID */
-        .uni-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-        .uni-card { background: white; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1.5px solid var(--gray-200); transition: all 0.25s; animation: fadeUp 0.4s ease both; }
-        .uni-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-        .uni-card h3 { font-family: 'Sora', sans-serif; font-size: 0.98rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.4; }
-        .uni-location { display: flex; align-items: center; gap: 6px; color: var(--gray-400); font-size: 0.83rem; margin-bottom: 10px; }
-        .uni-domain { font-size: 0.78rem; color: var(--gray-600); background: var(--gray-100); padding: 3px 10px; border-radius: 6px; display: inline-block; margin-bottom: 10px; font-family: monospace; }
-        .uni-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .uni-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; background: var(--gray-100); color: var(--gray-600); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 500; transition: 0.2s; border: 1px solid var(--gray-200); }
-        .uni-link:hover { background: var(--navy); color: white; border-color: var(--navy); }
-        .no-results { grid-column: 1/-1; text-align: center; padding: 48px; background: white; border-radius: var(--radius); border: 1.5px dashed var(--gray-200); color: var(--gray-400); }
-        .no-results h3 { font-family: 'Sora', sans-serif; font-size: 1.1rem; margin-bottom: 8px; color: var(--gray-600); }
+        /* Variant rasmlari */
+        .variant-with-image { flex-direction: column; align-items: flex-start; }
+        .variant-img { max-width: 200px; border-radius: 8px; margin-top: 8px; }
 
-        @media (max-width: 768px) {
-            .search-row { grid-template-columns: 1fr; }
-            .search-section { margin: -30px 16px 24px; padding: 20px; }
-            .uni-grid { grid-template-columns: 1fr; }
-            .hero { padding: 44px 0 70px; }
-            .stats-banner { flex-direction: column; gap: 6px; text-align: center; }
+        /* NAVIGATOR */
+        .navigator {
+            position: sticky; top: 90px;
+            background: #fff; border-radius: 16px; padding: 20px;
+            border: 1px solid #e3e8f1; box-shadow: 0 6px 18px rgba(15,39,66,0.06);
+            max-height: 85vh; overflow-y: auto;
+        }
+        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .nav-item {
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            border-radius: 10px; border: 1px solid #dde3ef; font-weight: 600; font-size: 13px;
+            text-decoration: none; color: #0f2742; transition: 0.2s; cursor: pointer;
+        }
+        .nav-item.answered { background: #e8fff1; border-color: #38b000; color: #38b000; }
+        .nav-item:hover { background: #f0f4f8; }
+
+        .stats-bar {
+            display: flex; justify-content: space-between;
+            margin-bottom: 15px; font-size: 13px; color: #555;
+        }
+        .stats-bar span strong { color: #0f2742; }
+
+        .btn-submit {
+            background: #4cc9f0; border: none; padding: 13px; width: 100%;
+            border-radius: 12px; font-weight: 700; font-size: 15px;
+            cursor: pointer; margin-top: 20px; transition: 0.2s;
+        }
+        .btn-submit:hover { background: #38b8e0; }
+
+        .legend { margin-top: 15px; font-size: 12px; color: #666; }
+        .legend-item { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+        @media(max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .navigator { position: static; }
         }
     </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-    <div class="container">
-        <div class="header-container">
-            <a href="{% url 'home' %}" class="logo">
-                <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
-                <span class="logo-text">UniBase</span>
-            </a>
-            <button class="mobile-menu-btn" id="menuBtn" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
-            <nav class="nav-menu" id="navMenu">
-                <ul>
-                    <li><a href="{% url 'home' %}#tests">Tests</a></li>
-                    <li><a href="{% url 'univers' %}">Universities</a></li>
-                    <li><a href="{% url 'home' %}#news">News</a></li>
-                    <li><a href="{% url 'home' %}#features">Features</a></li>
-                    <li><a href="https://t.me/unibase_support_bot">Support</a></li>
-                    {% if user.is_authenticated %}
-                        <li><a href="{% url 'profile' %}" class="btn btn-secondary">Dashboard</a></li>
-                        <li><a href="{% url 'logout' %}" class="btn btn-danger">Logout</a></li>
-                    {% else %}
-                        <li><a href="{% url 'login' %}" class="btn btn-secondary">Login</a></li>
-                        <li><a href="{% url 'sign' %}" class="btn btn-primary">Register</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
+<!-- TOPBAR -->
+<div class="topbar">
+    <a href="{% url 'home' %}" class="logo-text">UniBase</a>
+
+    <div class="progress-box">
+        <div class="progress-bar" id="p-bar"></div>
     </div>
-</header>
 
-<!-- HERO -->
-<section class="hero">
-    <div class="container">
-        <h1>🎓 Explore Universities Worldwide</h1>
-        <p>Search and discover universities from around the globe — instant access to official websites.</p>
-    </div>
-</section>
+    <div class="timer-display" id="timer-display">02:30:00</div>
 
-<!-- MAIN -->
-<section style="padding: 0 0 60px;">
-    <div class="container">
+    <button type="button"
+            style="background:#4cc9f0; border:none; padding:8px 18px; border-radius:10px; font-weight:600; cursor:pointer; color:#0f2742;"
+            onclick="submitTest()">
+        Topshirish
+    </button>
+</div>
 
-        <div class="search-section">
-            <div class="search-row">
-                <div class="form-group">
-                    <label for="university-search">University Name</label>
-                    <input type="text" id="university-search" placeholder="e.g. Harvard, MIT, Oxford...">
-                </div>
-                <div class="form-group">
-                    <label for="country-select">Country</label>
-                    <select id="country-select">
-                        <option value="">All Countries</option>
-                        <option value="United States">🇺🇸 United States</option>
-                        <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                        <option value="Canada">🇨🇦 Canada</option>
-                        <option value="Australia">🇦🇺 Australia</option>
-                        <option value="Germany">🇩🇪 Germany</option>
-                        <option value="France">🇫🇷 France</option>
-                        <option value="China">🇨🇳 China</option>
-                        <option value="Japan">🇯🇵 Japan</option>
-                        <option value="South Korea">🇰🇷 South Korea</option>
-                        <option value="India">🇮🇳 India</option>
-                        <option value="Uzbekistan">🇺🇿 Uzbekistan</option>
-                        <option value="Russia">🇷🇺 Russia</option>
-                        <option value="Turkey">🇹🇷 Turkey</option>
-                        <option value="Malaysia">🇲🇾 Malaysia</option>
-                        <option value="Singapore">🇸🇬 Singapore</option>
-                    </select>
-                </div>
-                <button class="btn-search" id="search-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    Search
+<!-- LAYOUT -->
+<div class="layout">
+    <main>
+        <form method="POST" id="test-form">
+            {% csrf_token %}
+
+            {% for q in questions %}
+            <div class="question-card" id="q-{{ forloop.counter }}">
+
+                <!-- Savol matni -->
+                <span class="q-title">
+                    <span class="q-number">{{ forloop.counter }}.</span>
+                    {{ q.savol }}
+                </span>
+
+                <!-- Savol rasmi (agar bo'lsa) -->
+                {% if q.savol_rasm %}
+                    <img src="{{ q.savol_rasm.url }}" class="savol-rasm" alt="Savol rasmi">
+                {% endif %}
+
+                <!-- Variantlar -->
+                {% if q.image_a %}
+                    <!-- Rasmli variantlar -->
+                    <label class="option-label variant-with-image">
+                        <input type="radio" name="q_{{ q.id }}" value="A"> A
+                        <img src="{{ q.image_a.url }}" class="variant-img">
+                    </label>
+                    <label class="option-label variant-with-image">
+                        <input type="radio" name="q_{{ q.id }}" value="B"> B
+                        <img src="{{ q.image_b.url }}" class="variant-img">
+                    </label>
+                    <label class="option-label variant-with-image">
+                        <input type="radio" name="q_{{ q.id }}" value="C"> C
+                        <img src="{{ q.image_c.url }}" class="variant-img">
+                    </label>
+                    <label class="option-label variant-with-image">
+                        <input type="radio" name="q_{{ q.id }}" value="D"> D
+                        <img src="{{ q.image_d.url }}" class="variant-img">
+                    </label>
+                {% else %}
+                    <!-- Matnli variantlar -->
+                    <label class="option-label">
+                        <input type="radio" name="q_{{ q.id }}" value="A"> A) {{ q.variant_a }}
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q_{{ q.id }}" value="B"> B) {{ q.variant_b }}
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q_{{ q.id }}" value="C"> C) {{ q.variant_c }}
+                    </label>
+                    <label class="option-label">
+                        <input type="radio" name="q_{{ q.id }}" value="D"> D) {{ q.variant_d }}
+                    </label>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+
+            <div style="margin-top: 30px; margin-bottom: 50px;">
+                <button type="button" class="btn-submit" onclick="submitTest()">
+                    ✅ Testni Yakunlash →
                 </button>
             </div>
+        </form>
+    </main>
+
+    <!-- NAVIGATOR -->
+    <aside>
+        <div class="navigator">
+            <h3 style="margin-top:0; margin-bottom:10px; font-size:16px;">📋 {{ fan_nomi }}</h3>
+
+            <div class="stats-bar">
+                <span>Jami: <strong>{{ total_questions }}</strong></span>
+                <span>Javob: <strong id="answered-count">0</strong></span>
+            </div>
+
+            <div class="nav-grid">
+                {% for q in questions %}
+                    <a href="#q-{{ forloop.counter }}"
+                       class="nav-item"
+                       id="nav-{{ forloop.counter }}">
+                        {{ forloop.counter }}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#e8fff1; border:1px solid #38b000;"></div>
+                    Javob berilgan
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background:#fff; border:1px solid #dde3ef;"></div>
+                    Javob berilmagan
+                </div>
+            </div>
+
+            <button type="button" class="btn-submit" onclick="submitTest()">
+                Yakunlash →
+            </button>
         </div>
-
-        <div id="stats-banner" class="stats-banner">
-            <h2 id="results-count">0 Universities Found</h2>
-            <span style="opacity:0.6;font-size:0.82rem;">Hipolabs API</span>
-        </div>
-
-        <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <p style="color:var(--gray-400);">Fetching universities...</p>
-        </div>
-
-        <div id="error-message" class="error-box"></div>
-        <div id="universities-grid" class="uni-grid"></div>
-
-        <div id="welcome-message" class="welcome-msg">
-            <div style="font-size:3rem;margin-bottom:16px;">🌍</div>
-            <h2>Discover World Universities</h2>
-            <p>Type a university name or select a country.<br>Data is fetched live from a global database.</p>
-        </div>
-
-    </div>
-</section>
+    </aside>
+</div>
 
 <script>
-    document.getElementById('menuBtn').addEventListener('click', function () {
-        this.classList.toggle('open');
-        document.getElementById('navMenu').classList.toggle('active');
-    });
+    // ── TIMER: 2 soat 30 daqiqa ──
+    let totalSeconds = 150 * 60;
+    const timerDisplay = document.getElementById('timer-display');
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        const d = document.createElement('div');
-        d.textContent = text;
-        return d.innerHTML;
-    }
+    const timerInterval = setInterval(() => {
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
 
-    async function searchUniversities() {
-        const name    = document.getElementById('university-search').value.trim();
-        const country = document.getElementById('country-select').value;
+        timerDisplay.textContent =
+            `${h < 10 ? '0' : ''}${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
 
-        if (!name && !country) {
-            showError('⚠️ Please enter a university name or select a country.');
-            return;
+        // Oxirgi 5 daqiqada qizaradi
+        if (totalSeconds <= 300) {
+            timerDisplay.classList.add('danger');
         }
 
-        hideError();
-        hideBanner();
-        document.getElementById('welcome-message').style.display = 'none';
-        document.getElementById('universities-grid').innerHTML = '';
-        showLoading();
-
-        // Django proxy orqali — CORS muammo yo'q!
-        let url = '/api/universities/?';
-        if (name)    url += `name=${encodeURIComponent(name)}`;
-        if (country) url += `${name ? '&' : ''}country=${encodeURIComponent(country)}`;
-
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`Server xatosi: ${res.status}`);
-            const data = await res.json();
-            if (data.error) throw new Error(data.error);
-            renderCards(data);
-        } catch (err) {
-            showError('❌ <strong>Xatolik yuz berdi:</strong> ' + err.message);
-        } finally {
-            hideLoading();
+        if (totalSeconds <= 0) {
+            clearInterval(timerInterval);
+            alert("⏰ Vaqt tugadi! Test avtomatik topshiriladi.");
+            document.getElementById('test-form').submit();
         }
+        totalSeconds--;
+    }, 1000);
+
+    // ── PROGRESS & NAVIGATOR ──
+    const totalQuestions = {{ total_questions }};
+
+    function updateProgress() {
+        let answeredCount = 0;
+
+        document.querySelectorAll('.question-card').forEach((card, index) => {
+            const radios = card.querySelectorAll('input[type="radio"]');
+            const navItem = document.getElementById(`nav-${index + 1}`);
+            const isAnswered = Array.from(radios).some(r => r.checked);
+
+            if (isAnswered) {
+                answeredCount++;
+                navItem.classList.add('answered');
+            } else {
+                navItem.classList.remove('answered');
+            }
+        });
+
+        document.getElementById('answered-count').textContent = answeredCount;
+        document.getElementById('p-bar').style.width = (answeredCount / totalQuestions * 100) + '%';
     }
 
-    function renderCards(unis) {
-        const grid = document.getElementById('universities-grid');
+    // Label bosilganda ham ishlaydi
+    document.querySelectorAll('.option-label').forEach(label => {
+        label.addEventListener('click', () => {
+            setTimeout(updateProgress, 50);
+        });
+    });
 
-        if (!unis.length) {
-            grid.innerHTML = `
-                <div class="no-results">
-                    <div style="font-size:2.5rem;margin-bottom:10px">🔍</div>
-                    <h3>No universities found</h3>
-                    <p>Try a different name or country.</p>
-                </div>`;
-            return;
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', updateProgress);
+    });
+
+    updateProgress();
+
+    // ── SUBMIT ──
+    function submitTest() {
+        const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+        const unanswered = totalQuestions - answered;
+
+        if (unanswered > 0) {
+            if (!confirm(`⚠️ ${unanswered} ta savolga javob berilmagan. Baribir topshirasizmi?`)) {
+                return;
+            }
         }
-
-        document.getElementById('results-count').textContent =
-            `${unis.length} ${unis.length === 1 ? 'University' : 'Universities'} Found`;
-        showBanner();
-
-        grid.innerHTML = unis.map((uni, i) => `
-            <div class="uni-card" style="animation-delay:${Math.min(i * 0.04, 0.8)}s">
-                <h3>${escapeHtml(uni.name)}</h3>
-                <div class="uni-location">
-                    <span>📍</span>
-                    <span>${escapeHtml(uni.country)}${uni['state-province'] ? ' · ' + escapeHtml(uni['state-province']) : ''}</span>
-                </div>
-                ${uni.domains?.[0] ? `<span class="uni-domain">${escapeHtml(uni.domains[0])}</span>` : ''}
-                ${uni.web_pages?.length ? `
-                    <div class="uni-links">
-                        ${uni.web_pages.map(u => `
-                            <a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer" class="uni-link">
-                                🔗 Official Website
-                            </a>`).join('')}
-                    </div>` : ''}
-            </div>`).join('');
+        document.getElementById('test-form').submit();
     }
-
-    function showLoading()  { document.getElementById('loading').classList.add('visible'); }
-    function hideLoading()  { document.getElementById('loading').classList.remove('visible'); }
-    function showBanner()   { document.getElementById('stats-banner').classList.add('visible'); }
-    function hideBanner()   { document.getElementById('stats-banner').classList.remove('visible'); }
-    function showError(msg) { const el = document.getElementById('error-message'); el.innerHTML = msg; el.classList.add('visible'); }
-    function hideError()    { document.getElementById('error-message').classList.remove('visible'); }
-
-    document.getElementById('search-btn').addEventListener('click', searchUniversities);
-    document.getElementById('university-search').addEventListener('keypress', e => {
-        if (e.key === 'Enter') searchUniversities();
-    });
-    document.getElementById('country-select').addEventListener('change', () => {
-        const name    = document.getElementById('university-search').value.trim();
-        const country = document.getElementById('country-select').value;
-        if (name || country) searchUniversities();
-    });
 </script>
-
 </body>
 </html>
