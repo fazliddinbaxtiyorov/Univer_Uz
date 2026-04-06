@@ -1,148 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% load i18n %}
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Practice - UniBase</title>
+    <title>{% trans "IELTS Practice - UniBase" %}</title>
     <link rel="icon" href="/media/logo.png" type="image/jpeg">
-
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-          /* HEADER & NAVIGATION */
-        header {
-            background: var(--color-primary);
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo { display: flex; align-items: center; text-decoration: none; color: white; }
-        .logo-img { width: 40px; border-radius: 50%; margin-right: 10px; }
-        .logo-text { font-weight: 700; font-size: 1.2rem; }
-
-        /* NAV MENU (DESKTOP) */
-        .nav-menu ul {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-menu ul li a {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu ul li a:hover { color: var(--color-teal); }
-
-        /* MOBILE MENU BUTTON (BURGER) */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 2101; /* Menyudan ustun turishi uchun */
-            padding: 5px;
-        }
-
-        .mobile-menu-btn span {
-            width: 25px;
-            height: 3px;
-            background: #fff;
-            display: block;
-            transition: 0.4s ease;
-            border-radius: 2px;
-        }
-
-        /* BURGER ANIMATION TO 'X' */
-        .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
-        .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
-        .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-
-        /* MOBILE STYLES */
-        @media (max-width: 991px) {
-            .mobile-menu-btn { display: flex; }
-
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%; /* O'ngda yashirin */
-                width: 75%;
-                max-width: 300px;
-                height: 100vh;
-                background-color: var(--color-primary);
-                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                padding: 100px 30px;
-                z-index: 2100;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-            }
-
-            .nav-menu.active { right: 0; }
-
-            .nav-menu ul {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 30px;
-            }
-
-            .nav-menu ul li a {
-                font-size: 1.2rem;
-                display: block;
-                width: 100%;
-            }
-
-            .auth-links {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                margin-top: 20px;
-            }
-        }
-        :root {
-            --font-main: 'Plus Jakarta Sans', sans-serif;
-            --primary-mint: #1cc8c8;
-            --primary-dark: #1a3a5a;
-            --bg-light: #f8fafc;
-            --white: #ffffff;
-            --text-muted: #7f8c8d;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
+        :root { --font-main: 'Plus Jakarta Sans', sans-serif; --primary-mint: #1cc8c8; --primary-dark: #1a3a5a; --bg-light: #f8fafc; --white: #ffffff; --text-muted: #7f8c8d; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         body { font-family: var(--font-main); background-color: var(--bg-light); margin: 0; padding: 0; color: var(--primary-dark); }
-
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-        /* HEADER */
         header { background: var(--primary-dark); padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 2000; }
         .header-container { display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; text-decoration: none; gap: 12px; }
         .logo-img { width: 40px; height: 40px; border-radius: 8px; }
         .logo-text { font-size: 22px; font-weight: 800; color: var(--white); }
 
+        /* Desktop nav */
         nav ul { list-style: none; display: flex; align-items: center; gap: 25px; margin: 0; padding: 0; }
         nav a { text-decoration: none; color: rgba(255,255,255,0.8); font-weight: 500; transition: var(--transition); }
         nav a:hover { color: var(--primary-mint); }
-
         .auth-links { display: flex; gap: 10px; }
         .btn { padding: 8px 18px; border-radius: 10px; font-weight: 600; text-decoration: none; font-size: 14px; transition: var(--transition); }
         .btn-secondary { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
@@ -150,31 +34,54 @@
         .btn-danger { background: #ef4444; color: var(--white); }
         .btn-sm { padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; }
 
-        /* MOBILE */
+        /* Hamburger button */
         .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; z-index: 2101; padding: 5px; }
         .mobile-menu-btn span { width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s ease; border-radius: 2px; }
         .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
         .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
         .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
 
+        /* Mobile nav — 991px dan kichik */
         @media (max-width: 991px) {
             .mobile-menu-btn { display: flex; }
-            .nav-menu { position: fixed; top: 0; right: -100%; width: 75%; max-width: 300px; height: 100vh; background-color: var(--primary-dark); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 100px 30px; z-index: 2100; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
+
+            /* MUHIM: nav.nav-menu ni yashirish uchun display:none ISHLATMANG
+               Buning o'rniga position:fixed + right:-100% ishlatiladi */
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 75%;
+                max-width: 300px;
+                height: 100vh;
+                background-color: var(--primary-dark);
+                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                padding: 100px 30px;
+                z-index: 2100;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+                /* ul ni ko'rsatish kerak, override qilamiz */
+                display: block !important;
+            }
             .nav-menu.active { right: 0; }
-            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; }
+
+            /* ul ichidagi elementlarni vertikal qilamiz */
+            .nav-menu ul {
+                display: flex !important;   /* desktop display:none ni bekor qiladi */
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 30px;
+            }
             .nav-menu ul li a { font-size: 1.2rem; display: block; width: 100%; }
             .auth-links { flex-direction: column; gap: 10px; width: 100%; margin-top: 20px; }
         }
 
-        /* HERO */
+        /* Hero */
         .hero { background: var(--primary-dark); padding: 80px 0 160px; text-align: center; color: var(--white); }
         .hero-title { font-size: 48px; font-weight: 800; margin: 0 0 20px; letter-spacing: -1px; }
         .hero-subtitle { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 700px; margin: 0 auto; }
 
-        /* MAIN CONTENT */
+        /* Main content */
         .main-content { margin-top: -80px; padding-bottom: 80px; }
-
-        /* SKILL CARDS (3 ta yuqori card) */
         .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 50px; }
         .skill-card-link { text-decoration: none; color: inherit; }
         .skill-card { background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: var(--transition); border: 2px solid transparent; height: 100%; cursor: pointer; }
@@ -186,52 +93,33 @@
         .skill-content p { color: var(--text-muted); font-size: 14px; margin: 10px 0 20px; }
         .skill-duration { background: #f1f5f9; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--primary-dark); }
 
-        /* SECTION TITLE */
+        /* Section title */
         .section-title { font-size: 22px; font-weight: 800; color: var(--primary-dark); margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
         .section-title::after { content: ''; flex: 1; height: 2px; background: #e2e8f0; }
 
-        /* TEST CARDS GRID */
+        /* Test cards */
         .tests-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-
-        .ielts-card {
-            background: var(--white); border-radius: 28px; padding: 30px;
-            border: 1.5px solid #e2e8f0; position: relative;
-            transition: var(--transition); display: flex; flex-direction: column;
-        }
-        .ielts-card::before {
-            content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 4px;
-            background: linear-gradient(90deg, var(--primary-mint) 50%, var(--primary-dark) 50%);
-            border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;
-        }
+        .ielts-card { background: var(--white); border-radius: 28px; padding: 30px; border: 1.5px solid #e2e8f0; position: relative; transition: var(--transition); display: flex; flex-direction: column; }
+        .ielts-card::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 4px; background: linear-gradient(90deg, var(--primary-mint) 50%, var(--primary-dark) 50%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
         .ielts-card:hover { transform: translateY(-5px); border-color: var(--primary-mint); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
-
         .card-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .badge-mint { background: #e0fcfc; color: #17a2a2; padding: 5px 14px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge-reading { background: #e8f4ff; color: #0f2742; }
         .badge-listening { background: #e8fff1; color: #38b000; }
         .badge-writing { background: #fff8e1; color: #e67e22; }
         .coin-price { font-weight: 800; color: #f59e0b; font-size: 14px; }
-
         .card-title-text { font-size: 22px; font-weight: 800; margin: 0 0 8px; }
         .card-subtitle-text { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; display: block; }
-
         .card-info-row { margin-bottom: 20px; }
         .info-detail { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: 600; color: #475569; font-size: 14px; }
-
-        .btn-mint {
-            margin-top: auto; background: var(--primary-mint); color: var(--white);
-            text-align: center; padding: 15px; border-radius: 16px; text-decoration: none;
-            font-weight: 700; font-size: 16px; transition: var(--transition); display: block;
-        }
+        .btn-mint { margin-top: auto; background: var(--primary-mint); color: var(--white); text-align: center; padding: 15px; border-radius: 16px; text-decoration: none; font-weight: 700; font-size: 16px; transition: var(--transition); display: block; }
         .btn-mint:hover { background: var(--primary-dark); color: var(--white); }
-
-        /* EMPTY STATE */
         .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted); }
         .empty-state img { opacity: 0.3; margin-bottom: 15px; }
 
         @media (max-width: 768px) {
             .hero-title { font-size: 32px; }
-            nav ul { display: none; }
+            /* nav ul { display: none; }  <-- BU MUAMMO EDI, O'CHIRILDI */
             .main-content { margin-top: -50px; }
             .tests-grid { grid-template-columns: 1fr; }
         }
@@ -246,27 +134,23 @@
                 <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
                 <span class="logo-text">UniBase</span>
             </a>
-
-            <button class="mobile-menu-btn" aria-label="Toggle navigation">
-                <span></span><span></span><span></span>
-            </button>
-
+            <button class="mobile-menu-btn" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="{% url 'home' %}#tests">Home</a></li>
-                    <li><a href="{% url 'univers' %}">Universities</a></li>
-                    <li><a href="{% url 'home' %}#news">News</a></li>
-                    <li><a href="{% url 'home' %}#features">Features</a></li>
-                    <li><a href="https://t.me/unibase_support_bot">Support</a></li>
+                    <li><a href="{% url 'home' %}#tests">{% trans "Home" %}</a></li>
+                    <li><a href="{% url 'univers' %}">{% trans "Universities" %}</a></li>
+<!--                    <li><a href="{% url 'home' %}#news">{% trans "News" %}</a></li>-->
+                    <li><a href="{% url 'home' %}#features">{% trans "Features" %}</a></li>
+                    <li><a href="https://t.me/unibase_support_bot">{% trans "Support" %}</a></li>
                     {% if user.is_authenticated %}
                         <li class="auth-links">
-                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">Dashboard</a>
-                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a>
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">{% trans "Dashboard" %}</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">{% trans "Logout" %}</a>
                         </li>
                     {% else %}
                         <li class="auth-links">
-                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a>
-                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm">Register</a>
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">{% trans "Login" %}</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm">{% trans "Register" %}</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -277,23 +161,21 @@
 
 <section class="hero">
     <div class="container">
-        <h1 class="hero-title">IELTS Practice</h1>
-        <p class="hero-subtitle">Comprehensive IELTS practice across all sections with realistic exam conditions.</p>
+        <h1 class="hero-title">{% trans "IELTS Practice" %}</h1>
+        <p class="hero-subtitle">{% trans "Comprehensive IELTS practice across all sections with realistic exam conditions." %}</p>
     </div>
 </section>
 
 <div class="main-content">
     <div class="container">
-
-        <!-- 3 ta Skill Card -->
         <div class="skills-grid">
             <a href="?category=LISTENING" class="skill-card-link">
                 <div class="skill-card {% if current_category == 'LISTENING' %}active{% endif %}">
                     <img src="https://willyrenandya.com/wp-content/uploads/2024/01/Screenshot-2024-01-12-112050.png" class="skill-image" alt="Listening">
                     <div class="skill-content">
-                        <h3>Listening</h3>
-                        <p>Fokus va tushunish qobiliyatingizni oshiring.</p>
-                        <span class="skill-duration">⏱️ 60 mins</span>
+                        <h3>{% trans "Listening" %}</h3>
+                        <p></p>
+                        <span class="skill-duration">{% trans "⏱️ 60 mins" %}</span>
                     </div>
                 </div>
             </a>
@@ -302,9 +184,9 @@
                 <div class="skill-card {% if current_category == 'READING' %}active{% endif %}">
                     <img src="https://cdn.prod.website-files.com/67ebfc7b58672c4b06d22c48/67fd8020c23fdc1ee04808ca_O2oqSWC1rJ2JPHrRd1sJZ_aef3e940e89948f8946eaa2843952d18.jpeg" class="skill-image" alt="Reading">
                     <div class="skill-content">
-                        <h3>Reading</h3>
-                        <p>Matnlar bilan tez va aniq ishlashni o'rganing.</p>
-                        <span class="skill-duration">⏱️ 60 mins</span>
+                        <h3>{% trans "Reading" %}</h3>
+                        <p></p>
+                        <span class="skill-duration">{% trans "⏱️ 60 mins" %}</span>
                     </div>
                 </div>
             </a>
@@ -313,112 +195,105 @@
                 <div class="skill-card {% if current_category == 'WRITING' %}active{% endif %}">
                     <img src="https://img.freepik.com/free-photo/young-writer-taking-notes_23-2148854508.jpg?w=740" class="skill-image" alt="Writing">
                     <div class="skill-content">
-                        <h3>Writing</h3>
-                        <p>Insho yozishda akademik darajaga chiqing.</p>
-                        <span class="skill-duration">⏱️ 60 mins</span>
+                        <h3>{% trans "Writing" %}</h3>
+                        <p></p>
+                        <span class="skill-duration">{% trans "⏱️ 60 mins" %}</span>
                     </div>
                 </div>
             </a>
         </div>
 
-        <!-- ===== LISTENING TESTLAR ===== -->
         {% if current_category == 'LISTENING' %}
-        <div class="section-title">🎧 Listening Tests</div>
+        <div class="section-title">{% trans "🎧 Listening Tests" %}</div>
         <div class="tests-grid">
             {% for test in tests_listening %}
             <div class="ielts-card">
                 <div class="card-header-top">
                     <span class="badge-mint badge-listening">IELTS ACADEMIC</span>
-                    <span class="coin-price">🪙 {{ test.price|default:"25" }} coins</span>
+                    <span class="coin-price">🪙 {{ test.price|default:"25" }} {% blocktrans %}coins{% endblocktrans %}</span>
                 </div>
                 <h3 class="card-title-text">{{ test.title }}</h3>
-                <span class="card-subtitle-text">Listening Practice Test</span>
+                <span class="card-subtitle-text">{% trans "Listening Practice Test" %}</span>
                 <div class="card-info-row">
-                    <div class="info-detail"><span>⏱️</span> Duration: {{ test.duration|default:"40" }} min</div>
-                    <div class="info-detail"><span>🎧</span> 4 Audio Sections</div>
-                    <div class="info-detail"><span>📝</span> {{ test.questions.count }} ta savol</div>
+                    <div class="info-detail"><span>⏱️</span> {% blocktrans %}Duration:{% endblocktrans %}{{ test.duration|default:"40" }} min</div>
+                    <div class="info-detail"><span>🎧</span> {% trans "4 Audio Sections" %}</div>
                 </div>
-                <a href="{% url 'ielts_listening' test.id %}" class="btn-mint">Start Listening</a>
+                <a href="{% url 'ielts_listening' test.id %}" class="btn-mint">{% trans "Start Listening" %}</a>
             </div>
             {% empty %}
             <div class="empty-state">
                 <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="60">
-                <p>Hozircha listening testlar yuklanmagan.</p>
+                <p>{% trans "Hozircha listening testlar yuklanmagan." %}</p>
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <!-- ===== READING TESTLAR ===== -->
         {% if current_category == 'READING' %}
-        <div class="section-title">📖 Reading Tests</div>
+        <div class="section-title">{% trans "📖 Reading Tests" %}</div>
         <div class="tests-grid">
             {% for test in tests %}
             <div class="ielts-card">
                 <div class="card-header-top">
                     <span class="badge-mint badge-reading">IELTS ACADEMIC</span>
-                    <span class="coin-price">🪙 {{ test.price|default:"25" }} coins</span>
+                    <span class="coin-price">🪙 {{ test.price|default:"25" }}{% blocktrans %} coins{% endblocktrans %}</span>
                 </div>
-                <h3 class="card-title-text">Test {{ forloop.counter }}</h3>
-                <span class="card-subtitle-text">Reading Practice Test</span>
+                <h3 class="card-title-text">{% trans "Test" %} {{ forloop.counter }}</h3>
+                <span class="card-subtitle-text">{% trans "Reading Practice Test" %}</span>
                 <div class="card-info-row">
-                    <div class="info-detail"><span>⏱️</span> Duration: 60 min</div>
-                    <div class="info-detail"><span>📖</span> 3 Passages</div>
-                    <div class="info-detail"><span>📝</span> {{ test.questions.count }} ta savol</div>
+                    <div class="info-detail"><span>⏱️</span> {% trans "Duration: 60 min" %}</div>
+                    <div class="info-detail"><span>📖</span> {% trans "3 Passages" %}</div>
                 </div>
-                <a href="{% url 'ielts_reading' test.id %}" class="btn-mint">Start Reading</a>
+                <a href="{% url 'ielts_reading' test.id %}" class="btn-mint">{% trans "Start Reading" %}</a>
             </div>
             {% empty %}
             <div class="empty-state">
                 <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="60">
-                <p>Hozircha reading testlar yuklanmagan.</p>
+                <p>{% trans "Hozircha reading testlar yuklanmagan." %}</p>
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <!-- ===== WRITING TESTLAR ===== -->
         {% if current_category == 'WRITING' %}
-        <div class="section-title">✍️ Writing Tests</div>
+        <div class="section-title">{% trans "✍️ Writing Tests" %}</div>
         <div class="tests-grid">
             {% for test in tests_writing %}
             <div class="ielts-card">
                 <div class="card-header-top">
                     <span class="badge-mint badge-writing">IELTS WRITING</span>
-                    <span class="coin-price">🪙 {{ test.price|default:"25" }} coins</span>
+                    <span class="coin-price">🪙 {{ test.price|default:"25" }}{% blocktrans %} coins{% endblocktrans %}</span>
                 </div>
                 <h3 class="card-title-text">{{ test.title }}</h3>
                 <span class="card-subtitle-text">
-                    {% if test.task_type == 'task1' %}Task 1 — Graph / Chart / Diagram{% else %}Task 2 — Essay{% endif %}
+                    {% if test.task_type == 'task1' %}{% trans "Task 1 — Graph / Chart / Diagram" %}{% else %}{% trans "Task 2 — Essay" %}{% endif %}
                 </span>
                 <div class="card-info-row">
                     {% if test.task_type == 'task1' %}
-                    <div class="info-detail"><span>⏱️</span> Duration: 20 min</div>
-                    {% else %}<div class="info-detail"><span>⏱️</span> Duration: 40 min</div>{% endif %}
-                    <div class="info-detail"><span>🤖</span> AI baholash</div>
+                    <div class="info-detail"><span>⏱️</span> {% trans "Duration: 20 min" %}</div>
+                    {% else %}<div class="info-detail"><span>⏱️</span> {% trans "Duration: 40 min" %}</div>{% endif %}
+                    <div class="info-detail"><span>🤖</span> {% trans "AI assessment" %}</div>
                     <div class="info-detail"><span>📝</span>
-                        {% if test.task_type == 'task1' %}Min 150 words{% else %}Min 250 words{% endif %}
+                        {% if test.task_type == 'task1' %}{% trans "Min 150 words" %}{% else %}{% trans "Min 250 words" %}{% endif %}
                     </div>
                 </div>
-                <a href="{% url 'writing_detail' test.id %}" class="btn-mint">Start Writing</a>
+                <a href="{% url 'writing_detail' test.id %}" class="btn-mint">{% trans "Start Writing" %}</a>
             </div>
             {% empty %}
             <div class="empty-state">
                 <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="60">
-                <p>Hozircha writing testlar yuklanmagan.</p>
+                <p>{% trans "Hozircha writing testlar yuklanmagan." %}</p>
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <!-- Hech qaysi kategoriya tanlanmagan -->
         {% if not current_category or current_category == 'ALL' %}
         <div style="text-align:center; padding: 50px 20px; color: var(--text-muted);">
             <div style="font-size: 48px; margin-bottom: 15px;">☝️</div>
-            <p style="font-size: 18px; font-weight: 600;">Yuqoridan bo'lim tanlang</p>
+            <p style="font-size: 18px; font-weight: 600;">{% trans "Yuqoridan bo'lim tanlang" %}</p>
         </div>
         {% endif %}
-
     </div>
 </div>
 
@@ -431,9 +306,15 @@ document.addEventListener("DOMContentLoaded", function () {
             navMenu.classList.toggle("active");
             menuBtn.classList.toggle("open");
         });
+        /* Tashqariga bosish — menuni yopadi */
+        document.addEventListener("click", function (e) {
+            if (!navMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                navMenu.classList.remove("active");
+                menuBtn.classList.remove("open");
+            }
+        });
     }
 });
 </script>
-
 </body>
 </html>

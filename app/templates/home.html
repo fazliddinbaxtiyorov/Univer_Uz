@@ -1,368 +1,295 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load i18n %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link rel="stylesheet" href="{% static 'responsive.css' %}">
-    <link rel="stylesheet" href="{% static 'dark-mode.css' %}">
-    <link rel="icon" href="/media/logo.png" type="image/jpeg">
-
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
-<style>
-     html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-    margin: 0;
-    padding: 0;
-}
-@media (max-width: 768px) {
-    .nav-menu {
-        position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
-        background: #1a3a5a; flex-direction: column; padding: 80px 40px;
-        transition: 0.4s ease-in-out; z-index: 999; display: block !important;
-    }
-    .nav-menu.active { right: 0; }
-    .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 35px; }
-    .nav-menu ul li a { font-size: 18px; color: white; }
-    .auth-links { margin-top: 40px; flex-direction: column; width: 100%; }
-    .btn-secondary { border: 2px solid white !important; background: transparent !important; text-align: center; }
-}
-.ielts-card {
-    background-color: #ffffff;
-    background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-    background-size: 20px 20px;
-    border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;
-    display: flex; flex-direction: column; gap: 15px;
-}
-.card-stats-row { display: flex; gap: 15px; margin: 15px 0; }
-.stat-box { background: #f8fafc; border: 1px solid #f1f5f9; padding: 12px; border-radius: 8px; flex: 1; }
-.stat-label { font-size: 12px; color: #64748b; }
-.stat-value { font-size: 18px; font-weight: 700; color: #1e293b; }
-.btn-discuss {
-    background: white; border: 1px solid #e2e8f0; color: #1e293b; padding: 10px;
-    border-radius: 8px; text-align: center; font-weight: 600;
-    display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
-}
-.hero {
-    background: linear-gradient(135deg, rgba(30, 58, 95, 0.85) 0%, rgba(21, 43, 71, 0.9) 100%),
-        url('../../media/media/hero-background.jpg');
-    background-size: cover; background-position: center; background-repeat: no-repeat;
-    background-attachment: fixed; color: var(--color-white);
-    padding: var(--spacing-3xl) 0; text-align: center; position: relative;
-}
-.hero-title { font-size: var(--font-size-5xl); color: var(--color-white); margin-bottom: var(--spacing-lg); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-.hero-subtitle { font-size: var(--font-size-xl); color: var(--color-gray-200); margin-bottom: var(--spacing-2xl); max-width: 700px; margin-left: auto; margin-right: auto; }
-.hero-actions { display: flex; gap: var(--spacing-lg); justify-content: center; flex-wrap: wrap; }
-
-/* ── NEWS SECTION ─────────────────────────────────────── */
-.news-section {
-    background: #f8fafc;
-    padding: 80px 0;
-}
-.section-title {
-    font-size: 28px;
-    font-weight: 800;
-    color: #1e293b;
-    position: relative;
-    display: inline-block;
-    margin-bottom: 10px;
-}
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -8px; left: 50%; transform: translateX(-50%);
-    width: 48px; height: 3px;
-    background: linear-gradient(90deg, #6366f1, #a855f7);
-    border-radius: 2px;
-}
-.section-subtitle {
-    color: #64748b;
-    font-size: 15px;
-    margin-top: 18px;
-    margin-bottom: 48px;
-}
-.news-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-}
-.news-card {
-    background: #fff;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
-    transition: transform .25s ease, box-shadow .25s ease;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: inherit;
-}
-.news-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 32px rgba(99,102,241,.12);
-}
-.news-img-wrap {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    background: linear-gradient(135deg, #e0e7ff, #f5f3ff);
-    flex-shrink: 0;
-    position: relative;
-}
-.news-img-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    transition: transform .4s ease;
-}
-.news-card:hover .news-img-wrap img { transform: scale(1.05); }
-.news-img-placeholder {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; color: #a5b4fc;
-}
-.news-body {
-    padding: 20px 22px 22px;
-    display: flex; flex-direction: column; flex: 1;
-}
-.news-meta {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 10px;
-}
-.news-cat {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px;
-    background: #eef2ff; color: #6366f1;
-    padding: 3px 10px; border-radius: 20px;
-}
-.news-date {
-    font-size: 12px; color: #94a3b8;
-    display: flex; align-items: center; gap: 4px;
-}
-.news-card-title {
-    font-size: 16px; font-weight: 700; color: #1e293b;
-    margin: 0 0 10px; line-height: 1.45;
-}
-.news-excerpt {
-    font-size: 13px; color: #64748b;
-    line-height: 1.65; flex: 1;
-}
-.news-read-more {
-    margin-top: 16px;
-    font-size: 13px; font-weight: 700; color: #6366f1;
-    display: flex; align-items: center; gap: 4px;
-}
-.news-read-more svg { transition: transform .2s; }
-.news-card:hover .news-read-more svg { transform: translateX(4px); }
-
-.news-empty {
-    grid-column: span 3; text-align: center;
-    padding: 60px 20px; color: #94a3b8;
-}
-.news-empty span { font-size: 48px; display: block; margin-bottom: 12px; }
-.news-empty p { font-size: 15px; }
-
-@media (max-width: 900px) { .news-grid { grid-template-columns: 1fr 1fr; } .news-empty { grid-column: span 2; } }
-@media (max-width: 580px) { .news-grid { grid-template-columns: 1fr; } .news-empty { grid-column: span 1; } .news-img-wrap { height: 180px; } }
-</style>
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="UniBase - Exam preparation platform for SAT, IELTS, DTM, Milliy Certificate, and IQ tests">
-    <title>UniBase - Preparation Like a Real Exam</title>
-</head>
+    <meta name="description" content="{% trans 'UniBase - Exam preparation platform for SAT, IELTS, DTM, Milliy Certificate, and IQ tests' %}">
+    <title>{% trans "UniBase - Preparation Like a Real Exam" %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <link rel="icon" href="/media/logo.png" type="image/jpeg">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <style>
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
+        @media (max-width: 768px) {
+            .nav-menu { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: #1a3a5a; flex-direction: column; padding: 80px 40px; transition: 0.4s ease-in-out; z-index: 999; display: block !important; }
+            .nav-menu.active { right: 0; }
+            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 35px; }
+            .nav-menu ul li a { font-size: 18px; color: white; }
+            .auth-links { margin-top: 40px; flex-direction: column; width: 100%; }
+            .btn-secondary { border: 2px solid white !important; background: transparent !important; text-align: center; }
+        }
+        .hero {
+            background: linear-gradient(135deg, rgba(30,58,95,0.85) 0%, rgba(21,43,71,0.9) 100%),
+                url('/media/media/hero-background.jpg');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            background-attachment: fixed; color: var(--color-white);
+            padding: var(--spacing-3xl) 0; text-align: center; position: relative;
+        }
+        .hero-title { font-size: var(--font-size-5xl); color: var(--color-white); margin-bottom: var(--spacing-lg); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .hero-subtitle { font-size: var(--font-size-xl); color: var(--color-gray-200); margin-bottom: var(--spacing-2xl); max-width: 700px; margin-left: auto; margin-right: auto; }
+        .hero-actions { display: flex; gap: var(--spacing-lg); justify-content: center; flex-wrap: wrap; }
+        .news-section { background: #f8fafc; padding: 80px 0; }
+        .section-title { font-size: 28px; font-weight: 800; color: #1e293b; position: relative; display: inline-block; margin-bottom: 10px; }
+        .section-title::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 48px; height: 3px; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 2px; }
+        .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .news-card { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+        .news-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(99,102,241,.12); }
+        .news-img-wrap { width: 100%; height: 200px; overflow: hidden; background: linear-gradient(135deg, #e0e7ff, #f5f3ff); flex-shrink: 0; }
+        .news-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+        .news-card:hover .news-img-wrap img { transform: scale(1.05); }
+        .news-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #a5b4fc; }
+        .news-body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+        .news-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .news-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; background: #eef2ff; color: #6366f1; padding: 3px 10px; border-radius: 20px; }
+        .news-date { font-size: 12px; color: #94a3b8; }
+        .news-card-title { font-size: 16px; font-weight: 700; color: #1e293b; margin: 0 0 10px; }
+        .news-excerpt { font-size: 13px; color: #64748b; line-height: 1.65; flex: 1; }
+        .news-empty { grid-column: span 3; text-align: center; padding: 60px 20px; color: #94a3b8; }
+        .news-empty span { font-size: 48px; display: block; margin-bottom: 12px; }
+        @media (max-width: 900px) { .news-grid { grid-template-columns: 1fr 1fr; } .news-empty { grid-column: span 2; } }
+        @media (max-width: 580px) { .news-grid { grid-template-columns: 1fr; } .news-empty { grid-column: span 1; } }
 
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+.social-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+@media (max-width: 768px) {
+    .social-section {
+        padding: 22px 0;
+    }
+
+    .social-links {
+        gap: 14px;
+    }
+
+    .social-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+    }
+}
+    </style>
+
+</head>
 <body>
-    <!-- Header -->
-    <header>
+
+<header>
     <div class="container">
         <div class="header-container">
             <a href="{% url 'home' %}" class="logo">
                 <img src="/media/media/logo.jpg" alt="UniBase Logo" class="logo-img">
                 <span class="logo-text">UniBase</span>
             </a>
-            <button class="mobile-menu-btn" aria-label="Toggle navigation">
+            <button class="mobile-menu-btn" aria-label="{% trans 'Toggle navigation' %}">
                 <span></span><span></span><span></span>
             </button>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="{% url 'home' %}#tests" data-translate="nav_tests">Tests</a></li>
-                    <li><a href="{% url 'univers' %}" data-translate="nav_universities">Universities</a></li>
-                    <li><a href="{% url 'home' %}#news" data-translate="nav_news">News</a></li>
-                    <li><a href="{% url 'home' %}#features" data-translate="nav_features">Features</a></li>
-                    <li><a href="https://t.me/unibase_support_bot" data-translate="nav_support">Support</a></li>
+                    <li><a href="{% url 'home' %}#tests">{% trans "Tests" %}</a></li>
+                    <li><a href="{% url 'univers' %}">{% trans "Universities" %}</a></li>
+<!--                    <li><a href="{% url 'home' %}#news">{% trans "News" %}</a></li>-->
+                    <li><a href="{% url 'home' %}#features">{% trans "Features" %}</a></li>
+                    <li><a href="https://t.me/unibase_support_bot">{% trans "Support" %}</a></li>
                     <li>
                         <select id="language-selector" class="language-selector">
-                            <option value="en">English</option>
-                            <option value="ru">Русский</option>
-                            <option value="uz">O'zbekcha</option>
+                            <option value="en" {% if LANGUAGE_CODE == "en" %}selected{% endif %}>English</option>
+                            <option value="ru" {% if LANGUAGE_CODE == "ru" %}selected{% endif %}>Русский</option>
+                            <option value="uz" {% if LANGUAGE_CODE == "uz" %}selected{% endif %}>O'zbekcha</option>
                         </select>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="auth-links">
-                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm" data-translate="nav_dashboard">Dashboard</a>
-                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm" data-translate="nav_logout">Logout</a>
+                            <a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">{% trans "Dashboard" %}</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger btn-sm">{% trans "Logout" %}</a>
                         </li>
                     {% else %}
                         <li class="auth-links">
-                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm" data-translate="nav_login">Login</a>
-                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm" data-translate="nav_register">Register</a>
+                            <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">{% trans "Login" %}</a>
+                            <a href="{% url 'sign' %}" class="btn btn-primary btn-sm">{% trans "Register" %}</a>
                         </li>
                     {% endif %}
                 </ul>
             </nav>
         </div>
     </div>
-    </header>
+</header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1 class="hero-title" data-translate="hero_title">Preparation Like a Real Exam</h1>
-            <p class="hero-subtitle" data-translate="hero_subtitle">IELTS, SAT, Milliy certificate, IQ, DTM — timed practice tests in a realistic exam environment</p>
-            {% if not user.is_authenticated %}
-                <div class="hero-actions">
-                    <a href="{% url 'sign' %}" class="btn btn-primary btn-lg" data-translate="hero_btn_start">Start Free</a>
-                    <a href="#tests" class="btn btn-secondary btn-lg" data-translate="hero_btn_view">View Tests</a>
-                </div>
-            {% endif %}
-        </div>
-    </section>
+{# ── HERO ─────────────────────────────────────────────── #}
+<section class="hero">
+    <div class="container">
+        <h1 class="hero-title">{% trans "Preparation Like a Real Exam" %}</h1>
+        <p class="hero-subtitle">{% trans "IELTS, SAT, Milliy certificate, IQ, DTM — timed practice tests in a realistic exam environment" %}</p>
+        {% if not user.is_authenticated %}
+            <div class="hero-actions">
+                <a href="{% url 'sign' %}" class="btn btn-primary btn-lg">{% trans "Start Free" %}</a>
+                <a href="#tests" class="btn btn-secondary btn-lg">{% trans "View Tests" %}</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
 
-    <!-- Tests Section -->
-    <section id="tests" class="section">
-        <div class="container">
-            <h2 class="text-center mb-4" data-translate="tests_title">Choose Your Test</h2>
-            <div class="grid grid-4" id="tests-grid">
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_english">ENGLISH</span>
-                    <h3 class="card-title" data-translate="test_ielts_title">IELTS</h3>
-                    <p class="card-description" data-translate="test_ielts_desc">Comprehensive IELTS practice across all sections with realistic exam conditions.</p>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'ielts' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% endif %}
-                </div>
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_academic">ACADEMIC</span>
-                    <h3 class="card-title" data-translate="test_sat_title">SAT</h3>
-                    <p class="card-description" data-translate="test_sat_desc">Prepare for SAT with Math and English sections in a timed environment.</p>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'sat' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% endif %}
-                </div>
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_national">NATIONAL</span>
-                    <h3 class="card-title" data-translate="test_milliy_title">Milliy certificate</h3>
-                    <p class="card-description" data-translate="test_milliy_desc">National certification exam practice with comprehensive question bank.</p>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'fan_tanlash' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% endif %}
-                </div>
-                <div class="test-card">
-                    <span class="test-card-badge" data-translate="test_badge_entrance">ENTRANCE</span>
-                    <h3 class="card-title" data-translate="test_dtm_title">DTM</h3>
-                    <p class="card-description" data-translate="test_dtm_desc">Prepare for university entrance exams with realistic test simulations.</p>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'dtm_select' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-outline mt-3" data-translate="test_start">Start Test</a>
-                    {% endif %}
-                </div>
+{# ── TESTS ────────────────────────────────────────────── #}
+<section id="tests" class="section">
+    <div class="container">
+        <h2 class="text-center mb-4">{% trans "Choose Your Test" %}</h2>
+        <div class="grid grid-4">
+            <div class="test-card">
+                <span class="test-card-badge">{% trans "ENGLISH" %}</span>
+                <h3 class="card-title">IELTS</h3>
+                <p class="card-description">{% trans "Comprehensive IELTS practice across all sections with realistic exam conditions." %}</p>
+                <a href="{% if user.is_authenticated %}{% url 'ielts' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-outline mt-3">{% trans "Start Test" %}</a>
+            </div>
+            <div class="test-card">
+                <span class="test-card-badge">{% trans "ACADEMIC" %}</span>
+                <h3 class="card-title">SAT</h3>
+                <p class="card-description">{% trans "Prepare for SAT with Math and English sections in a timed environment." %}</p>
+                <a href="{% if user.is_authenticated %}{% url 'sat' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-outline mt-3">{% trans "Start Test" %}</a>
+            </div>
+            <div class="test-card">
+                <span class="test-card-badge">{% trans "NATIONAL" %}</span>
+                <h3 class="card-title">{% trans "Milliy certificate" %}</h3>
+                <p class="card-description">{% trans "National certification exam practice with comprehensive question bank." %}</p>
+                <a href="{% if user.is_authenticated %}{% url 'fan_tanlash' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-outline mt-3">{% trans "Start Test" %}</a>
+            </div>
+            <div class="test-card">
+                <span class="test-card-badge">{% trans "ENTRANCE" %}</span>
+                <h3 class="card-title">DTM</h3>
+                <p class="card-description">{% trans "Prepare for university entrance exams with realistic test simulations." %}</p>
+                <a href="{% if user.is_authenticated %}{% url 'dtm_select' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-outline mt-3">{% trans "Start Test" %}</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ══════════════════════════════════════════
-         NEWS SECTION
-    ══════════════════════════════════════════ -->
-    <section id="news" class="news-section">
-        <div class="container">
-            <div class="text-center">
-                <h2 class="section-title" data-translate="nav_news">Latest News</h2>
+<!--{# ── NEWS ─────────────────────────────────────────────── #}-->
+<!--<section id="news" class="news-section">-->
+<!--    <div class="container">-->
+<!--        <div class="text-center">-->
+<!--            <h2 class="section-title">{% trans "Latest News" %}</h2>-->
+<!--        </div>-->
+<!--        <div class="news-grid">-->
+<!--            {% for item in news_items %}-->
+<!--            <a class="news-card" href="#">-->
+<!--                <div class="news-img-wrap">-->
+<!--                    {% if item.image %}-->
+<!--                        <img src="{{ item.image.url }}" alt="{{ item.title }}">-->
+<!--                    {% else %}-->
+<!--                        <div class="news-img-placeholder">📰</div>-->
+<!--                    {% endif %}-->
+<!--                </div>-->
+<!--                <div class="news-body">-->
+<!--                    <div class="news-meta">-->
+<!--                        {% if item.category %}<span class="news-cat">{{ item.category }}</span>{% endif %}-->
+<!--                        <span class="news-date">{{ item.created_at|date:"M d, Y" }}</span>-->
+<!--                    </div>-->
+<!--                    <h3 class="news-card-title">{{ item.title }}</h3>-->
+<!--                    <p class="news-excerpt">{{ item.content|truncatewords:18 }}</p>-->
+<!--                </div>-->
+<!--            </a>-->
+<!--            {% empty %}-->
+<!--            <div class="news-empty">-->
+<!--                <span>📭</span>-->
+<!--                <p>{% trans "No news available at the moment." %}</p>-->
+<!--            </div>-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
+{# ── FEATURES ─────────────────────────────────────────── #}
+<section id="features" class="section features-bg">
+    <div class="container">
+        <h2 class="text-center mb-4">{% trans "Why Choose UniBase?" %}</h2>
+        <div class="grid grid-3">
+            <div class="card feature-card">
+                <div class="card-header"><h3 class="card-title">{% trans "🎯 Realistic Exam Environment" %}</h3></div>
+                <div class="card-body"><p>{% trans "Experience the pressure and atmosphere of real exams with authentic interfaces, timers, and question formats." %}</p></div>
             </div>
-
-            <div class="news-grid">
-                {% for item in news_items %}
-                <a class="news-card" href="#">
-                    <div class="news-img-wrap">
-                        {% if item.image %}
-                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
-                        {% else %}
-                            <div class="news-img-placeholder">📰</div>
-                        {% endif %}
-                    </div>
-                    <div class="news-body">
-                        <div class="news-meta">
-                            {% if item.category %}
-                                <span class="news-cat">{{ item.category }}</span>
-                            {% endif %}
-                            <span class="news-date">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                {{ item.created_at|date:"M d, Y" }}
-                            </span>
-                        </div>
-                        <h3 class="news-card-title">{{ item.title }}</h3>
-                        <h5 class="news-card-title">{{ item.content }}</h5>
-                        <p class="news-excerpt">
-                            {% if item.excerpt %}{{ item.excerpt|truncatewords:18 }}
-                            {% else %}{{ item.content|truncatewords:18 }}{% endif %}
-                        </p>
-                    </div>
-                </a>
-                {% empty %}
-                <div class="news-empty">
-                    <span>📭</span>
-                    <p>No news available at the moment.</p>
-                </div>
-                {% endfor %}
+            <div class="card feature-card">
+                <div class="card-header"><h3 class="card-title">{% trans "📊 Detailed Analytics" %}</h3></div>
+                <div class="card-body"><p>{% trans "Track your performance with comprehensive analysis of your strengths, weaknesses, and progress over time." %}</p></div>
             </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="section features-bg">
-        <div class="container">
-            <h2 class="text-center mb-4" data-translate="features_title">Why Choose UniBase?</h2>
-            <div class="grid grid-3">
-                <div class="card feature-card">
-                    <div class="card-header"><h3 class="card-title" data-translate="feature_realistic_title">🎯 Realistic Exam Environment</h3></div>
-                    <div class="card-body"><p data-translate="feature_realistic_desc">Experience the pressure and atmosphere of real exams with authentic interfaces, timers, and question formats.</p></div>
-                </div>
-                <div class="card feature-card">
-                    <div class="card-header"><h3 class="card-title" data-translate="feature_analytics_title">📊 Detailed Analytics</h3></div>
-                    <div class="card-body"><p data-translate="feature_analytics_desc">Track your performance with comprehensive analysis of your strengths, weaknesses, and progress over time.</p></div>
-                </div>
-                <div class="card feature-card">
-                    <div class="card-header"><h3 class="card-title" data-translate="feature_progress_title">📈 Track Your Progress</h3></div>
-                    <div class="card-body"><p data-translate="feature_progress_desc">Monitor your improvement with dynamic progress tracking, personalized recommendations, and goal setting.</p></div>
-                </div>
+            <div class="card feature-card">
+                <div class="card-header"><h3 class="card-title">{% trans "📈 Track Your Progress" %}</h3></div>
+                <div class="card-body"><p>{% trans "Monitor your improvement with dynamic progress tracking, personalized recommendations, and goal setting." %}</p></div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <p data-translate="footer_copyright">&copy; 2026 UniBase. All rights reserved.</p>
-                <ul class="footer-links">
-                    <li><a href="#tests" data-translate="footer_tests">Tests</a></li>
-                    <li><a href="#features" data-translate="footer_features">Features</a></li>
-                    <li><a href="#" data-translate="footer_privacy">Privacy Policy</a></li>
-                    <li><a href="https://t.me/unibase_support_bot" data-translate="footer_contact">Contact</a></li>
-                </ul>
-            </div>
+</section>
+
+{# ── FOOTER ───────────────────────────────────────────── #}
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <p>{% trans "© 2026 UniBase. All rights reserved." %}</p>
+
+            <ul class="footer-links">
+                <li><a href="#tests">{% trans "Tests" %}</a></li>
+                <li><a href="#features">{% trans "Features" %}</a></li>
+                <li><a href="#">{% trans "Privacy Policy" %}</a></li>
+                <li><a href="https://t.me/unibase_support_bot">{% trans "Contact" %}</a></li>
+            </ul>
+             <section class="social-section">
+    <div class="container">
+        <div class="social-links">
+            <a href="https://t.me/unibaseuz" target="_blank" class="social-btn" aria-label="Telegram">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M21.5 4.5 18.2 20c-.2 1-.8 1.3-1.6.8l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.3L5.8 13.3.9 11.8c-1-.3-1-1 .2-1.5L20 3c.9-.3 1.7.2 1.5 1.5Z"/>
+                </svg>
+            </a>
+
+            <a href="https://instagram.com/unibase.uz" target="_blank" class="social-btn" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <circle cx="17.5" cy="6.5" r="1"></circle>
+                </svg>
+            </a>
+
+            <a href="https://youtube.com/" target="_blank" class="social-btn" aria-label="YouTube">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M23 12s0-3.5-.4-5.2a2.8 2.8 0 0 0-2-2C18.9 4.3 12 4.3 12 4.3s-6.9 0-8.6.5a2.8 2.8 0 0 0-2 2C1 8.5 1 12 1 12s0 3.5.4 5.2a2.8 2.8 0 0 0 2 2c1.7.5 8.6.5 8.6.5s6.9 0 8.6-.5a2.8 2.8 0 0 0 2-2C23 15.5 23 12 23 12ZM10 15.5v-7l6 3.5-6 3.5Z"/>
+                </svg>
+            </a>
         </div>
-    </footer>
-
-    <script src="{% static 'language.js' %}"></script>
-    <script src="{% static 'theme.js' %}"></script>
-    <script src="{% static 'main.js' %}"></script>
+    </div>
+</section>
+        </div>
+    </div>
+</footer>
+<script src="{% static 'language.js' %}"></script>
+<script src="{% static 'main.js' %}"></script>
 </body>
 </html>

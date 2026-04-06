@@ -1,16 +1,21 @@
+{% load i18n %}
+{% load static %}
 {% load crispy_forms_tags %}
-<html lang="en">
-
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
-    {% load static %}
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - UniBase</title>
-    <style>
+    <title>{% trans "Register - UniBase" %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
+<body>
+ <style>
 /* ===================================
    UniBase Exam Platform - Main Styles
    =================================== */
@@ -216,18 +221,14 @@ nav a:hover { background-color: var(--color-primary-light); color: var(--color-w
 .mt-3 { margin-top: var(--spacing-lg); }
 .mb-3 { margin-bottom: var(--spacing-lg); }
     </style>
-</head>
-
-<body>
-
 <header>
     <div class="container">
         <div class="header-container">
             <a href="/" class="logo">UniBase</a>
             <nav>
                 <ul>
-                    <li><a href="/" data-translate="home">Home</a></li>
-                    <li><a href="{% url 'login' %}" data-translate="nav_login">Login</a></li>
+                    <li><a href="/">{% trans "Home" %}</a></li>
+                    <li><a href="{% url 'login' %}">{% trans "Login" %}</a></li>
                 </ul>
             </nav>
         </div>
@@ -238,13 +239,11 @@ nav a:hover { background-color: var(--color-primary-light); color: var(--color-w
     <div class="container" style="max-width: 500px;">
         <div class="card">
             <div class="card-header text-center">
-                <h2 class="card-title" data-translate="register_title">Create Account</h2>
-                <p class="card-description" data-translate="register_subtitle">Start your exam preparation journey</p>
+                <h2 class="card-title">{% trans "Create Account" %}</h2>
+                <p class="card-description">{% trans "Start your exam preparation journey" %}</p>
             </div>
 
             <div class="card-body">
-
-                <!-- ✅ Django messages (success, error, warning, info) -->
                 {% if messages %}
                 <div class="messages-container">
                     {% for message in messages %}
@@ -257,36 +256,32 @@ nav a:hover { background-color: var(--color-primary-light); color: var(--color-w
                             {% endif %}
                         </span>
                         <span class="alert-text">{{ message }}</span>
-                        <button class="alert-close" onclick="this.parentElement.remove()" title="Yopish">×</button>
+                        <button class="alert-close" onclick="this.parentElement.remove()" title="{% trans 'Close' %}">×</button>
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
-                <!-- ✅ / Django messages -->
 
                 <form method="POST">
                     {% csrf_token %}
-
                     <div class="form-group mb-3">
                         {{ form|crispy }}
                     </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%;" data-translate="register_btn">
-                        Create Account
-                    </button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">{% trans "Create Account" %}</button>
                 </form>
 
                 <div class="text-center mt-3">
                     <p>
-                        <span data-translate="register_have_account">Already have an account?</span>
-                        <a href="{% url 'login' %}" data-translate="register_login_here">Login here</a>
+                        {% trans "Already have an account?" %}
+                        <a href="{% url 'login' %}" style="color: var(--color-accent); font-weight: 600;">{% trans "Login here" %}</a>
                     </p>
                 </div>
-
             </div>
         </div>
     </div>
 </section>
 
+<script src="{% static 'language.js' %}"></script>
+<script src="{% static 'main.js' %}"></script>
 </body>
 </html>

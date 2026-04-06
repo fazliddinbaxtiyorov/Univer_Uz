@@ -1,0 +1,777 @@
+# Uzbek translations for UniBase — ALL PAGES
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-30 12:00+0500\n"
+"Language: uz\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ── COMMON ───────────────────────────────────────────────────────────────────
+msgid "Home"
+msgstr "Bosh sahifa"
+
+msgid "Tests"
+msgstr "Testlar"
+
+msgid "Universities"
+msgstr "Universitetlar"
+
+msgid "News"
+msgstr "Yangiliklar"
+
+msgid "Features"
+msgstr "Imkoniyatlar"
+
+msgid "Support"
+msgstr "Qo'llab-quvvatlash"
+
+msgid "Dashboard"
+msgstr "Shaxsiy kabinet"
+
+msgid "Logout"
+msgstr "Chiqish"
+
+msgid "Login"
+msgstr "Kirish"
+
+msgid "Register"
+msgstr "Ro'yxatdan o'tish"
+
+msgid "Save"
+msgstr "Saqlash"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Settings"
+msgstr "Sozlamalar"
+
+msgid "Friends"
+msgstr "Do'stlar"
+
+msgid "Leaderboard"
+msgstr "Reyting"
+
+msgid "Help"
+msgstr "Yordam"
+
+msgid "Close"
+msgstr "Yopish"
+
+msgid "Error"
+msgstr "Xatolik"
+
+msgid "Date"
+msgstr "Sana"
+
+msgid "Score"
+msgstr "Natija"
+
+msgid "Average"
+msgstr "O'rtacha"
+
+msgid "Best"
+msgstr "Eng yaxshi"
+
+msgid "days"
+msgstr "kun"
+
+msgid "Accept"
+msgstr "Qabul qilish"
+
+msgid "Reject"
+msgstr "Rad etish"
+
+msgid "questions"
+msgstr "ta savol"
+
+msgid "min"
+msgstr "min"
+
+msgid "points"
+msgstr "ball"
+
+msgid "Free"
+msgstr "Bepul"
+
+msgid "average"
+msgstr "o'rtacha"
+
+# ── home.html ────────────────────────────────────────────────────────────────
+msgid "UniBase - Exam preparation platform for SAT, IELTS, DTM, Milliy Certificate, and IQ tests"
+msgstr "UniBase — SAT, IELTS, DTM, Milliy Sertifikat testlariga tayyorgarlik platformasi"
+
+msgid "UniBase - Preparation Like a Real Exam"
+msgstr "UniBase — Haqiqiy imtihondek tayyorgarlik"
+
+msgid "Toggle navigation"
+msgstr "Menyuni ochish"
+
+msgid "Preparation Like a Real Exam"
+msgstr "Haqiqiy imtihondek tayyorgarlik"
+
+msgid "IELTS, SAT, Milliy certificate, IQ, DTM — timed practice tests in a realistic exam environment"
+msgstr "IELTS, SAT, Milliy Sertifikat, DTM — vaqt cheklangan amaliy testlar"
+
+msgid "Start Free"
+msgstr "Bepul boshlash"
+
+msgid "View Tests"
+msgstr "Testlarni ko'rish"
+
+msgid "Choose Your Test"
+msgstr "Testni tanlang"
+
+msgid "ENGLISH"
+msgstr "INGLIZ TILI"
+
+msgid "Comprehensive IELTS practice across all sections with realistic exam conditions."
+msgstr "Barcha bo'limlar bo'yicha IELTS ga to'liq tayyorgarlik."
+
+msgid "Start Test"
+msgstr "Testni boshlash"
+
+msgid "ACADEMIC"
+msgstr "AKADEMIK"
+
+msgid "Prepare for SAT with Math and English sections in a timed environment."
+msgstr "Matematika va ingliz tili bo'limlari bo'yicha SATga tayyorlaning."
+
+msgid "NATIONAL"
+msgstr "MILLIY"
+
+msgid "Milliy certificate"
+msgstr "Milliy sertifikat"
+
+msgid "National certification exam practice with comprehensive question bank."
+msgstr "Keng savol bazasi bilan milliy sertifikat imtihoniga tayyorgarlik."
+
+msgid "ENTRANCE"
+msgstr "KIRISH"
+
+msgid "Prepare for university entrance exams with realistic test simulations."
+msgstr "Universitetga kirish imtihonlariga realistik test simulyatsiyalari bilan tayyorlaning."
+
+msgid "Latest News"
+msgstr "So'nggi yangiliklar"
+
+msgid "No news available at the moment."
+msgstr "Hozircha yangiliklar yo'q."
+
+msgid "Why Choose UniBase?"
+msgstr "Nima uchun UniBase?"
+
+msgid "🎯 Realistic Exam Environment"
+msgstr "🎯 Haqiqiy imtihon muhiti"
+
+msgid "Experience the pressure and atmosphere of real exams with authentic interfaces, timers, and question formats."
+msgstr "Haqiqiy interfeyslar, taymerlar va savol formatlari bilan real imtihon muhitini his eting."
+
+msgid "📊 Detailed Analytics"
+msgstr "📊 Batafsil tahlil"
+
+msgid "Track your performance with comprehensive analysis of your strengths, weaknesses, and progress over time."
+msgstr "Kuchli va zaif tomonlaringiz hamda vaqt o'tishi bilan natijalaringizni kuzating."
+
+msgid "📈 Track Your Progress"
+msgstr "📈 Rivojlanishingizni kuzating"
+
+msgid "Monitor your improvement with dynamic progress tracking, personalized recommendations, and goal setting."
+msgstr "Dinamik kuzatuv, shaxsiy tavsiyalar va maqsad qo'yish orqali o'sishingizni nazorat qiling."
+
+msgid "© 2026 UniBase. All rights reserved."
+msgstr "© 2026 UniBase. Barcha huquqlar himoyalangan."
+
+msgid "Privacy Policy"
+msgstr "Maxfiylik siyosati"
+
+msgid "Contact"
+msgstr "Aloqa"
+
+# ── login.html ───────────────────────────────────────────────────────────────
+msgid "Login - UniBase"
+msgstr "Kirish — UniBase"
+
+msgid "Welcome Back"
+msgstr "Qaytib kelganingiz bilan"
+
+msgid "Login to continue your exam preparation"
+msgstr "Imtihonga tayyorgarlikni davom ettirish uchun kiring"
+
+msgid "Don't have an account?"
+msgstr "Akkauntingiz yo'qmi?"
+
+# ── sign.html ─────────────────────────────────────────────────────────────────
+msgid "Register - UniBase"
+msgstr "Ro'yxatdan o'tish — UniBase"
+
+msgid "Create Account"
+msgstr "Akkaunt yaratish"
+
+msgid "Start your exam preparation journey"
+msgstr "Imtihonga tayyorgarlik safaringizni boshlang"
+
+msgid "Already have an account?"
+msgstr "Akkauntingiz bormi?"
+
+msgid "Login here"
+msgstr "Bu yerda kiring"
+
+# ── profile.html ──────────────────────────────────────────────────────────────
+msgid "My Profile - UniBase"
+msgstr "Mening profilim — UniBase"
+
+msgid "STREAK"
+msgstr "SERIYA"
+
+msgid "days for discount"
+msgstr "kun chegirma uchun"
+
+msgid "My Balance"
+msgstr "Mening balansim"
+
+msgid "5-day streak — 25% discount on tests!"
+msgstr "5 kunlik seriya — testlarda 25% chegirma!"
+
+msgid "Overview"
+msgstr "Umumiy ko'rinish"
+
+msgid "Buy Coins"
+msgstr "Tanga sotib olish"
+
+msgid "Activity & Results"
+msgstr "Faoliyat va natijalar"
+
+msgid "Tests Completed"
+msgstr "Testlar bajarildi"
+
+msgid "Avg. Accuracy"
+msgstr "O'rtacha aniqlik"
+
+msgid "Your Progress"
+msgstr "Sizning rivojlanishingiz"
+
+msgid "Last 15 average"
+msgstr "So'nggi 15 ta o'rtacha"
+
+msgid "Overall"
+msgstr "Jami"
+
+msgid "Analysis Locked"
+msgstr "Tahlil qulflangan"
+
+msgid "Complete"
+msgstr "Bajaring"
+
+msgid "more tests"
+msgstr "ta test yana"
+
+msgid "to unlock analysis!"
+msgstr "tahlilni ochish uchun!"
+
+msgid "Friend Requests"
+msgstr "Do'stlik so'rovlari"
+
+msgid "Test Name"
+msgstr "Test nomi"
+
+msgid "No activity recorded yet"
+msgstr "Hali faoliyat qayd etilmagan"
+
+msgid "Insights"
+msgstr "Tahlil"
+
+msgid "5 consecutive 100% results! Amazing!"
+msgstr "Ketma-ket 5 ta 100% natija! Ajoyib!"
+
+msgid "PROGRESS"
+msgstr "RIVOJLANISH"
+
+msgid "tests done"
+msgstr "test bajarildi"
+
+msgid "BEST SCORE"
+msgstr "ENG YAXSHI NATIJA"
+
+msgid "Achieved"
+msgstr "Erishildi"
+
+msgid "days in a row"
+msgstr "kun ketma-ket"
+
+msgid "SAT PERFECT"
+msgstr "SAT MUKAMMAL"
+
+msgid "consecutive 100%"
+msgstr "ketma-ket 100%"
+
+msgid "Your Region"
+msgstr "Viloyatingiz"
+
+msgid "Select"
+msgstr "Tanlang"
+
+msgid "View Full Analytics"
+msgstr "To'liq tahlilni ko'rish"
+
+# ── settings.html ─────────────────────────────────────────────────────────────
+msgid "Settings — UniBase"
+msgstr "Sozlamalar — UniBase"
+
+msgid "Profile Photo"
+msgstr "Profil rasmi"
+
+msgid "JPG, PNG or GIF. Max 5MB."
+msgstr "JPG, PNG yoki GIF. Maksimal 5MB."
+
+msgid "Upload Photo"
+msgstr "Rasm yuklash"
+
+msgid "Personal Information"
+msgstr "Shaxsiy ma'lumotlar"
+
+msgid "First Name"
+msgstr "Ism"
+
+msgid "Your name"
+msgstr "Ismingiz"
+
+msgid "Last Name"
+msgstr "Familiya"
+
+msgid "Your surname"
+msgstr "Familiyangiz"
+
+msgid "Username"
+msgstr "Foydalanuvchi nomi"
+
+msgid "Email"
+msgstr "Elektron pochta"
+
+msgid "Phone"
+msgstr "Telefon"
+
+msgid "Change Password"
+msgstr "Parolni o'zgartirish"
+
+msgid "Enter your old password to change it. Leave blank if you don't want to change."
+msgstr "O'zgartirish uchun eski parolni kiriting. O'zgartirmoqchi bo'lmasangiz bo'sh qoldiring."
+
+msgid "Old Password"
+msgstr "Eski parol"
+
+msgid "Enter old password"
+msgstr "Eski parolni kiriting"
+
+msgid "New Password"
+msgstr "Yangi parol"
+
+msgid "New password"
+msgstr "Yangi parol"
+
+msgid "Confirm Password"
+msgstr "Parolni tasdiqlash"
+
+msgid "Re-enter password"
+msgstr "Qayta kiriting"
+
+# ── analytics.html ────────────────────────────────────────────────────────────
+msgid "Analytics Dashboard"
+msgstr "Tahlil paneli"
+
+msgid "SELECT ANALYSIS TYPE"
+msgstr "TAHLIL TURINI TANLANG"
+
+msgid "Growth Chart"
+msgstr "O'sish grafigi"
+
+msgid "Average Score"
+msgstr "O'rtacha ball"
+
+msgid "Total Tests"
+msgstr "Jami testlar"
+
+msgid "Best Score"
+msgstr "Eng yuqori natija"
+
+msgid "Recent Submissions"
+msgstr "So'nggi ishlar"
+
+msgid "DATE"
+msgstr "SANA"
+
+msgid "SUBJECT / TEST"
+msgstr "FAN / TEST"
+
+msgid "SCORE"
+msgstr "NATIJA"
+
+msgid "No data found"
+msgstr "Ma'lumot topilmadi"
+
+msgid "Select Analysis"
+msgstr "Tahlilni tanlang"
+
+msgid "Milliy Certificate"
+msgstr "Milliy Sertifikat"
+
+# ── fan_tanlash.html ──────────────────────────────────────────────────────────
+msgid "Select a subject and start the test"
+msgstr "Fanlardan birini tanlang va testni boshlang"
+
+msgid "Select a subject above"
+msgstr "Yuqoridan fan tanlang"
+
+msgid "Milliy Certificate preparation test"
+msgstr "Milliy Sertifikat tayyorgarlik testi"
+
+msgid "Duration"
+msgstr "Davomiyligi"
+
+msgid "Questions"
+msgstr "Savollar"
+
+msgid "Practice your SAT skills"
+msgstr "SAT ko'nikmalaringizni mashq qiling"
+
+msgid "Each correct answer"
+msgstr "Har to'g'ri javob"
+
+# ── my_friends.html ───────────────────────────────────────────────────────────
+msgid "Friends - UniBase"
+msgstr "Do'stlar — UniBase"
+
+msgid "My Friends"
+msgstr "Mening do'stlarim"
+
+msgid "Pending Requests"
+msgstr "Kutilayotgan so'rovlar"
+
+msgid "Sent a friend request"
+msgstr "Do'stlik so'rovi yubordi"
+
+msgid "Search friends..."
+msgstr "Do'st qidirish..."
+
+msgid "tests taken"
+msgstr "test yechgan"
+
+msgid "No friends yet"
+msgstr "Hali do'stlar yo'q"
+
+msgid "Send friend requests to users on the Leaderboard!"
+msgstr "Leaderboard da foydalanuvchilarga do'stlik so'rovi yuboring!"
+
+# ── friend_profile.html ───────────────────────────────────────────────────────
+msgid "Test Results"
+msgstr "Test natijalari"
+
+msgid "Last 10"
+msgstr "So'nggi 10 ta"
+
+msgid "Request Sent"
+msgstr "So'rov yuborilgan"
+
+msgid "Add Friend"
+msgstr "Do'st qo'shish"
+
+msgid "No results yet"
+msgstr "Hali natijalar yo'q"
+
+msgid "hasn't taken any tests yet."
+msgstr "hali hech qanday test yechmagan."
+
+msgid "Results are hidden"
+msgstr "Natijalar yashirin"
+
+msgid "Your request is being reviewed."
+msgstr "So'rovingiz ko'rib chiqilmoqda."
+
+msgid "Accept the friend request to see results!"
+msgstr "Do'stlik so'rovini qabul qiling va natijalarni ko'ring!"
+
+msgid "Become friends to see their results."
+msgstr "Do'st bo'lgach natijalarni ko'rishingiz mumkin."
+
+# ── settings.py LANGUAGES ─────────────────────────────────────────────────────
+msgid "English"
+msgstr "Inglizcha"
+
+msgid "Русский"
+msgstr "Ruscha"
+
+msgid "O'zbekcha"
+msgstr "O'zbekcha"
+
+# ── ielts.html ────────────────────────────────────────────────────────────────
+msgid "IELTS Practice - UniBase"
+msgstr "IELTS Tayyorgarlik — UniBase"
+
+msgid "IELTS Practice"
+msgstr "IELTS Tayyorgarlik"
+
+msgid "Listening"
+msgstr "Tinglash"
+
+msgid "Fokus va tushunish qobiliyatingizni oshiring."
+msgstr "Fokus va tushunish qobiliyatingizni oshiring."
+
+msgid "⏱️ 60 mins"
+msgstr "⏱️ 60 daqiqa"
+
+msgid "Reading"
+msgstr "O'qish"
+
+msgid "Matnlar bilan tez va aniq ishlashni o'rganing."
+msgstr "Matnlar bilan tez va aniq ishlashni o'rganing."
+
+msgid "Writing"
+msgstr "Yozish"
+
+msgid "Insho yozishda akademik darajaga chiqing."
+msgstr "Insho yozishda akademik darajaga chiqing."
+
+msgid "🎧 Listening Tests"
+msgstr "🎧 Tinglash testlari"
+
+msgid "Listening Practice Test"
+msgstr "Tinglash amaliy testi"
+
+msgid "4 Audio Sections"
+msgstr "4 ta audio bo'lim"
+
+msgid "Start Listening"
+msgstr "Tinglashni boshlash"
+
+msgid "Hozircha listening testlar yuklanmagan."
+msgstr "Hozircha listening testlar yuklanmagan."
+
+msgid "📖 Reading Tests"
+msgstr "📖 O'qish testlari"
+
+msgid "Reading Practice Test"
+msgstr "O'qish amaliy testi"
+
+msgid "Duration: 60 min"
+msgstr "Davomiyligi: 60 daqiqa"
+
+msgid "3 Passages"
+msgstr "3 ta matn"
+
+msgid "Hozircha reading testlar yuklanmagan."
+msgstr "Hozircha reading testlar yuklanmagan."
+
+msgid "✍️ Writing Tests"
+msgstr "✍️ Yozish testlari"
+
+msgid "Task 1 — Graph / Chart / Diagram"
+msgstr "Task 1 — Grafik / Jadval / Diagramma"
+
+msgid "Task 2 — Essay"
+msgstr "Task 2 — Insho"
+
+msgid "Duration: 20 min"
+msgstr "Davomiyligi: 20 daqiqa"
+
+msgid "Duration: 40 min"
+msgstr "Davomiyligi: 40 daqiqa"
+
+msgid "AI assessment"
+msgstr "AI baholash"
+
+msgid "Min 150 words"
+msgstr "Min 150 so'z"
+
+msgid "Min 250 words"
+msgstr "Min 250 so'z"
+
+msgid "Start Writing"
+msgstr "Yozishni boshlash"
+
+msgid "Hozircha writing testlar yuklanmagan."
+msgstr "Hozircha writing testlar yuklanmagan."
+
+msgid "Yuqoridan bo'lim tanlang"
+msgstr "Yuqoridan bo'lim tanlang"
+
+msgid "Test"
+msgstr "Test"
+
+msgid "coins"
+msgstr "tanga"
+
+# ── leaderboard.html ─────────────────────────────────────────────────────────
+msgid "Leaderboard - UniBase"
+msgstr "Reyting — UniBase"
+
+msgid "Test Results Leaderboard"
+msgstr "Test natijalari bo'yicha reyting"
+
+msgid "Rating among all users"
+msgstr "Barcha foydalanuvchilar orasida reyting"
+
+msgid "📍 Region:"
+msgstr "📍 Viloyat:"
+
+msgid "🌍 All regions"
+msgstr "🌍 Barcha viloyatlar"
+
+msgid "Filtering"
+msgstr "Filtrlash"
+
+msgid "Delete"
+msgstr "✕ Tozalash"
+
+msgid "Total Passed"
+msgstr "Jami topshirdi"
+
+msgid "Top Points"
+msgstr "Eng yuqori ball"
+
+msgid "Top Performers"
+msgstr "Eng yaxshi natijalar"
+
+msgid "💡 Points system: Every 10 points = 1 leaderboard point. The more tests you take, the higher you will climb!"
+msgstr "💡 Ball tizimi: Har 10 ball = 1 leaderboard point. Qancha ko'p test yechsangiz, shuncha yuqori chiqasiz!"
+
+msgid "You"
+msgstr "Siz"
+
+msgid "test"
+msgstr "test"
+
+msgid "tests"
+msgstr "testlar"
+
+msgid "Hali hech kim test yechmagan."
+msgstr "Hali hech kim test yechmagan."
+
+# ── sat.html ──────────────────────────────────────────────────────────────────
+msgid "SAT Practice - UniBase"
+msgstr "SAT Tayyorgarlik — UniBase"
+
+msgid "SAT Practice Tests"
+msgstr "SAT amaliy testlari"
+
+msgid "Improve your SAT score with our realistic practice questions."
+msgstr "Realistik amaliy savollar yordamida SAT ballaringizni oshiring."
+
+msgid "NEW SAT 2026"
+msgstr "YANGI SAT 2026"
+
+msgid "Hozircha testlar mavjud emas."
+msgstr "Hozircha testlar mavjud emas."
+
+# ── dtm.html ──────────────────────────────────────────────────────────────────
+msgid "DTM - UniBase"
+msgstr "DTM — UniBase"
+
+msgid "DTM Preparation"
+msgstr "DTM Tayyorgarlik"
+
+msgid "Choose 2 main subjects and start a full DTM simulation"
+msgstr "2 ta asosiy fan tanlang va to'liq DTM simulyatsiyasini boshlang"
+
+msgid "⏱️ Duration: 3 hours"
+msgstr "⏱️ Davomiyligi: 3 soat"
+
+msgid "📝 Total: 150 questions"
+msgstr "📝 Jami: ~150 savol"
+
+msgid "🎯 5 subjects: 2 core + Mother Tongue + Mathematics + History"
+msgstr "🎯 5 ta fan: 2 asosiy + Ona Tili + Matematika + Tarix"
+
+msgid "🏆 Maximum score: 189"
+msgstr "🏆 Maksimal ball: ~189"
+
+msgid "1st core subject"
+msgstr "1-chi asosiy fan"
+
+msgid "Select the first subject"
+msgstr "Birinchi fanni tanlang"
+
+msgid "ball"
+msgstr "ball"
+
+msgid "2nd core subject"
+msgstr "2-chi asosiy fan"
+
+msgid "Select the second subject"
+msgstr "Ikkinchi fanni tanlang"
+
+msgid "📊 Selected subjects and score distribution"
+msgstr "📊 Tanlangan fanlar va ball taqsimoti"
+
+msgid "1st subject"
+msgstr "1-chi fan"
+
+msgid "2nd subject"
+msgstr "2-chi fan"
+
+msgid "Compulsory subjects"
+msgstr "Majburiy fanlar"
+
+msgid "Mother Tongue + Math + History"
+msgstr "Ona Tili + Mat + Tarix"
+
+msgid "question"
+msgstr "savol"
+
+msgid "🚀 Start DTM Test"
+msgstr "🚀 DTM Testini Boshlash"
+
+msgid "The test will start after selecting both subjects"
+msgstr "Ikkala fanni tanlagandan keyin test boshlanadi"
+
+# ── universities.html ─────────────────────────────────────────────────────────
+msgid "Coming Soon"
+msgstr "Tez orada"
+
+msgid "Universities Directory"
+msgstr "Universitetlar katalogi"
+
+msgid "We are preparing a complete database of universities worldwide with detailed information, campus images, and smart filters. Stay tuned!"
+msgstr "Biz dunyo universitetlarining to'liq ma'lumotlar bazasini, kampus rasmlari va aqlli filtrlar bilan tayyorlayapmiz. Kuzatib turing!"
+
+msgid "Back to Home"
+msgstr "Bosh sahifaga"
+
+msgid "All rights reserved"
+msgstr "Barcha huquqlar himoyalangan"
+
+msgid "Results"
+msgstr "Natijalar"
+
+msgid "Back to Profile"
+msgstr "Profilga qaytish"
+
+msgid "correct"
+msgstr "to'g'ri"
+
+msgid "Let AI explain"
+msgstr "AI tushuntirsin"
+
+msgid "Loading..."
+msgstr "Yuklanmoqda..."
+
+msgid "No answer given"
+msgstr "Javob berilmadi"
+
+msgid "Time spent"
+msgstr "Sarflangan vaqt"
+
+msgid "Score earned"
+msgstr "To'plangan ball"
+
+msgid "Review Answers"
+msgstr "Javoblarni ko'rib chiqish"
+
+msgid "Excellent result! Keep it up."
+msgstr "Ajoyib natija! Davom eting."
+
+msgid "Good! Practice more."
+msgstr "Yaxshi! Yana mashq qiling."
+
+msgid "Need more studying."
+msgstr "Ko'proq o'qish kerak."

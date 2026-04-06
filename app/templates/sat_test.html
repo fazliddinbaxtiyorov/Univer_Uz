@@ -290,14 +290,6 @@
         <button type="submit" class="btn-submit">Finish and Review Results</button>
     </form>
 </main>
-
-<div class="nav-panel">
-    {% for question in questions %}
-        <a href="#q-{{ forloop.counter }}" class="nav-dot" id="dot-{{ forloop.counter }}">
-            {{ forloop.counter }}
-        </a>
-    {% endfor %}
-</div>
 <script>
     let totalSeconds = parseInt({{ duration|default:60 }}) * 60;
     const timerDisplay = document.getElementById('timer');

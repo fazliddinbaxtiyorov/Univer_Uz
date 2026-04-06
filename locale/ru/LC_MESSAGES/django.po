@@ -1,0 +1,838 @@
+# Russian translations for UniBase — ALL PAGES
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-30 12:00+0500\n"
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ── COMMON ───────────────────────────────────────────────────────────────────
+msgid "Home"
+msgstr "Главная"
+
+msgid "Universities"
+msgstr "Университеты"
+
+msgid "News"
+msgstr "Новости"
+
+msgid "Features"
+msgstr "Возможности"
+
+msgid "Support"
+msgstr "Поддержка"
+
+msgid "Dashboard"
+msgstr "Личный кабинет"
+
+msgid "Logout"
+msgstr "Выйти"
+
+msgid "Login"
+msgstr "Войти"
+
+msgid "Register"
+msgstr "Регистрация"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Profile"
+msgstr "Профиль"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Leaderboard"
+msgstr "Таблица лидеров"
+
+msgid "Help"
+msgstr "Помощь"
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Error"
+msgstr "Ошибка"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Score"
+msgstr "Результат"
+
+msgid "Average"
+msgstr "Среднее"
+
+msgid "Best"
+msgstr "Лучший"
+
+msgid "days"
+msgstr "дней"
+
+msgid "Accept"
+msgstr "Принять"
+
+msgid "Reject"
+msgstr "Отклонить"
+
+msgid "questions"
+msgstr "вопросов"
+
+msgid "Tests"
+msgstr "Тесты"
+
+msgid "min"
+msgstr "мин"
+
+msgid "points"
+msgstr "баллов"
+
+msgid "Free"
+msgstr "Бесплатно"
+
+msgid "average"
+msgstr "среднее"
+
+msgid "correct"
+msgstr "правильно"
+
+msgid "Correct"
+msgstr "Правильно"
+
+msgid "Question"
+msgstr "Вопрос"
+
+msgid "You"
+msgstr "Вы"
+
+msgid "My Profile"
+msgstr "Мой профиль"
+
+msgid "Loading..."
+msgstr "Загрузка..."
+
+msgid "Retry"
+msgstr "Повторить"
+
+msgid "m"
+msgstr "м"
+
+msgid "s"
+msgstr "с"
+
+# ── home.html ────────────────────────────────────────────────────────────────
+msgid "UniBase - Exam preparation platform for SAT, IELTS, DTM, Milliy Certificate, and IQ tests"
+msgstr "UniBase — платформа подготовки к SAT, IELTS, DTM, Milliy Certificate и IQ тестам"
+
+msgid "UniBase - Preparation Like a Real Exam"
+msgstr "UniBase — Подготовка как на настоящем экзамене"
+
+msgid "Toggle navigation"
+msgstr "Открыть меню"
+
+msgid "Preparation Like a Real Exam"
+msgstr "Подготовка как на настоящем экзамене"
+
+msgid "IELTS, SAT, Milliy certificate, IQ, DTM — timed practice tests in a realistic exam environment"
+msgstr "IELTS, SAT, Milliy certificate, IQ, DTM — практические тесты с таймером в реалистичных условиях"
+
+msgid "Start Free"
+msgstr "Начать бесплатно"
+
+msgid "View Tests"
+msgstr "Смотреть тесты"
+
+msgid "Choose Your Test"
+msgstr "Выберите тест"
+
+msgid "ENGLISH"
+msgstr "АНГЛИЙСКИЙ"
+
+msgid "Comprehensive IELTS practice across all sections with realistic exam conditions."
+msgstr "Полная подготовка к IELTS по всем разделам в реалистичных условиях экзамена."
+
+msgid "Start Test"
+msgstr "Начать тест"
+
+msgid "ACADEMIC"
+msgstr "АКАДЕМИЧЕСКИЙ"
+
+msgid "Prepare for SAT with Math and English sections in a timed environment."
+msgstr "Готовьтесь к SAT по математике и английскому языку в условиях реального экзамена."
+
+msgid "NATIONAL"
+msgstr "НАЦИОНАЛЬНЫЙ"
+
+msgid "Milliy certificate"
+msgstr "Milliy certificate"
+
+msgid "National certification exam practice with comprehensive question bank."
+msgstr "Подготовка к национальному сертификационному экзамену с обширной базой вопросов."
+
+msgid "ENTRANCE"
+msgstr "ВСТУПИТЕЛЬНЫЙ"
+
+msgid "Prepare for university entrance exams with realistic test simulations."
+msgstr "Готовьтесь к вступительным экзаменам в вуз с реалистичными симуляциями тестов."
+
+msgid "Latest News"
+msgstr "Последние новости"
+
+msgid "No news available at the moment."
+msgstr "Новостей пока нет."
+
+msgid "Why Choose UniBase?"
+msgstr "Почему UniBase?"
+
+msgid "🎯 Realistic Exam Environment"
+msgstr "🎯 Реалистичная обстановка экзамена"
+
+msgid "Experience the pressure and atmosphere of real exams with authentic interfaces, timers, and question formats."
+msgstr "Почувствуйте атмосферу настоящего экзамена с реальными интерфейсами, таймерами и форматами вопросов."
+
+msgid "📊 Detailed Analytics"
+msgstr "📊 Подробная аналитика"
+
+msgid "Track your performance with comprehensive analysis of your strengths, weaknesses, and progress over time."
+msgstr "Отслеживайте результаты с подробным анализом сильных и слабых сторон и прогресса."
+
+msgid "📈 Track Your Progress"
+msgstr "📈 Следите за прогрессом"
+
+msgid "Monitor your improvement with dynamic progress tracking, personalized recommendations, and goal setting."
+msgstr "Контролируйте улучшения с динамическим отслеживанием прогресса и персональными рекомендациями."
+
+msgid "© 2026 UniBase. All rights reserved."
+msgstr "© 2026 UniBase. Все права защищены."
+
+msgid "Privacy Policy"
+msgstr "Политика конфиденциальности"
+
+msgid "Contact"
+msgstr "Контакты"
+
+# ── login.html ───────────────────────────────────────────────────────────────
+msgid "Login - UniBase"
+msgstr "Вход — UniBase"
+
+msgid "Welcome Back"
+msgstr "С возвращением"
+
+msgid "Login to continue your exam preparation"
+msgstr "Войдите, чтобы продолжить подготовку к экзаменам"
+
+msgid "Don't have an account?"
+msgstr "Нет аккаунта?"
+
+# ── sign.html ─────────────────────────────────────────────────────────────────
+msgid "Register - UniBase"
+msgstr "Регистрация — UniBase"
+
+msgid "Create Account"
+msgstr "Создать аккаунт"
+
+msgid "Start your exam preparation journey"
+msgstr "Начните свой путь подготовки к экзаменам"
+
+msgid "Already have an account?"
+msgstr "Уже есть аккаунт?"
+
+msgid "Login here"
+msgstr "Войти здесь"
+
+# ── profile.html ──────────────────────────────────────────────────────────────
+msgid "My Profile - UniBase"
+msgstr "Мой профиль — UniBase"
+
+msgid "STREAK"
+msgstr "СЕРИЯ"
+
+msgid "days for discount"
+msgstr "дней для скидки"
+
+msgid "My Balance"
+msgstr "Мой баланс"
+
+msgid "5-day streak — 25% discount on tests!"
+msgstr "Серия 5 дней — скидка 25% на тесты!"
+
+msgid "Overview"
+msgstr "Обзор"
+
+msgid "Buy Coins"
+msgstr "Купить монеты"
+
+msgid "Activity & Results"
+msgstr "Активность и результаты"
+
+msgid "Tests Completed"
+msgstr "Тестов пройдено"
+
+msgid "Avg. Accuracy"
+msgstr "Средняя точность"
+
+msgid "Your Progress"
+msgstr "Ваш прогресс"
+
+msgid "Last 15 average"
+msgstr "Среднее за 15 тестов"
+
+msgid "Overall"
+msgstr "Всего"
+
+msgid "Analysis Locked"
+msgstr "Анализ заблокирован"
+
+msgid "Complete"
+msgstr "Пройдите"
+
+msgid "more tests"
+msgstr "тестов ещё"
+
+msgid "to unlock analysis!"
+msgstr "чтобы разблокировать анализ!"
+
+msgid "Friend Requests"
+msgstr "Заявки в друзья"
+
+msgid "Test Name"
+msgstr "Название теста"
+
+msgid "No activity recorded yet"
+msgstr "Активность пока не зарегистрирована"
+
+msgid "Insights"
+msgstr "Аналитика"
+
+msgid "5 consecutive 100% results! Amazing!"
+msgstr "5 результатов по 100% подряд! Потрясающе!"
+
+msgid "PROGRESS"
+msgstr "ПРОГРЕСС"
+
+msgid "tests done"
+msgstr "тестов пройдено"
+
+msgid "BEST SCORE"
+msgstr "ЛУЧШИЙ РЕЗУЛЬТАТ"
+
+msgid "Achieved"
+msgstr "Достигнуто"
+
+msgid "days in a row"
+msgstr "дней подряд"
+
+msgid "SAT PERFECT"
+msgstr "SAT ОТЛИЧНО"
+
+msgid "consecutive 100%"
+msgstr "подряд 100%"
+
+msgid "Your Region"
+msgstr "Ваш регион"
+
+msgid "Select"
+msgstr "Выберите"
+
+msgid "View Full Analytics"
+msgstr "Полная аналитика"
+
+# ── settings.html ─────────────────────────────────────────────────────────────
+msgid "Settings — UniBase"
+msgstr "Настройки — UniBase"
+
+msgid "Profile Photo"
+msgstr "Фото профиля"
+
+msgid "JPG, PNG or GIF. Max 5MB."
+msgstr "JPG, PNG или GIF. Максимум 5МБ."
+
+msgid "Upload Photo"
+msgstr "Загрузить фото"
+
+msgid "Personal Information"
+msgstr "Личная информация"
+
+msgid "First Name"
+msgstr "Имя"
+
+msgid "Your name"
+msgstr "Ваше имя"
+
+msgid "Last Name"
+msgstr "Фамилия"
+
+msgid "Your surname"
+msgstr "Ваша фамилия"
+
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Email"
+msgstr "Эл. почта"
+
+msgid "Phone"
+msgstr "Телефон"
+
+msgid "Change Password"
+msgstr "Изменить пароль"
+
+msgid "Enter your old password to change it. Leave blank if you don't want to change."
+msgstr "Введите старый пароль для изменения. Оставьте пустым, если не хотите менять."
+
+msgid "Old Password"
+msgstr "Старый пароль"
+
+msgid "Enter old password"
+msgstr "Введите старый пароль"
+
+msgid "New Password"
+msgstr "Новый пароль"
+
+msgid "New password"
+msgstr "Новый пароль"
+
+msgid "Confirm Password"
+msgstr "Подтвердите пароль"
+
+msgid "Re-enter password"
+msgstr "Повторите пароль"
+
+# ── analytics.html ────────────────────────────────────────────────────────────
+msgid "Analytics Dashboard"
+msgstr "Панель аналитики"
+
+msgid "SELECT ANALYSIS TYPE"
+msgstr "ВЫБРАТЬ ТИП АНАЛИЗА"
+
+msgid "Growth Chart"
+msgstr "График роста"
+
+msgid "Average Score"
+msgstr "Средний балл"
+
+msgid "Total Tests"
+msgstr "Всего тестов"
+
+msgid "Best Score"
+msgstr "Лучший результат"
+
+msgid "Recent Submissions"
+msgstr "Последние работы"
+
+msgid "DATE"
+msgstr "ДАТА"
+
+msgid "SUBJECT / TEST"
+msgstr "ПРЕДМЕТ / ТЕСТ"
+
+msgid "SCORE"
+msgstr "РЕЗУЛЬТАТ"
+
+msgid "No data found"
+msgstr "Данные не найдены"
+
+msgid "Select Analysis"
+msgstr "Выберите анализ"
+
+msgid "Milliy Certificate"
+msgstr "Milliy Certificate"
+
+# ── fan_tanlash.html ──────────────────────────────────────────────────────────
+msgid "Select a subject and start the test"
+msgstr "Выберите предмет и начните тест"
+
+msgid "Select a subject above"
+msgstr "Выберите предмет выше"
+
+msgid "Milliy Certificate preparation test"
+msgstr "Подготовительный тест Milliy Certificate"
+
+msgid "Duration"
+msgstr "Длительность"
+
+msgid "Questions"
+msgstr "Вопросы"
+
+msgid "Practice your SAT skills"
+msgstr "Потренируйте свои навыки для сдачи SAT."
+
+msgid "Each correct answer"
+msgstr "За каждый правильный ответ"
+
+# ── my_friends.html ───────────────────────────────────────────────────────────
+msgid "Friends - UniBase"
+msgstr "Друзья — UniBase"
+
+msgid "My Friends"
+msgstr "Мои друзья"
+
+msgid "Pending Requests"
+msgstr "Ожидающие запросы"
+
+msgid "Sent a friend request"
+msgstr "Отправил запрос в друзья"
+
+msgid "Search friends..."
+msgstr "Поиск друзей..."
+
+msgid "tests taken"
+msgstr "тестов пройдено"
+
+msgid "No friends yet"
+msgstr "Друзей пока нет"
+
+msgid "Send friend requests to users on the Leaderboard!"
+msgstr "Отправляйте запросы пользователям в таблице лидеров!"
+
+# ── friend_profile.html ───────────────────────────────────────────────────────
+msgid "Test Results"
+msgstr "Результаты тестов"
+
+msgid "Last 10"
+msgstr "Последние 10"
+
+msgid "Friends"
+msgstr "Друзья"
+
+msgid "Request Sent"
+msgstr "Запрос отправлен"
+
+msgid "Add Friend"
+msgstr "Добавить в друзья"
+
+msgid "No results yet"
+msgstr "Результатов пока нет"
+
+msgid "hasn't taken any tests yet."
+msgstr "ещё не проходил тесты."
+
+msgid "Results are hidden"
+msgstr "Результаты скрыты"
+
+msgid "Your request is being reviewed."
+msgstr "Ваш запрос рассматривается."
+
+msgid "Accept the friend request to see results!"
+msgstr "Примите запрос в друзья, чтобы увидеть результаты!"
+
+msgid "Become friends to see their results."
+msgstr "Станьте друзьями, чтобы увидеть результаты."
+
+# ── settings.py LANGUAGES ─────────────────────────────────────────────────────
+msgid "English"
+msgstr "Английский"
+
+msgid "Русский"
+msgstr "Русский"
+
+msgid "O'zbekcha"
+msgstr "Узбекский"
+
+# ── ielts.html ────────────────────────────────────────────────────────────────
+msgid "IELTS Practice - UniBase"
+msgstr "IELTS Практика — UniBase"
+
+msgid "IELTS Practice"
+msgstr "IELTS Практика"
+
+msgid "Listening"
+msgstr "Аудирование"
+
+msgid "Fokus va tushunish qobiliyatingizni oshiring."
+msgstr "Улучшите свою концентрацию и навыки понимания."
+
+msgid "⏱️ 60 mins"
+msgstr "⏱️ 60 мин"
+
+msgid "Reading"
+msgstr "Чтение"
+
+msgid "Matnlar bilan tez va aniq ishlashni o'rganing."
+msgstr "Научитесь быстро и точно работать с текстами."
+
+msgid "Writing"
+msgstr "Письмо"
+
+msgid "Insho yozishda akademik darajaga chiqing."
+msgstr "Достигните академического уровня в написании эссе."
+
+msgid "🎧 Listening Tests"
+msgstr "🎧 Тесты на аудирование"
+
+msgid "Listening Practice Test"
+msgstr "Практический тест на аудирование"
+
+msgid "4 Audio Sections"
+msgstr "4 аудио раздела"
+
+msgid "Start Listening"
+msgstr "Начать аудирование"
+
+msgid "Hozircha listening testlar yuklanmagan."
+msgstr "Тесты на аудирование пока не загружены."
+
+msgid "📖 Reading Tests"
+msgstr "📖 Тесты на чтение"
+
+msgid "Reading Practice Test"
+msgstr "Практический тест на чтение"
+
+msgid "Duration: 60 min"
+msgstr "Длительность: 60 мин"
+
+msgid "3 Passages"
+msgstr "3 текста"
+
+msgid "Hozircha reading testlar yuklanmagan."
+msgstr "Тесты на чтение пока не загружены."
+
+msgid "✍️ Writing Tests"
+msgstr "✍️ Тесты на письмо"
+
+msgid "Task 1 — Graph / Chart / Diagram"
+msgstr "Задание 1 — График / Таблица / Диаграмма"
+
+msgid "Task 2 — Essay"
+msgstr "Задание 2 — Эссе"
+
+msgid "Duration: 20 min"
+msgstr "Длительность: 20 мин"
+
+msgid "Duration: 40 min"
+msgstr "Длительность: 40 мин"
+
+msgid "AI assessment"
+msgstr "Оценка ИИ"
+
+msgid "Min 150 words"
+msgstr "Мин. 150 слов"
+
+msgid "Min 250 words"
+msgstr "Мин. 250 слов"
+
+msgid "Start Writing"
+msgstr "Начать письмо"
+
+msgid "Hozircha writing testlar yuklanmagan."
+msgstr "Тесты на письмо пока не загружены."
+
+msgid "Yuqoridan bo'lim tanlang"
+msgstr "Выберите раздел выше"
+
+msgid "Test"
+msgstr "Тест"
+
+msgid "coins"
+msgstr "монет"
+
+# ── leaderboard.html ──────────────────────────────────────────────────────────
+msgid "Leaderboard - UniBase"
+msgstr "Таблица лидеров — UniBase"
+
+msgid "Test Results Leaderboard"
+msgstr "Таблица лидеров по результатам тестов"
+
+msgid "Rating among all users"
+msgstr "Рейтинг среди всех пользователей"
+
+msgid "📍 Region:"
+msgstr "📍 Область:"
+
+msgid "🌍 All regions"
+msgstr "🌍 Все области"
+
+msgid "Filtering"
+msgstr "Фильтровать"
+
+msgid "Delete"
+msgstr "✕ Очистить"
+
+msgid "Total Passed"
+msgstr "Всего сдали"
+
+msgid "Top Points"
+msgstr "Макс. баллов"
+
+msgid "Top Performers"
+msgstr "Лучшие результаты"
+
+msgid "💡 Points system: Every 10 points = 1 leaderboard point. The more tests you take, the higher you will climb!"
+msgstr "💡 Система баллов: Каждые 10 баллов = 1 очко в таблице лидеров. Чем больше тестов вы пройдете, тем выше подниметесь!"
+
+msgid "test"
+msgstr "тест"
+
+msgid "tests"
+msgstr "тесты"
+
+msgid "Hali hech kim test yechmagan."
+msgstr "Никто еще не проходил тесты."
+
+# ── sat.html ──────────────────────────────────────────────────────────────────
+msgid "SAT Practice - UniBase"
+msgstr "SAT Практика — UniBase"
+
+msgid "SAT Practice Tests"
+msgstr "Практические тесты SAT"
+
+msgid "Improve your SAT score with our realistic practice questions."
+msgstr "Улучшите баллы SAT с помощью наших реалистичных практических вопросов."
+
+msgid "NEW SAT 2026"
+msgstr "НОВЫЙ SAT 2026"
+
+msgid "Hozircha testlar mavjud emas."
+msgstr "Тесты пока отсутствуют."
+
+# ── dtm.html ──────────────────────────────────────────────────────────────────
+msgid "DTM - UniBase"
+msgstr "ДТМ — UniBase"
+
+msgid "DTM Preparation"
+msgstr "Подготовка к ДТМ"
+
+msgid "Choose 2 main subjects and start a full DTM simulation"
+msgstr "Выберите 2 основных предмета и начните полную симуляцию ДТМ"
+
+msgid "⏱️ Duration: 3 hours"
+msgstr "⏱️ Длительность: 3 часа"
+
+msgid "📝 Total: 150 questions"
+msgstr "📝 Всего: ~150 вопросов"
+
+msgid "🎯 5 subjects: 2 core + Mother Tongue + Mathematics + History"
+msgstr "🎯 5 предметов: 2 основных + Родной язык + Математика + История"
+
+msgid "🏆 Maximum score: 189"
+msgstr "🏆 Максимальный балл: ~189"
+
+msgid "1st core subject"
+msgstr "1-й основной предмет"
+
+msgid "Select first subject"
+msgstr "Выберите первый предмет"
+
+msgid "ball"
+msgstr "балл"
+
+msgid "2nd core subject"
+msgstr "2-й основной предмет"
+
+msgid "Select second subject"
+msgstr "Выберите второй предмет"
+
+msgid "📊 Selected subjects and score distribution"
+msgstr "📊 Выбранные предметы и распределение баллов"
+
+msgid "1st subject"
+msgstr "1-й предмет"
+
+msgid "2nd subject"
+msgstr "2-й предмет"
+
+msgid "Compulsory subjects"
+msgstr "Обязательные предметы"
+
+msgid "Mother Tongue + Math + History"
+msgstr "Родной язык + Мат. + История"
+
+msgid "question"
+msgstr "вопрос"
+
+msgid "🚀 Start DTM Test"
+msgstr "🚀 Начать тест ДТМ"
+
+msgid "The test will start after selecting both subjects"
+msgstr "Тест начнется после выбора обоих предметов"
+
+# ── universities.html ─────────────────────────────────────────────────────────
+msgid "Coming Soon"
+msgstr "Скоро"
+
+msgid "Universities Directory"
+msgstr "Каталог университетов"
+
+msgid "We are preparing a complete database of universities worldwide with detailed information, campus images, and smart filters. Stay tuned!"
+msgstr "Мы готовим полную базу данных университетов мира с подробной информацией, изображениями кампусов и умными фильтрами. Следите за обновлениями!"
+
+msgid "Back to Home"
+msgstr "На главную"
+
+msgid "All rights reserved"
+msgstr "Все права защищены"
+
+# ── result.html ───────────────────────────────────────────────────────────────
+msgid "Test Results — UniBase"
+msgstr "Результаты теста — UniBase"
+
+msgid "Results"
+msgstr "Результаты"
+
+msgid "Back to Profile"
+msgstr "Вернуться в профиль"
+
+msgid "IELTS Band Score"
+msgstr "Балл IELTS"
+
+msgid "Expert level"
+msgstr "Уровень эксперта"
+
+msgid "Good user"
+msgstr "Хороший пользователь"
+
+msgid "Competent user"
+msgstr "Компетентный пользователь"
+
+msgid "Modest user"
+msgstr "Скромный пользователь"
+
+msgid "Limited user"
+msgstr "Ограниченный пользователь"
+
+msgid "+20 Coins returned!"
+msgstr "+20 монет возвращено!"
+
+msgid "Special reward for 100% result has been added to your account."
+msgstr "Специальная награда за 100% результат добавлена на ваш счёт."
+
+msgid "You earned the SAT Master title!"
+msgstr "Вы получили звание SAT Master!"
+
+msgid "5 consecutive 100% results — amazing! Badge is visible in your profile."
+msgstr "5 подряд результатов 100% — великолепно! Значок виден в профиле."
+
+msgid "SAT Perfect"
+msgstr "SAT Идеально"
+
+msgid "Time spent"
+msgstr "Затраченное время"
+
+msgid "Score earned"
+msgstr "Набранный балл"
+
+msgid "Excellent result! Keep it up."
+msgstr "Отличный результат! Продолжайте."
+
+msgid "Good! Practice more."
+msgstr "Хорошо! Практикуйтесь больше."
+
+msgid "Need more studying."
+msgstr "Нужно больше учиться."
+
+msgid "Review Answers"
+msgstr "Просмотр ответов"
+
+msgid "No answer given"
+msgstr "Ответ не дан"
+
+msgid "Let AI explain"
+msgstr "Пусть ИИ объяснит"
+
+msgid "Server connection error."
+msgstr "Ошибка подключения к серверу."
+
+msgid "An error occurred."
+msgstr "Произошла ошибка."

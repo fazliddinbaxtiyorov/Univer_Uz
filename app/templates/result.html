@@ -1,120 +1,93 @@
 <!DOCTYPE html>
 <html lang="uz">
 {% load static %}
+{% load i18n %}
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/media/logo.png" type="image/jpeg">
-
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Natijalari — UniBase</title>
+    <title>{% trans "Test Results — UniBase" %}</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Outfit', sans-serif; background: #ffffff; color: #111; }
-
         .page { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
-
         .page-top { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
         .page-top h1 { font-size: 1.6rem; font-weight: 800; color: #111; margin: 0; }
         .page-top .back-link { font-size: 0.85rem; color: #888; text-decoration: none; display: flex; align-items: center; gap: 4px; margin-left: auto; transition: color 0.15s; }
         .page-top .back-link:hover { color: #333; }
-
-        /* SCORE BANNER */
         .score-banner { background: #f5f5f5; border-radius: 20px; padding: 32px 28px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 20px; }
         .score-main .big { font-size: 4rem; font-weight: 800; line-height: 1; color: #111; letter-spacing: -2px; }
         .score-main .sub { font-size: 0.9rem; color: #888; font-weight: 500; margin-top: 4px; }
         .score-main .test-type { font-size: 0.78rem; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-
         .score-ring { width: 100px; height: 100px; flex-shrink: 0; }
         .score-ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
         .score-ring .bg { stroke: #e5e5e5; }
         .score-ring .fg { stroke: #111; stroke-dasharray: 283; stroke-dashoffset: calc(283 - (283 * var(--pct)) / 100); transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1s ease; }
         .score-ring text { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; fill: #111; }
-
-        /* BAND SCORE */
         .band-box { background: #111; color: white; border-radius: 14px; padding: 14px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
         .band-box .band-label { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .band-box .band-num { font-size: 2rem; font-weight: 800; line-height: 1; }
         .band-box .band-desc { font-size: 0.8rem; color: #888; margin-top: 2px; }
         .band-right { text-align: right; }
-
-        /* NOTIFICATIONS */
         .notif { border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; }
         .notif.coins { background: #fefce8; border: 1.5px solid #fbbf24; }
         .notif.master { background: #f5f3ff; border: 1.5px solid #a78bfa; }
         .notif-icon { font-size: 2rem; flex-shrink: 0; }
         .notif-text h4 { margin: 0 0 2px; font-size: 0.95rem; font-weight: 700; color: #111; }
         .notif-text p { margin: 0; font-size: 0.82rem; color: #555; }
-
-        /* SAT progress */
         .sat-progress { background: #f5f3ff; border: 1.5px solid #c4b5fd; border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
         .sat-dots { display: flex; gap: 6px; }
         .sat-dot { width: 18px; height: 18px; border-radius: 50%; background: #e5e7eb; }
         .sat-dot.filled { background: #7c3aed; }
         .sat-progress-text { font-size: 0.85rem; font-weight: 600; color: #5b21b6; }
         .sat-progress-sub { font-size: 0.75rem; color: #7c3aed; }
-
-        /* MINI STATS */
         .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
         .mini-stat { background: #f5f5f5; border-radius: 14px; padding: 18px 20px; }
         .mini-stat .val { font-size: 1.5rem; font-weight: 700; color: #111; line-height: 1; margin-bottom: 4px; }
         .mini-stat .lbl { font-size: 0.82rem; color: #888; font-weight: 500; }
-
         .perf-tag { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; margin-bottom: 32px; }
         .perf-tag.great { background: #dcfce7; color: #15803d; }
         .perf-tag.good  { background: #fef9c3; color: #854d0e; }
         .perf-tag.low   { background: #fee2e2; color: #991b1b; }
-
-        /* ACTION BUTTONS */
         .action-row { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
         .action-btn { flex: 1; min-width: 120px; padding: 12px 16px; border-radius: 12px; font-size: 0.88rem; font-weight: 700; text-decoration: none; text-align: center; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
         .action-btn.dark { background: #111; color: white; }
         .action-btn.dark:hover { background: #333; transform: translateY(-2px); }
         .action-btn.light { background: #f5f5f5; color: #111; border: 1.5px solid #e5e5e5; }
         .action-btn.light:hover { border-color: #111; transform: translateY(-2px); }
-
         .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
         .divider span { font-size: 0.9rem; font-weight: 700; color: #111; white-space: nowrap; }
         .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e5e5e5; }
-
-        /* ANSWER ITEMS */
         .answer-item { border: 1.5px solid #e5e5e5; border-radius: 14px; padding: 16px 18px; margin-bottom: 10px; transition: border-color 0.15s, box-shadow 0.15s; animation: up 0.3s ease both; }
         .answer-item:hover { border-color: #ccc; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
         .answer-item.correct { border-color: #bbf7d0; background: #f0fdf4; }
         .answer-item.wrong   { border-color: #fecaca; background: #fff5f5; }
-
         .ai-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
         .q-num { font-size: 0.72rem; font-weight: 700; color: #aaa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
         .q-txt { font-size: 0.92rem; font-weight: 600; color: #222; line-height: 1.45; }
-
         .status-dot { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
         .status-dot.ok  { background: #22c55e; color: white; }
         .status-dot.bad { background: #ef4444; color: white; }
-
         .ans-chips { display: flex; gap: 8px; flex-wrap: wrap; }
         .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
         .chip.you   { background: #fee2e2; color: #b91c1c; }
         .chip.right { background: #dcfce7; color: #15803d; }
         .chip.same  { background: #dcfce7; color: #15803d; }
-
         .ai-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 14px; border-radius: 999px; border: 1.5px solid #d1d5db; background: white; color: #555; font-size: 0.8rem; font-weight: 600; font-family: 'Outfit', sans-serif; cursor: pointer; transition: all 0.15s; }
         .ai-btn:hover { border-color: #111; color: #111; }
         .ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
         .ai-result { display: none; margin-top: 12px; padding: 14px 16px; background: #fafafa; border: 1.5px solid #e5e5e5; border-radius: 12px; font-size: 0.85rem; line-height: 1.75; color: #333; white-space: pre-wrap; }
-
         .sp { width: 12px; height: 12px; border: 2px solid #ccc; border-top-color: #555; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .bottom { text-align: center; margin-top: 40px; }
         .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; background: #111; color: white; border-radius: 14px; font-size: 0.95rem; font-weight: 700; text-decoration: none; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
         .back-btn:hover { background: #333; color: white; transform: translateY(-2px); }
-
         @keyframes up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .answer-item:nth-child(1)  { animation-delay: 0.04s; }
         .answer-item:nth-child(2)  { animation-delay: 0.08s; }
@@ -126,7 +99,6 @@
         .answer-item:nth-child(8)  { animation-delay: 0.32s; }
         .answer-item:nth-child(9)  { animation-delay: 0.36s; }
         .answer-item:nth-child(10) { animation-delay: 0.40s; }
-
         @media (max-width: 480px) {
             .score-banner { flex-direction: column; align-items: flex-start; }
             .mini-stats { grid-template-columns: 1fr; }
@@ -142,8 +114,8 @@
             <a href="{% url 'home' %}" class="logo">UniBase</a>
             <nav>
                 <ul>
-                    <li><a href="{% url 'profile' %}">Profile</a></li>
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a href="{% url 'profile' %}">{% trans "Profile" %}</a></li>
+                    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
                 </ul>
             </nav>
         </div>
@@ -153,8 +125,8 @@
 <div class="page">
 
     <div class="page-top">
-        <h1>Natijalar</h1>
-        <a href="{% url 'profile' %}" class="back-link">← Profilga qaytish</a>
+        <h1>{% trans "Results" %}</h1>
+        <a href="{% url 'profile' %}" class="back-link">← {% trans "Back to Profile" %}</a>
     </div>
 
     <!-- SCORE BANNER -->
@@ -165,8 +137,8 @@
             {% endif %}
             <div class="big">{{ percentage }}<span style="font-size:2rem">%</span></div>
             <div class="sub">
-                Ball: {{ total }}
-                {% if correct_count is not None %}&nbsp;·&nbsp; {{ correct_count }}/{{ total_questions }} to'g'ri{% endif %}
+                {% trans "Score" %}: {{ total }}
+                {% if correct_count is not None %}&nbsp;·&nbsp; {{ correct_count }}/{{ total_questions }} {% trans "correct" %}{% endif %}
             </div>
         </div>
         <svg class="score-ring" viewBox="0 0 100 100" style="--pct:{{ percentage }}">
@@ -180,16 +152,16 @@
     {% if band_score %}
     <div class="band-box">
         <div>
-            <div class="band-label">IELTS Band Score</div>
+            <div class="band-label">{% trans "IELTS Band Score" %}</div>
             <div class="band-num">{{ band_score }}</div>
         </div>
         <div class="band-right">
             <div class="band-desc">
-                {% if band_score >= 8.0 %}Expert darajasi
-                {% elif band_score >= 7.0 %}Good user
-                {% elif band_score >= 6.0 %}Competent user
-                {% elif band_score >= 5.0 %}Modest user
-                {% else %}Limited user{% endif %}
+                {% if band_score >= 8.0 %}{% trans "Expert level" %}
+                {% elif band_score >= 7.0 %}{% trans "Good user" %}
+                {% elif band_score >= 6.0 %}{% trans "Competent user" %}
+                {% elif band_score >= 5.0 %}{% trans "Modest user" %}
+                {% else %}{% trans "Limited user" %}{% endif %}
             </div>
         </div>
     </div>
@@ -200,8 +172,8 @@
     <div class="notif coins">
         <div class="notif-icon">🎉</div>
         <div class="notif-text">
-            <h4>+20 Coin qaytarildi!</h4>
-            <p>100% natija uchun maxsus mukofot hisobingizga qo'shildi.</p>
+            <h4>{% trans "+20 Coins returned!" %}</h4>
+            <p>{% trans "Special reward for 100% result has been added to your account." %}</p>
         </div>
     </div>
     {% endif %}
@@ -211,8 +183,8 @@
     <div class="notif master">
         <div class="notif-icon">🏆</div>
         <div class="notif-text">
-            <h4>SAT Master unvoni oldingiz!</h4>
-            <p>5 ketma-ket 100% natija — ajoyib! Badge profilingizda ko'rinadi.</p>
+            <h4>{% trans "You earned the SAT Master title!" %}</h4>
+            <p>{% trans "5 consecutive 100% results — amazing! Badge is visible in your profile." %}</p>
         </div>
     </div>
     {% endif %}
@@ -221,8 +193,8 @@
     {% if consecutive_perfect and not sat_master_achieved %}
     <div class="sat-progress">
         <div>
-            <div class="sat-progress-text">SAT Perfect: {{ consecutive_perfect }}/5</div>
-            <div class="sat-progress-sub">Yana {{ 5|add:"-"|add:consecutive_perfect }} marta 100% → SAT Master 🏆</div>
+            <div class="sat-progress-text">{% trans "SAT Perfect" %}: {{ consecutive_perfect }}/5</div>
+            <div class="sat-progress-sub">{% blocktrans with remaining=consecutive_perfect %}{{ remaining }} more 100% → SAT Master 🏆{% endblocktrans %}</div>
             <div class="sat-dots" style="margin-top: 8px;">
                 {% for i in "12345" %}
                 <div class="sat-dot {% if forloop.counter <= consecutive_perfect %}filled{% endif %}"></div>
@@ -235,37 +207,37 @@
     <!-- MINI STATS -->
     <div class="mini-stats">
         <div class="mini-stat">
-            <div class="val">{{ minutes }}m {{ seconds }}s</div>
-            <div class="lbl">Sarflangan vaqt</div>
+            <div class="val">{{ minutes }}{% trans "m" %} {{ seconds }}{% trans "s" %}</div>
+            <div class="lbl">{% trans "Time spent" %}</div>
         </div>
         <div class="mini-stat">
             <div class="val">{{ total }}</div>
-            <div class="lbl">To'plangan ball</div>
+            <div class="lbl">{% trans "Score earned" %}</div>
         </div>
     </div>
 
     {% if percentage >= 80 %}
-        <div class="perf-tag great">🎉 Ajoyib natija! Davom eting.</div>
+        <div class="perf-tag great">🎉 {% trans "Excellent result! Keep it up." %}</div>
     {% elif percentage >= 50 %}
-        <div class="perf-tag good">💪 Yaxshi! Yana mashq qiling.</div>
+        <div class="perf-tag good">💪 {% trans "Good! Practice more." %}</div>
     {% else %}
-        <div class="perf-tag low">📚 Ko'proq o'qish kerak.</div>
+        <div class="perf-tag low">📚 {% trans "Need more studying." %}</div>
     {% endif %}
 
     <!-- ACTION BUTTONS -->
     <div class="action-row">
-        <a href="{% url 'home' %}" class="action-btn dark">🏠 Bosh sahifa</a>
-        <a href="{% url 'profile' %}" class="action-btn light">📊 Profilim</a>
-        <a href="{% url 'leaderboard' %}" class="action-btn light">🏆 Reyting</a>
+        <a href="{% url 'home' %}" class="action-btn dark">🏠 {% trans "Home" %}</a>
+        <a href="{% url 'profile' %}" class="action-btn light">📊 {% trans "My Profile" %}</a>
+        <a href="{% url 'leaderboard' %}" class="action-btn light">🏆 {% trans "Leaderboard" %}</a>
     </div>
 
-    <div class="divider"><span>Javoblarni ko'rib chiqish</span></div>
+    <div class="divider"><span>{% trans "Review Answers" %}</span></div>
 
     {% for r in results %}
         <div class="answer-item {% if r.is_correct %}correct{% else %}wrong{% endif %}">
             <div class="ai-top">
                 <div>
-                    <div class="q-num">Savol {{ forloop.counter }}</div>
+                    <div class="q-num">{% trans "Question" %} {{ forloop.counter }}</div>
                     <div class="q-txt">{{ r.savol }}</div>
                 </div>
                 {% if r.is_correct %}
@@ -279,11 +251,11 @@
                     <span class="chip same">✓ {{ r.correct }}</span>
                 {% else %}
                     {% if r.user_answer %}
-                    <span class="chip you">✗ Siz: {{ r.user_answer }}</span>
+                    <span class="chip you">✗ {% trans "You" %}: {{ r.user_answer }}</span>
                     {% else %}
-                    <span class="chip you">✗ Javob berilmadi</span>
+                    <span class="chip you">✗ {% trans "No answer given" %}</span>
                     {% endif %}
-                    <span class="chip right">✓ To'g'ri: {{ r.correct }}</span>
+                    <span class="chip right">✓ {% trans "Correct" %}: {{ r.correct }}</span>
                 {% endif %}
             </div>
             {% if not r.is_correct %}
@@ -292,7 +264,7 @@
                     data-category="{{ r.category }}"
                     data-user-answer="{{ r.user_answer|default:'' }}"
                     onclick="explain(this)">
-                    🤖 AI tushuntirsin
+                    🤖 {% trans "Let AI explain" %}
                 </button>
                 <div class="ai-result" id="exp-{{ r.question_id }}"></div>
             {% endif %}
@@ -300,43 +272,57 @@
     {% endfor %}
 
     <div class="bottom">
-        <a href="{% url 'profile' %}" class="back-btn">← Profilga qaytish</a>
+        <a href="{% url 'profile' %}" class="back-btn">← {% trans "Back to Profile" %}</a>
     </div>
 
 </div>
 
 <script>
+const LOADING_TEXT  = "{% trans 'Loading...' %}";
+const AI_BTN_TEXT   = "🤖 {% trans 'Let AI explain' %}";
+const CLOSE_TEXT    = "▲ {% trans 'Close' %}";
+const RETRY_TEXT    = "↺ {% trans 'Retry' %}";
+const ERROR_TEXT    = "{% trans 'Server connection error.' %}";
+const GENERIC_ERROR = "{% trans 'An error occurred.' %}";
+
 function explain(btn) {
     const id  = btn.dataset.questionId;
     const cat = btn.dataset.category;
     const ua  = btn.dataset.userAnswer;
     const box = document.getElementById('exp-' + id);
+
     if (box.style.display === 'block') {
         box.style.display = 'none';
-        btn.innerHTML = '🤖 AI tushuntirsin';
+        btn.innerHTML = AI_BTN_TEXT;
         return;
     }
+
     btn.disabled = true;
-    btn.innerHTML = '<span class="sp"></span> Yuklanmoqda...';
+    btn.innerHTML = '<span class="sp"></span> ' + LOADING_TEXT;
+
     fetch('/explain-error/' + id + '/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
         body: JSON.stringify({ category: cat, user_answer: ua })
     })
     .then(r => r.json())
     .then(d => {
-        box.textContent = d.explanation || 'Xatolik yuz berdi.';
-        box.style.display = 'block';
-        btn.disabled = false;
-        btn.innerHTML = '▲ Yopish';
+        box.textContent    = d.explanation || GENERIC_ERROR;
+        box.style.display  = 'block';
+        btn.disabled       = false;
+        btn.innerHTML      = CLOSE_TEXT;
     })
     .catch(() => {
-        box.textContent = "Server bilan bog'lanishda xatolik.";
+        box.textContent   = ERROR_TEXT;
         box.style.display = 'block';
-        btn.disabled = false;
-        btn.innerHTML = '↺ Qayta';
+        btn.disabled      = false;
+        btn.innerHTML     = RETRY_TEXT;
     });
 }
+
 function getCookie(n) {
     let v = null;
     document.cookie.split(';').forEach(c => {

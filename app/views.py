@@ -8,7 +8,7 @@ from .models import (
     IELTS_Reading, Milliy_Sertifikat, IELTSListeningQuestion,
     SATQuestion, Davlat_Univer, Xususiy_Univer, Xorijiy_Univer,
     ContactMessage, UserTestResult, ReadingTest, ListeningTest,
-    Sat, TestAccess, DTM_Majburiy, WritingQuestion, WritingSubmission, News
+    Sat, TestAccess, DTM_Majburiy, WritingQuestion, WritingSubmission, News, DTM_Practise
 )
 from user.models import Friendship
 from django.contrib import messages
@@ -22,7 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import user_passes_test
 from .forms import WritingSubmissionForm
 from .utils import check_ielts_writing
-from .hi import get_ai_explanation
+from .utils import explain_wrong_answer
 
 
 VILOYATLAR = [
@@ -601,6 +601,9 @@ def dtm_test_view(request):
             "correct": q.togri_variant,
             "is_correct": request.POST.get(f'q_{q.model_name}_{q.id}') == q.togri_variant,
             "fan": q.fan, "step": q.step, "ball": q.ball_per_q,
+            # ✅ QO'SHILDI:
+            "question_id": q.id,
+            "category": "DTM_MAJBURIY" if q.model_name == "majburiy" else "MILLIY",
         } for q in all_questions]
 
         request.session.pop('selected_subjects', None)
@@ -634,18 +637,19 @@ def dtm_test_view(request):
 
 @login_required
 def sat_test_view(request, test_id):
-    test_obj  = get_object_or_404(Sat, pk=test_id)
+    test_obj = get_object_or_404(Sat, pk=test_id)
     questions = test_obj.questions.all()
-    form      = SATForm(request.POST or None, questions=questions)
+    form = SATForm(request.POST or None, questions=questions)
+
+    # ✅ Bu yerga ko'chirish kerak — GET da sahifa ochilganda boshlansin
+    if 'sat_start' not in request.session:
+        request.session['sat_start'] = time.time()
 
     if request.method == "POST":
         allowed, status = check_test_access(request.user, test_obj, category="SAT")
         if not allowed:
             messages.error(request, "Sizda yetarli coin yo'q!")
             return redirect("buy_coins")
-
-        if 'sat_start' not in request.session:
-            request.session['sat_start'] = time.time()
 
         if form.is_valid():
             correct_count = sum(
@@ -1086,34 +1090,101 @@ def manage_tests(request):
 #  AI EXPLANATION
 # ═══════════════════════════════════════
 
+# views.py — faqat AI tushuntirish qismi
+
+def build_variants(q):
+    result = {}
+    for letter, text_field, image_field in [
+        ('A', 'variant_a', 'image_a'),
+        ('B', 'variant_b', 'image_b'),
+        ('C', 'variant_c', 'image_c'),
+        ('D', 'variant_d', 'image_d'),
+    ]:
+        text  = getattr(q, text_field, '') or ''
+        image = getattr(q, image_field, None)
+        if text.strip():
+            result[letter] = text.strip()
+        elif image and getattr(image, 'name', None):
+            result[letter] = f'[Rasm variant — {letter} variantida rasm berilgan]'
+        else:
+            result[letter] = ''
+    return result
+
+
+def build_question_text(q, base_text):
+    image_field = getattr(q, 'question_image', None) or getattr(q, 'savol_rasm', None)
+    if image_field and getattr(image_field, 'name', None):
+        return f"[Bu savolda rasm mavjud — rasm asosida berilgan savol]\n{base_text}"
+    return base_text
+
+
 @csrf_exempt
 def explain_error_view(request, submission_id):
-    data = json.loads(request.body) if request.method == "POST" else request.GET
+    data        = json.loads(request.body) if request.method == "POST" else request.GET
     category    = data.get('category', 'IELTS')
     user_answer = data.get('user_answer', '')
 
+    if not submission_id:
+        return JsonResponse({'explanation': "Savol ID topilmadi."}, status=400)
+
     try:
         if category == 'SAT':
-            q_obj = SATQuestion.objects.get(id=submission_id)
-            passage=q_obj.test_group.description; question_text=q_obj.savol
-            correct_answer=q_obj.togri_variant; test_type="SAT"
-        elif category in ('IELTS_LISTENING','IELTS'):
-            q_obj = IELTSListeningQuestion.objects.get(id=submission_id)
-            passage=f"Part {q_obj.part} listening."; question_text=q_obj.savol
-            correct_answer=q_obj.togri_variant; test_type="IELTS Listening"
-        elif category == 'MILLIY':
-            q_obj = Milliy_Sertifikat.objects.get(id=submission_id)
-            passage=f"Fan: {q_obj.fan}"; question_text=q_obj.savol
-            correct_answer=q_obj.togri_variant; test_type="Milliy Sertifikat"
-        else:
-            q_obj = IELTS_Reading.objects.get(id=submission_id)
-            passage=q_obj.test_group.passage_text; question_text=q_obj.savol
-            correct_answer=q_obj.togri_variant; test_type="IELTS Reading"
+            q_obj          = SATQuestion.objects.get(id=submission_id)
+            passage        = q_obj.test_group.description
+            question_text  = build_question_text(q_obj, q_obj.savol)
+            correct_answer = q_obj.togri_variant
+            all_variants   = build_variants(q_obj)
+            test_type      = "SAT"
 
-        explanation = get_ai_explanation(
-            test_type=test_type, passage=passage, question=question_text,
-            correct_answer=correct_answer, user_answer=user_answer
+        elif category in ('IELTS_LISTENING', 'IELTS'):
+            q_obj          = IELTSListeningQuestion.objects.get(id=submission_id)
+            passage        = f"Part {q_obj.part} — IELTS Listening."
+            question_text  = build_question_text(q_obj, q_obj.savol)
+            correct_answer = q_obj.togri_variant
+            all_variants   = build_variants(q_obj)
+            test_type      = "IELTS Listening"
+
+        elif category == 'MILLIY':
+            q_obj          = Milliy_Sertifikat.objects.get(id=submission_id)
+            passage        = f"Fan: {q_obj.fan}"
+            question_text  = build_question_text(q_obj, q_obj.savol)
+            correct_answer = q_obj.togri_variant
+            all_variants   = build_variants(q_obj)
+            test_type      = "Milliy Sertifikat"
+
+        elif category == 'DTM_PRACTISE':
+            q_obj          = DTM_Practise.objects.get(id=submission_id)
+            passage        = f"Fan: {q_obj.fan}"
+            question_text  = build_question_text(q_obj, q_obj.savol)
+            correct_answer = q_obj.togri_javob  # DTM_Practise da togri_javob!
+            all_variants   = build_variants(q_obj)
+            test_type      = "DTM"
+
+        elif category == 'DTM_MAJBURIY':
+            q_obj          = DTM_Majburiy.objects.get(id=submission_id)
+            passage        = f"Fan: {q_obj.fan}"
+            question_text  = build_question_text(q_obj, q_obj.savol)
+            correct_answer = q_obj.togri_variant
+            all_variants   = build_variants(q_obj)
+            test_type      = "DTM"
+
+        else:  # IELTS_READING
+            q_obj          = IELTS_Reading.objects.get(id=submission_id)
+            _, passage     = q_obj.test_group.get_passage(q_obj.part)
+            question_text  = build_question_text(q_obj, q_obj.savol)
+            correct_answer = q_obj.togri_variant
+            all_variants   = build_variants(q_obj)
+            test_type      = "IELTS Reading"
+
+        explanation = explain_wrong_answer(
+            test_type=test_type,
+            passage=passage,
+            question=question_text,
+            correct_answer=correct_answer,
+            user_answer=user_answer,
+            all_variants=all_variants,
         )
         return JsonResponse({'explanation': explanation})
+
     except Exception as e:
         return JsonResponse({'explanation': f"Savol topilmadi: {str(e)}"}, status=200)

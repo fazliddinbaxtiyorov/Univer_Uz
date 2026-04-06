@@ -1,355 +1,552 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IELTS Listening — {{ test.title }}</title>
-    <link rel="icon" href="/media/logo.png" type="image/jpeg">
-{% load static %}
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,700;1,300&family=Figtree:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg:      #f0f8ff;
-  --white:   #ffffff;
-  --surface: #e8f4fd;
-  --border:  #bae6fd;
-  --teal:    #0ea5e9;
-  --teal2:   #38bdf8;
-  --teal-dk: #0284c7;
-  --tealfg:  #ffffff;
-  --amber:   #d97706;
-  --muted:   #7dd3fc;
-  --text:    #0c4a6e;
-  --subtext: #0369a1;
-  --danger:  #ef4444;
-  --green:   #10b981;
-  --radius:  12px;
-  --shadow:  0 1px 3px rgba(14,165,233,.08), 0 4px 16px rgba(14,165,233,.06);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Figtree', sans-serif; min-height: 100vh; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Listening — {{ test.title }}</title>
 
-/* ── SPLASH ── */
-.splash {
-  position: fixed; inset: 0; background: var(--white);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  z-index: 999; gap: 24px; padding: 24px;
-}
-.splash-logo { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--text); }
-.splash-logo span { color: var(--teal); }
-.splash-title { font-size: 1.1rem; color: var(--subtext); font-weight: 600; }
-.splash-cards { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-.splash-card {
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 14px 24px; text-align: center; min-width: 110px;
-}
-.splash-card .sc-val { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 600; color: var(--teal); }
-.splash-card .sc-lbl { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-top: 2px; font-weight: 600; }
-.start-btn {
-  background: var(--teal); color: #fff;
-  border: none; padding: 14px 48px;
-  border-radius: 50px; font-family: 'Figtree', sans-serif;
-  font-size: 1rem; font-weight: 700; cursor: pointer;
-  box-shadow: 0 4px 20px rgba(14,165,233,.35);
-  transition: all .2s;
-}
-.start-btn:hover { background: var(--teal-dk); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(14,165,233,.45); }
+  <link rel="icon" href="/media/logo.png" type="image/jpeg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'site.webmanifest' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-/* ── TOPBAR ── */
-.topbar {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--white);
-  border-bottom: 1.5px solid var(--border);
-  padding: 0 24px; height: 58px;
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: 0 1px 8px rgba(14,165,233,.08);
-}
-.topbar-left { display: flex; align-items: center; gap: 12px; }
-.topbar-logo { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--text); }
-.topbar-logo span { color: var(--teal); }
-.part-chip {
-  background: var(--surface); color: var(--teal);
-  font-size: .72rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 3px 12px; border-radius: 20px;
-  border: 1px solid var(--border);
-}
-.timer-pill {
-  display: flex; align-items: center; gap: 7px;
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 30px; padding: 6px 16px;
-}
-.timer-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--green); flex-shrink: 0;
-  animation: blink 2s infinite;
-  box-shadow: 0 0 0 3px rgba(16,185,129,.2);
-}
-.timer-dot.urgent { background: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,.2); animation: blink .6s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-#timer-display {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: .95rem; font-weight: 600; color: var(--text);
-}
-#timer-display.danger { color: var(--danger); }
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --surface:#ffffff;
+      --surface-soft:#f8fbff;
+      --line:#e3eaf3;
+      --line-2:#d9e6f2;
+      --text:#19365a;
+      --muted:#6e7f95;
+      --primary:#31b6cf;
+      --primary-dark:#1e98b4;
+      --pill:#e9f9fc;
+      --danger:#ff3a2f;
+      --green:#10b981;
+      --shadow:0 10px 30px rgba(22,48,84,.06);
+      --radius-xl:22px;
+      --radius-lg:18px;
+      --radius-md:14px;
+      --header-h:84px;
+      --toolbar-h:72px;
+      --partbar-h:72px;
+      --footer-h:0px;
+    }
 
-/* ── PROGRESS ── */
-.prog-wrap { height: 3px; background: var(--border); }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal2)); transition: width .5s ease; width: 0%; }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
 
-/* ── PAGE ── */
-.page { max-width: 840px; margin: 0 auto; padding: 28px 20px 100px; }
+    /* ══ SPLASH (from template 2) ══ */
+    .splash{
+      position:fixed;inset:0;
+      background:#fff;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      z-index:999;gap:24px;padding:24px;
+      transition:opacity .35s;
+    }
+    .splash-logo{
+      display:flex;align-items:center;gap:14px;
+    }
+    .splash-logo img{width:48px;height:48px;object-fit:contain;border-radius:12px}
+    .splash-logo-text strong{font-size:22px;font-weight:800;color:var(--text)}
+    .splash-logo-text span{display:block;font-size:13px;color:var(--muted)}
+    .splash-title{font-size:18px;font-weight:700;color:var(--text);text-align:center}
+    .splash-cards{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+    .splash-card{
+      background:#f4f7fb;border:1.5px solid var(--line);
+      border-radius:16px;padding:16px 28px;text-align:center;min-width:110px;
+    }
+    .splash-card .sc-val{
+      font-size:28px;font-weight:800;color:var(--primary);
+    }
+    .splash-card .sc-lbl{
+      font-size:12px;color:var(--muted);text-transform:uppercase;
+      letter-spacing:.07em;margin-top:4px;font-weight:600;
+    }
+    .splash-desc{
+      font-size:14px;color:var(--muted);text-align:center;
+      max-width:340px;line-height:1.7;
+    }
+    .start-btn{
+      border:none;cursor:pointer;font:inherit;
+      height:50px;padding:0 48px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#fff;font-weight:800;font-size:16px;
+      box-shadow:0 10px 28px rgba(49,182,207,.30);
+      transition:all .2s;
+    }
+    .start-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(49,182,207,.40)}
 
-/* ── PART NAV ── */
-.part-nav {
-  display: flex; gap: 6px; margin-bottom: 24px;
-  background: var(--white); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 5px; box-shadow: var(--shadow);
-}
-.part-btn {
-  flex: 1; padding: 10px 8px; border: none; background: transparent;
-  color: var(--subtext); font-family: 'Figtree', sans-serif;
-  font-size: .82rem; font-weight: 600; border-radius: 9px;
-  cursor: pointer; transition: all .18s;
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-}
-.part-btn .pn { font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; opacity: .7; }
-.part-btn:hover { background: var(--surface); color: var(--text); }
-.part-btn.active { background: var(--teal); color: #fff; box-shadow: 0 2px 10px rgba(14,165,233,.3); }
-.part-btn.done::after { content: ' ✓'; font-size: .7rem; color: var(--green); }
-.part-btn.active.done::after { color: rgba(255,255,255,.8); }
+    /* ══ NOW PLAYING BANNER (from template 2) ══ */
+    .now-playing-bar{
+      display:none;
+      position:fixed;
+      top:calc(var(--header-h) + var(--toolbar-h) + var(--partbar-h));
+      left:0;right:0;
+      z-index:180;
+      background:#ecfdf5;border-bottom:1.5px solid #a7f3d0;
+      padding:10px 28px;
+      align-items:center;gap:14px;
+      font-size:14px;color:#065f46;font-weight:600;
+    }
+    .now-playing-bar.show{display:flex}
+    .wave{display:flex;align-items:flex-end;gap:2px;height:18px}
+    .wave span{width:3px;background:var(--green);border-radius:2px;animation:wave 1s ease-in-out infinite}
+    .wave span:nth-child(1){animation-delay:0s;height:6px}
+    .wave span:nth-child(2){animation-delay:.15s;height:14px}
+    .wave span:nth-child(3){animation-delay:.3s;height:8px}
+    .wave span:nth-child(4){animation-delay:.1s;height:16px}
+    .wave span:nth-child(5){animation-delay:.25s;height:6px}
+    @keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
 
-/* ── NOW PLAYING ── */
-.now-playing {
-  display: none;
-  background: #ecfdf5; border: 1.5px solid #a7f3d0;
-  border-radius: var(--radius); padding: 12px 18px;
-  margin-bottom: 20px;
-  align-items: center; gap: 12px; font-size: .85rem; color: #065f46;
-  font-weight: 500;
-}
-.now-playing.show { display: flex; }
-.wave { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
-.wave span { width: 3px; background: var(--green); border-radius: 2px; animation: wave 1s ease-in-out infinite; }
-.wave span:nth-child(1){animation-delay:0s;height:6px}
-.wave span:nth-child(2){animation-delay:.15s;height:14px}
-.wave span:nth-child(3){animation-delay:.3s;height:8px}
-.wave span:nth-child(4){animation-delay:.1s;height:16px}
-.wave span:nth-child(5){animation-delay:.25s;height:6px}
-@keyframes wave { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.8)} }
+    /* ══ TOPBAR ══ */
+    .exam-shell{
+      min-height:100vh;
+      padding-top:calc(var(--header-h) + var(--toolbar-h) + var(--partbar-h));
+      padding-bottom:32px;
+    }
+    .exam-shell.has-nowplaying{
+      padding-top:calc(var(--header-h) + var(--toolbar-h) + var(--partbar-h) + 42px);
+    }
 
-/* ── INSTRUCTION ── */
-.instruction {
-  background: #fffbeb; border: 1.5px solid #fde68a;
-  border-radius: 10px; padding: 11px 16px;
-  font-size: .83rem; color: #92400e;
-  margin-bottom: 22px; display: flex; gap: 8px; align-items: flex-start;
-}
+    .topbar{
+      position:fixed;
+      top:0;left:0;right:0;
+      z-index:200;
+      height:var(--header-h);
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 28px;
+    }
 
-/* ── PART SECTION ── */
-.part-section { display: none; animation: fadeUp .2s ease; }
-.part-section.visible { display: block; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand img{width:42px;height:42px;object-fit:contain;border-radius:10px}
+    .brand-text{display:flex;flex-direction:column;line-height:1.1}
+    .brand-text strong{font-size:15px;font-weight:800;color:var(--text)}
+    .brand-text span{font-size:12px;color:var(--muted)}
 
-.part-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px; padding-bottom: 12px;
-  border-bottom: 2px solid var(--border);
-}
-.part-header-title { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; color: var(--text); }
-.q-count-badge {
-  font-size: .72rem; color: var(--subtext);
-  background: var(--surface); padding: 3px 12px;
-  border-radius: 20px; border: 1px solid var(--border);
-  font-weight: 600;
-}
+    .timer-center{
+      position:absolute;left:50%;transform:translateX(-50%);
+      display:flex;align-items:center;gap:10px;
+      font-size:19px;font-weight:700;color:#4f6076;
+    }
+    .timer-center .time{color:var(--primary);font-size:22px;font-weight:800}
+    .timer-center .time.danger{color:var(--danger)}
 
-/* ── QUESTION CARD ── */
-.q-card {
-  background: var(--white); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 18px 20px; margin-bottom: 10px;
-  transition: border-color .2s, box-shadow .2s; box-shadow: var(--shadow);
-}
-.q-card:hover { border-color: var(--teal2); }
-.q-card.active-question {
-  border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(14,165,233,.12), var(--shadow);
-}
+    /* blinking dot next to timer */
+    .timer-dot{
+      width:9px;height:9px;border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 0 3px rgba(16,185,129,.2);
+      animation:blink 2s infinite;
+      flex-shrink:0;
+    }
+    .timer-dot.urgent{
+      background:var(--danger);
+      box-shadow:0 0 0 3px rgba(255,58,47,.2);
+      animation:blink .6s infinite;
+    }
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-.q-top { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 14px; }
-.q-num-badge {
-  background: var(--surface); color: var(--teal);
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .72rem; font-weight: 700; flex-shrink: 0; margin-top: 1px;
-  border: 1.5px solid var(--border);
-  transition: all .2s;
-}
-.q-card.active-question .q-num-badge { background: var(--teal); color: #fff; border-color: var(--teal); }
-.q-text { font-size: .9rem; line-height: 1.6; color: var(--text); font-weight: 500; }
+    .top-actions{display:flex;align-items:center;gap:14px}
+    .submit-btn-top{
+      border:none;cursor:pointer;font:inherit;
+      height:44px;padding:0 24px;border-radius:999px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#fff;font-weight:800;
+      box-shadow:0 10px 24px rgba(49,182,207,.24);
+    }
 
-/* ── MAP / IMAGE ── */
-.map-wrap {
-  margin-bottom: 16px; border-radius: 10px; overflow: hidden;
-  border: 1.5px solid var(--border);
-}
-.map-wrap img { width: 100%; display: block; max-height: 300px; object-fit: contain; background: #f8fafc; }
-.map-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    /* ══ PROGRESS BAR (from template 2) ══ */
+    .prog-wrap{
+      position:fixed;
+      top:var(--header-h);left:0;right:0;
+      z-index:195;
+      height:3px;background:var(--line);
+    }
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-dark));transition:width .5s ease;width:0%}
 
-/* ── ABCD OPTIONS ── */
-.options { display: flex; flex-direction: column; gap: 7px; }
-.opt-label {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 9px;
-  cursor: pointer; font-size: .88rem; color: var(--subtext); transition: all .15s;
-  background: var(--bg);
-}
-.opt-label:hover { border-color: var(--teal2); color: var(--text); background: var(--surface); }
-.opt-label input[type="radio"] { display: none; }
-.opt-label:has(input[type="radio"]:checked) {
-  border-color: var(--teal); background: var(--surface);
-  color: var(--text); box-shadow: 0 0 0 3px rgba(14,165,233,.1);
-}
-.opt-circle {
-  width: 22px; height: 22px; border-radius: 50%;
-  border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
-  font-size: .68rem; font-weight: 700; flex-shrink: 0; transition: all .15s;
-  color: var(--subtext); background: var(--white);
-}
-.opt-label:has(input[type="radio"]:checked) .opt-circle {
-  background: var(--teal); border-color: var(--teal); color: #fff;
-}
+    /* ══ AUDIOBAR ══ */
+    .audiobar{
+      position:fixed;
+      top:calc(var(--header-h) + 3px);
+      left:0;right:0;
+      z-index:190;
+      height:calc(var(--toolbar-h) - 3px);
+      background:#f9fbfd;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:18px;padding:0 22px;
+    }
 
-/* ── CHECKBOX (CHECK type) ── */
-.check-group-title {
-  font-size: .78rem; font-weight: 700; color: var(--teal);
-  text-transform: uppercase; letter-spacing: .08em;
-  margin-bottom: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 7px 12px;
-  display: flex; align-items: center; gap: 6px;
-}
-.check-options { display: flex; flex-direction: column; gap: 7px; }
-.check-label {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 9px;
-  cursor: pointer; font-size: .88rem; color: var(--subtext); transition: all .15s;
-  background: var(--bg);
-}
-.check-label:hover { border-color: var(--teal2); color: var(--text); background: var(--surface); }
-.check-label input[type="checkbox"] { display: none; }
-.check-label:has(input[type="checkbox"]:checked) {
-  border-color: var(--teal); background: var(--surface);
-  color: var(--text); box-shadow: 0 0 0 3px rgba(14,165,233,.1);
-}
-.check-box {
-  width: 20px; height: 20px; border-radius: 5px;
-  border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
-  font-size: .7rem; font-weight: 700; flex-shrink: 0; transition: all .15s;
-  color: var(--subtext); background: var(--white);
-}
-.check-label:has(input[type="checkbox"]:checked) .check-box {
-  background: var(--teal); border-color: var(--teal); color: #fff; content: '✓';
-}
-.check-letter { font-weight: 700; color: var(--teal); font-size: .85rem; min-width: 18px; }
-.check-label:has(input[type="checkbox"]:checked) .check-letter { color: var(--teal-dk); }
+    .audio-left,.audio-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
 
-/* ── FILL ── */
-.fill-input {
-  width: 100%; padding: 10px 14px;
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 9px; color: var(--text);
-  font-family: 'Figtree', sans-serif; font-size: .9rem; outline: none; transition: all .2s;
-}
-.fill-input::placeholder { color: var(--muted); }
-.fill-input:focus { border-color: var(--teal); background: #fff; box-shadow: 0 0 0 3px rgba(14,165,233,.12); }
+    .circle-control{
+      width:34px;height:34px;border-radius:50%;
+      border:2px solid #35516f;background:#fff;color:#35516f;
+      display:grid;place-items:center;font-size:14px;font-weight:800;
+      cursor:pointer;
+    }
+    .circle-control.play{
+      width:42px;height:42px;
+      background:var(--primary);border-color:var(--primary);color:#fff;
+    }
 
-/* ── SECTION HEADER ── */
-.section-label {
-  background: var(--teal); color: #fff;
-  padding: 8px 16px; border-radius: 8px 8px 0 0;
-  font-size: .8rem; font-weight: 700;
-  margin-bottom: 0; letter-spacing: .03em;
-}
-.section-body {
-  background: var(--white); border: 1.5px solid var(--border);
-  border-top: none; border-radius: 0 0 10px 10px;
-  padding: 14px 16px; margin-bottom: 16px;
-}
+    .audio-time{
+      min-width:54px;color:#4c617b;font-weight:600;
+      font-variant-numeric:tabular-nums;white-space:nowrap;
+    }
 
-/* ── SUBMIT ── */
-.submit-wrap { margin-top: 32px; }
-.submit-btn {
-  width: 100%; padding: 15px;
-  background: linear-gradient(135deg, var(--teal), var(--teal-dk));
-  color: #fff; border: none; border-radius: var(--radius);
-  font-family: 'Figtree', sans-serif; font-size: 1rem; font-weight: 700;
-  cursor: pointer; transition: all .2s;
-  box-shadow: 0 4px 16px rgba(14,165,233,.3);
-}
-.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,165,233,.4); }
+    .progress-wrap{flex:1;display:flex;align-items:center;gap:14px}
+    .progress-track{
+      position:relative;width:100%;height:4px;
+      background:#dceef3;border-radius:999px;overflow:visible;cursor:pointer;
+    }
+    .progress-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--primary);border-radius:999px}
+    .progress-knob{
+      position:absolute;top:50%;left:0%;
+      width:18px;height:18px;border-radius:50%;
+      background:#d9dfe5;transform:translate(-50%,-50%);
+      box-shadow:0 2px 6px rgba(0,0,0,.08);
+    }
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-</style>
+    .volume-track{width:96px;height:4px;background:#dceef3;border-radius:999px;position:relative;cursor:pointer}
+    .volume-fill{position:absolute;inset:0 auto 0 0;width:75%;background:var(--primary);border-radius:999px}
+    .volume-knob{
+      position:absolute;left:75%;top:50%;
+      width:18px;height:18px;border-radius:50%;
+      background:#fff;border:2px solid #d1dce8;
+      transform:translate(-50%,-50%);
+    }
+
+    /* ══ CONTENT ══ */
+    .exam-content{
+      width:min(100%,1560px);margin:0 auto;
+      padding:22px 20px 0;
+    }
+
+    .part-panel{
+      display:none;
+      background:#fff;
+      border-top:1px solid #eef3f7;
+      border-bottom:1px solid #eef3f7;
+      min-height:calc(100vh - var(--header-h) - var(--toolbar-h) - var(--footer-h) - 40px);
+      padding:18px 20px 28px;
+    }
+    .part-panel.active{display:block}
+
+    .part-title{font-size:28px;font-weight:800;margin:8px 0 28px;color:#1f4671}
+    .question-range{display:flex;align-items:center;gap:14px;margin-bottom:34px;flex-wrap:wrap}
+    .question-range strong{font-size:22px;color:var(--primary);font-weight:800}
+    .listen-pill{
+      border:1px solid var(--line);background:#fff;border-radius:999px;
+      padding:10px 16px;color:#24466b;font-weight:600;
+      display:inline-flex;align-items:center;gap:10px;
+    }
+
+    .intro-text,.instruction-text{font-size:18px;line-height:1.75;color:#233a59;margin:0 0 12px}
+    .instruction-text .red,.limit-red{color:var(--danger);font-weight:800}
+    .block-title{
+      font-size:22px;font-weight:800;color:#1f4671;
+      margin:34px 0 18px;text-transform:uppercase;letter-spacing:.01em;
+    }
+
+    .exam-table,.notes-table{border:1px solid #dbe5ee;background:#fff;width:100%}
+    .form-row,.note-row,.chart-row{
+      display:grid;grid-template-columns:40% 60%;
+      border-top:1px solid #dbe5ee;min-height:58px;
+    }
+    .form-row:first-child,.note-row:first-child,.chart-row:first-child{border-top:none}
+
+    .cell-label,.cell-answer,.note-cell,.chart-label,.chart-answer{
+      display:flex;align-items:center;padding:12px 16px;font-size:17px;color:#243c5e;
+    }
+    .cell-label,.note-cell,.chart-label{border-right:1px solid #dbe5ee}
+
+    .answer-inline,.sentence-answer{display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:100%}
+
+    .q-badge{
+      width:32px;height:32px;min-width:32px;border-radius:50%;
+      background:var(--primary);color:#fff;
+      display:grid;place-items:center;font-size:18px;font-weight:800;
+    }
+
+    .blank-input{
+      width:min(100%,220px);height:36px;
+      border:1.6px solid #c8d8e7;border-radius:999px;
+      padding:0 14px;font:inherit;color:#17385f;background:#fff;outline:none;
+    }
+    .blank-input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(49,182,207,.12)}
+
+    .sentences-wrap{margin-top:6px}
+    .sentence-row{
+      display:flex;align-items:center;flex-wrap:wrap;gap:12px;
+      font-size:19px;line-height:1.9;color:#223c5f;margin-bottom:18px;
+    }
+    .sentence-row .blank-input{width:250px}
+
+    .mcq-list{margin-top:18px}
+    .mcq-card{background:transparent;padding:16px 0 10px;border-bottom:1px solid #ebf0f4}
+    .mcq-card:last-child{border-bottom:none}
+    .mcq-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+    .mcq-question{font-size:18px;line-height:1.7;color:#213a5c;flex:1}
+
+    .options-grid{
+      display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));
+      gap:12px 18px;margin-left:46px;
+    }
+    .option-label{display:flex;align-items:flex-start;gap:12px;cursor:pointer;color:#284363;font-size:16px;line-height:1.5}
+    .option-label input{margin-top:4px;accent-color:var(--primary)}
+    .option-letter{
+      width:24px;height:24px;min-width:24px;border-radius:50%;
+      background:#edf8fb;color:var(--primary-dark);
+      display:grid;place-items:center;font-size:13px;font-weight:800;
+    }
+
+    .chart-block{display:grid;grid-template-columns:340px 1fr;gap:22px;align-items:start;margin-top:18px}
+    .pie-wrap{display:flex;align-items:center;justify-content:center;padding:10px 0 0}
+    .pie-chart{
+      width:300px;height:300px;border-radius:50%;
+      background:conic-gradient(#76a9e9 0 50%,#f08c84 50% 65%,#c6e78a 65% 100%);
+      box-shadow:0 6px 16px rgba(0,0,0,.12);
+    }
+    .chart-table{border:1px solid #dbe5ee;margin-top:10px}
+    .legend-box{width:18px;height:18px;border-radius:0;margin-right:12px;flex-shrink:0}
+    .legend-blue{background:#76a9e9}.legend-red{background:#f08c84}.legend-green{background:#c6e78a}
+
+    /* active question highlight (from template 2) */
+    .question-block.active-question{
+      outline:2px solid var(--primary);
+      border-radius:10px;
+      box-shadow:0 0 0 4px rgba(49,182,207,.10);
+    }
+
+    /* ══ PART NAV BAR (fixed below audiobar) ══ */
+    .partbar{
+      position:fixed;
+      top:calc(var(--header-h) + var(--toolbar-h));
+      left:0;right:0;
+      z-index:185;
+      height:var(--partbar-h);
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      padding:10px 18px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .partbar::-webkit-scrollbar{display:none}
+
+    .part-nav-card{
+      background:#f4f7fb;
+      border:1.5px solid #dbe6ef;
+      border-radius:16px;
+      height:50px;
+      padding:0 14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      transition:.18s ease;
+      flex-shrink:0;
+      white-space:nowrap;
+    }
+    .part-nav-card.active{
+      border-color:var(--primary);
+      background:#f0fbfd;
+      box-shadow:0 0 0 2px rgba(49,182,207,.08) inset;
+    }
+    .part-nav-title{
+      font-size:14px;font-weight:800;color:#1f4168;
+    }
+    .part-nav-meta{
+      color:#6e8aaa;font-size:12px;font-style:italic;
+    }
+    .bubble-list{
+      display:flex;align-items:center;gap:6px;flex-wrap:nowrap;
+    }
+    .bubble{
+      width:28px;height:28px;border-radius:50%;
+      border:1px solid #d7e3ec;background:#fff;color:#4e6684;
+      display:grid;place-items:center;font-size:12px;cursor:pointer;
+      flex-shrink:0;
+    }
+    .bubble.active{border-color:var(--primary);color:#1f456d;background:#f2fcfe}
+    .bubble.done{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:800}
+
+    /* divider between part cards */
+    .partbar-divider{
+      width:1px;height:36px;background:var(--line);flex-shrink:0;
+    }
+
+    .question-image-box{
+      margin:14px 0 10px 46px;border:1px solid #e2e9f1;
+      border-radius:14px;padding:10px;background:#fff;max-width:760px;
+    }
+    .question-image-box img{width:100%;border-radius:10px;display:block}
+
+    .hidden{display:none !important}
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width:1200px){
+      .chart-block{grid-template-columns:1fr}
+      .pie-wrap{justify-content:flex-start}
+    }
+
+    @media (max-width:860px){
+      :root{--header-h:72px;--toolbar-h:64px;--partbar-h:60px}
+      .topbar{padding:0 12px;gap:10px}
+      .timer-center{position:static;transform:none;font-size:15px;gap:6px;flex:1;justify-content:center}
+      .timer-center .time{font-size:19px}
+      .brand img{width:34px;height:34px}
+      .brand-text{display:none}
+      .submit-btn-top{height:38px;padding:0 16px;font-size:14px}
+      .audiobar{padding:0 10px;gap:8px}
+      .audio-left,.audio-right{gap:8px}
+      .circle-control{width:30px;height:30px;font-size:12px}
+      .circle-control.play{width:36px;height:36px}
+      .audio-time{min-width:auto;font-size:13px}
+      .volume-track{width:56px}
+      .exam-content{padding:12px 8px 0}
+      .part-panel{padding:12px 10px 22px;min-height:auto}
+      .part-title{font-size:24px;margin-bottom:20px}
+      .question-range strong{font-size:20px}
+      .intro-text,.instruction-text{font-size:16px;line-height:1.65}
+      .block-title{font-size:20px;margin:24px 0 14px}
+      .options-grid{grid-template-columns:1fr;margin-left:0}
+      .mcq-question{font-size:16px}
+      .form-row,.note-row,.chart-row{grid-template-columns:1fr}
+      .cell-label,.note-cell,.chart-label{border-right:none;border-bottom:1px solid #dbe5ee;font-size:15px}
+      .sentence-row{font-size:16px;line-height:1.7}
+      .sentence-row .blank-input,.blank-input{width:100%;max-width:100%}
+      .question-image-box{margin-left:0}
+      .part-nav-card{height:44px;padding:0 10px;gap:8px}
+      .part-nav-title{font-size:13px}
+      .part-nav-meta{font-size:11px}
+      .bubble{width:26px;height:26px;font-size:11px}
+      .pie-wrap{justify-content:center}
+      .pie-chart{width:220px;height:220px}
+      .partbar-divider{height:28px}
+    }
+
+    @media (max-width:520px){
+      :root{--partbar-h:56px}
+      .topbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center}
+      .timer-center{font-size:14px}
+      .timer-center .time{font-size:17px}
+      .audio-right .volume-track{display:none}
+      .part-nav-meta{display:none}
+      .bubble{width:24px;height:24px;font-size:10px}
+      .part-nav-card{gap:6px;padding:0 8px}
+    }
+  </style>
 </head>
 <body>
 
-<!-- SPLASH -->
-<div class="splash" id="splash">
-  <div class="splash-logo">Uni<span>Base</span></div>
-  <div class="splash-title">IELTS Listening — {{ test.title }}</div>
-  <div class="splash-cards">
-    <div class="splash-card"><div class="sc-val">60</div><div class="sc-lbl">Daqiqa</div></div>
-    <div class="splash-card"><div class="sc-val">4</div><div class="sc-lbl">Part</div></div>
-    <div class="splash-card"><div class="sc-val">40</div><div class="sc-lbl">Savol</div></div>
+  <!-- ══ SPLASH SCREEN (from template 2) ══ -->
+  <div class="splash" id="splash">
+    <div class="splash-logo">
+      <img src="/media/logo.png" alt="Logo">
+      <div class="splash-logo-text">
+        <strong>IELTS Listening</strong>
+        <span>{{ test.title }}</span>
+      </div>
+    </div>
+    <div class="splash-cards">
+      <div class="splash-card">
+        <div class="sc-val">{{ test.duration|default:60 }}</div>
+        <div class="sc-lbl">Minutes</div>
+      </div>
+      <div class="splash-card">
+        <div class="sc-val">4</div>
+        <div class="sc-lbl">Parts</div>
+      </div>
+      <div class="splash-card">
+        <div class="sc-val">40</div>
+        <div class="sc-lbl">Questions</div>
+      </div>
+    </div>
+    <p class="splash-desc">Put on your headphones and get ready. Audio will play automatically when you start.</p>
+    <button class="start-btn" id="start-test-btn">Start Test →</button>
   </div>
-  <p style="font-size:.88rem;color:var(--subtext);text-align:center;max-width:340px;line-height:1.7">
-    Quloqchinlarni ulab, testni boshlang. Audio avtomatik ijra etiladi.
-  </p>
-  <button class="start-btn" id="start-test-btn">Boshlash →</button>
-</div>
 
-<!-- TOPBAR -->
-<div class="topbar" id="topbar" style="display:none">
-  <div class="topbar-left">
-    <div class="topbar-logo">Uni<span>Base</span></div>
-    <div class="part-chip" id="topbar-part">Part 1</div>
-  </div>
-  <div class="timer-pill">
-    <div class="timer-dot" id="timer-dot"></div>
-    <div id="timer-display">60:00</div>
-  </div>
-</div>
-<div class="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
-
-<!-- MAIN -->
-<div class="page" id="main-test-area" style="display:none">
-  <form method="POST" id="listening-form">
+  <!-- ══ MAIN EXAM ══ -->
+  <form method="POST" id="listening-form" autocomplete="off" style="display:none">
     {% csrf_token %}
 
-    <!-- Part nav -->
-    <div class="part-nav">
-      {% for part_num, part_qs in parts.items %}
-        <button type="button" class="part-btn {% if forloop.first %}active{% endif %}"
-                data-part="{{ part_num }}" onclick="showPart({{ part_num }})">
-          <span class="pn">Part</span>{{ part_num }}
-        </button>
-      {% endfor %}
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="brand">
+        <img src="/media/logo.png" alt="Logo">
+        <div class="brand-text">
+          <strong>IELTS Listening</strong>
+          <span>{{ test.title }}</span>
+        </div>
+      </div>
+
+      <div class="timer-center">
+        <div class="timer-dot" id="timer-dot"></div>
+        <span class="time" id="time-remaining">{{ test.duration|default:60 }}:00</span>
+        <span>remaining</span>
+      </div>
+
+      <div class="top-actions">
+        <button type="submit" class="submit-btn-top">Submit</button>
+      </div>
     </div>
 
-    <!-- Now playing -->
-    <div class="now-playing" id="now-playing">
+    <!-- PROGRESS BAR (from template 2) -->
+    <div class="prog-wrap"><div class="prog-fill" id="prog-fill"></div></div>
+
+    <!-- AUDIOBAR (template 1 design) -->
+    <div class="audiobar">
+      <div class="audio-left">
+        <button type="button" class="circle-control" id="rewind-btn">5</button>
+        <button type="button" class="circle-control play" id="play-pause-btn">▶</button>
+        <button type="button" class="circle-control" id="forward-btn">5</button>
+        <div class="audio-time" id="audio-current">00:00</div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-track" id="audio-progress-track">
+          <div class="progress-fill"></div>
+          <div class="progress-knob"></div>
+        </div>
+        <div class="audio-time" id="audio-duration">00:00</div>
+      </div>
+
+      <div class="audio-right">
+        <button type="button" id="mute-btn" style="color:var(--primary);font-size:20px;line-height:1;background:none;border:none;cursor:pointer;">🔊</button>
+        <div class="volume-track" id="volume-track">
+          <div class="volume-fill"></div>
+          <div class="volume-knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOW PLAYING BANNER (from template 2) -->
+    <div class="now-playing-bar" id="now-playing-bar">
       <div class="wave"><span></span><span></span><span></span><span></span><span></span></div>
-      <span>Audio ijrolanmoqda — <strong id="playing-label"></strong></span>
+      <span>Audio playing — <strong id="playing-label">Part 1</strong></span>
     </div>
 
-    <!-- Hidden audios -->
+    <!-- HIDDEN AUDIO SOURCES (from template 2 — per-question per-part audio) -->
     <div id="audio-data" style="display:none">
       {% for part_num, part_qs in parts.items %}
         {% for q in part_qs %}
@@ -360,266 +557,554 @@ body { background: var(--bg); color: var(--text); font-family: 'Figtree', sans-s
       {% endfor %}
     </div>
 
-    <!-- Instruction -->
-    <div class="instruction">
-      ℹ️ <span>Har bir javob uchun <strong>uch so'zdan ko'p bo'lmagan</strong> yozuv kiriting.</span>
-    </div>
+    <!-- FALLBACK: single test-level audio (template 1 style) -->
+    {% if test.audio %}
+      <audio id="listening-audio-main" preload="metadata" playsinline>
+        <source src="{{ test.audio.url }}">
+      </audio>
+    {% elif test.audio_file %}
+      <audio id="listening-audio-main" preload="metadata" playsinline>
+        <source src="{{ test.audio_file.url }}">
+      </audio>
+    {% elif audio_url %}
+      <audio id="listening-audio-main" preload="metadata" playsinline>
+        <source src="{{ audio_url }}">
+      </audio>
+    {% else %}
+      <audio id="listening-audio-main" preload="metadata" playsinline></audio>
+    {% endif %}
 
-    <!-- Part sections -->
-    {% for part_num, part_qs in parts.items %}
-    <div class="part-section {% if forloop.first %}visible{% endif %}"
-         id="part-section-{{ part_num }}" data-part="{{ part_num }}">
+    <!-- EXAM SHELL -->
+    <div class="exam-shell" id="exam-shell">
+      <div class="exam-content">
+        {% for part_num, part_qs in parts.items %}
+          <section class="part-panel {% if forloop.first %}active{% endif %}"
+                   id="part-panel-{{ part_num }}" data-part="{{ part_num }}">
 
-      <div class="part-header">
-        <div class="part-header-title">Part {{ part_num }}</div>
-        <div class="q-count-badge">{{ part_qs|length }} savol</div>
-      </div>
+            <div class="part-title">Part {{ part_num }}</div>
 
-      {% regroup part_qs by question_type as type_groups %}
-
-      {% for tgroup in type_groups %}
-
-        <!-- ── CHECKBOX SECTION ── -->
-        {% if tgroup.grouper == 'CHECK' %}
-        <div class="section-label">📋 Multiple Select — tegishli variantlarni belgilang</div>
-        <div class="section-body">
-          {% for q in tgroup.list %}
-          <div class="q-card" id="qcard-{{ q.id }}">
-            <div class="q-top">
-              <div class="q-num-badge">{{ forloop.counter }}</div>
-              <div class="q-text">{{ q.savol }}</div>
+            <div class="question-range">
+              {% if part_num == 1 %}<strong>Questions 1-10</strong>
+              {% elif part_num == 2 %}<strong>Questions 11-20</strong>
+              {% elif part_num == 3 %}<strong>Questions 21-30</strong>
+              {% else %}<strong>Questions 31-40</strong>{% endif %}
+              <div class="listen-pill">🎧 Listen from here</div>
             </div>
-            <div class="check-options">
-              {% if q.variant_a %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="A" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">A</span><span>{{ q.variant_a }}</span></label>{% endif %}
-              {% if q.variant_b %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="B" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">B</span><span>{{ q.variant_b }}</span></label>{% endif %}
-              {% if q.variant_c %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="C" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">C</span><span>{{ q.variant_c }}</span></label>{% endif %}
-              {% if q.variant_d %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="D" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">D</span><span>{{ q.variant_d }}</span></label>{% endif %}
-              {% if q.variant_e %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="E" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">E</span><span>{{ q.variant_e }}</span></label>{% endif %}
-              {% if q.variant_f %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="F" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">F</span><span>{{ q.variant_f }}</span></label>{% endif %}
-              {% if q.variant_g %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="G" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">G</span><span>{{ q.variant_g }}</span></label>{% endif %}
-              {% if q.variant_h %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="H" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">H</span><span>{{ q.variant_h }}</span></label>{% endif %}
-              {% if q.variant_i %}<label class="check-label"><input type="checkbox" name="q_{{ q.id }}" value="I" onchange="markDone({{ part_num }})"><div class="check-box">✓</div><span class="check-letter">I</span><span>{{ q.variant_i }}</span></label>{% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
 
-        <!-- ── MAP / IMAGE SECTION ── -->
-        {% elif tgroup.grouper == 'MAP' %}
-        <div class="section-label">🗺 Diagram / Image — to'g'ri variantni tanlang</div>
-        <div class="section-body">
-          {% for q in tgroup.list %}
-          <div class="q-card" id="qcard-{{ q.id }}">
-            <div class="q-top">
-              <div class="q-num-badge">{{ forloop.counter }}</div>
-              <div class="q-text">{{ q.savol }}</div>
-            </div>
-            {% if q.map_image %}
-            <div class="map-wrap">
-              <img src="{{ q.map_image.url }}" alt="Diagram">
-            </div>
+            {% if part_num == 1 %}
+              <p class="instruction-text">Complete the following form with <span class="red">NO MORE THAN THREE WORDS AND/OR A NUMBER</span> for each answer.</p>
+            {% elif part_num == 2 %}
+              <p class="instruction-text">Complete the notes by filling in the blanks with <span class="red">NO MORE THAN THREE WORDS AND/OR NUMBER</span> for each answer.</p>
+            {% elif part_num == 3 %}
+              <p class="instruction-text">Write <span class="red">NO MORE THAN THREE WORDS AND/OR A NUMBER</span> for each answer.</p>
+            {% else %}
+              <p class="instruction-text">Fill in the blanks with <span class="red">ONE WORD AND/OR A NUMBER</span> for each answer.</p>
             {% endif %}
-            <div class="map-options">
-              {% if q.variant_a %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="A" onchange="markDone({{ part_num }})"><span class="opt-circle">A</span><span>{{ q.variant_a }}</span></label>{% endif %}
-              {% if q.variant_b %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="B" onchange="markDone({{ part_num }})"><span class="opt-circle">B</span><span>{{ q.variant_b }}</span></label>{% endif %}
-              {% if q.variant_c %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="C" onchange="markDone({{ part_num }})"><span class="opt-circle">C</span><span>{{ q.variant_c }}</span></label>{% endif %}
-              {% if q.variant_d %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="D" onchange="markDone({{ part_num }})"><span class="opt-circle">D</span><span>{{ q.variant_d }}</span></label>{% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
 
-        <!-- ── FILL SECTION ── -->
-        {% elif tgroup.grouper == 'FILL' %}
-        <div class="section-label">✏️ Fill in the Blanks — NO MORE THAN THREE WORDS</div>
-        <div class="section-body">
-          {% for q in tgroup.list %}
-          <div class="q-card" id="qcard-{{ q.id }}">
-            <div class="q-top">
-              <div class="q-num-badge">{{ forloop.counter }}</div>
-              <div class="q-text">{{ q.savol }}</div>
-            </div>
-            <input class="fill-input" type="text" name="q_{{ q.id }}"
-                   placeholder="Javobingiz..." oninput="markDone({{ part_num }})">
-          </div>
-          {% endfor %}
-        </div>
+            {% regroup part_qs by question_type as type_groups %}
 
-        <!-- ── ABCD / MATCH SECTION ── -->
-        {% else %}
-        <div class="section-label">🔘 Multiple Choice — to'g'ri javobni tanlang</div>
-        <div class="section-body">
-          {% for q in tgroup.list %}
-          <div class="q-card" id="qcard-{{ q.id }}">
-            <div class="q-top">
-              <div class="q-num-badge">{{ forloop.counter }}</div>
-              <div class="q-text">{{ q.savol }}</div>
-            </div>
-            <div class="options">
-              {% if q.variant_a %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="A" onchange="markDone({{ part_num }})"><span class="opt-circle">A</span><span>{{ q.variant_a }}</span></label>{% endif %}
-              {% if q.variant_b %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="B" onchange="markDone({{ part_num }})"><span class="opt-circle">B</span><span>{{ q.variant_b }}</span></label>{% endif %}
-              {% if q.variant_c %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="C" onchange="markDone({{ part_num }})"><span class="opt-circle">C</span><span>{{ q.variant_c }}</span></label>{% endif %}
-              {% if q.variant_d %}<label class="opt-label"><input type="radio" name="q_{{ q.id }}" value="D" onchange="markDone({{ part_num }})"><span class="opt-circle">D</span><span>{{ q.variant_d }}</span></label>{% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %}
+            {% for tgroup in type_groups %}
+              {% if tgroup.grouper == 'FILL' and part_num == 1 %}
+                <div class="exam-table">
+                  {% for q in tgroup.list %}
+                    <div class="form-row question-block" data-qid="{{ q.id }}" data-part="{{ part_num }}">
+                      <div class="cell-label">{{ q.label|default:q.savol }}</div>
+                      <div class="cell-answer">
+                        <div class="answer-inline">
+                          <span class="q-badge">{{ forloop.counter }}</span>
+                          <input type="text" name="q_{{ q.id }}" class="blank-input answer-control" />
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
 
-      {% endfor %}
+              {% elif tgroup.grouper == 'FILL' and part_num == 2 %}
+                <div class="notes-table">
+                  {% for q in tgroup.list %}
+                    <div class="note-row question-block" data-qid="{{ q.id }}" data-part="{{ part_num }}">
+                      <div class="note-cell">{{ q.savol }}</div>
+                      <div class="cell-answer">
+                        <div class="answer-inline">
+                          <span class="q-badge">{{ forloop.counter|add:10 }}</span>
+                          <input type="text" name="q_{{ q.id }}" class="blank-input answer-control" />
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
 
+              {% elif tgroup.grouper == 'FILL' and part_num == 3 %}
+                <div class="sentences-wrap">
+                  {% for q in tgroup.list %}
+                    <div class="sentence-row question-block" data-qid="{{ q.id }}" data-part="{{ part_num }}">
+                      <span>{{ q.savol }}</span>
+                      <div class="sentence-answer">
+                        <span class="q-badge">{{ forloop.counter|add:20 }}</span>
+                        <input type="text" name="q_{{ q.id }}" class="blank-input answer-control" />
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+
+              {% elif tgroup.grouper == 'FILL' and part_num == 4 %}
+                <div class="chart-block">
+                  <div class="pie-wrap">
+                    <div class="pie-chart" aria-hidden="true"></div>
+                  </div>
+                  <div class="chart-table">
+                    {% for q in tgroup.list %}
+                      <div class="chart-row question-block" data-qid="{{ q.id }}" data-part="{{ part_num }}">
+                        <div class="chart-label">
+                          {% if forloop.counter == 1 %}<span class="legend-box legend-blue"></span>
+                          {% elif forloop.counter == 2 %}<span class="legend-box legend-red"></span>
+                          {% else %}<span class="legend-box legend-green"></span>{% endif %}
+                          <span>{{ q.savol }}</span>
+                        </div>
+                        <div class="chart-answer">
+                          <div class="answer-inline">
+                            <span class="q-badge">{{ forloop.counter|add:24 }}</span>
+                            <input type="text" name="q_{{ q.id }}" class="blank-input answer-control" />
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+
+              {% elif tgroup.grouper == 'CHECK' %}
+                <div class="mcq-list">
+                  {% for q in tgroup.list %}
+                    <div class="mcq-card question-block" data-qid="{{ q.id }}" data-part="{{ part_num }}">
+                      <div class="mcq-head">
+                        <span class="q-badge question-no"></span>
+                        <div class="mcq-question">{{ q.savol|default:'Choose the correct items.' }}</div>
+                      </div>
+                      <div class="options-grid">
+                        {% if q.variant_a %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="A"><span class="option-letter">A</span><span>{{ q.variant_a }}</span></label>{% endif %}
+                        {% if q.variant_b %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="B"><span class="option-letter">B</span><span>{{ q.variant_b }}</span></label>{% endif %}
+                        {% if q.variant_c %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="C"><span class="option-letter">C</span><span>{{ q.variant_c }}</span></label>{% endif %}
+                        {% if q.variant_d %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="D"><span class="option-letter">D</span><span>{{ q.variant_d }}</span></label>{% endif %}
+                        {% if q.variant_e %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="E"><span class="option-letter">E</span><span>{{ q.variant_e }}</span></label>{% endif %}
+                        {% if q.variant_f %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="F"><span class="option-letter">F</span><span>{{ q.variant_f }}</span></label>{% endif %}
+                        {% if q.variant_g %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="G"><span class="option-letter">G</span><span>{{ q.variant_g }}</span></label>{% endif %}
+                        {% if q.variant_h %}<label class="option-label"><input class="answer-control" type="checkbox" name="q_{{ q.id }}" value="H"><span class="option-letter">H</span><span>{{ q.variant_h }}</span></label>{% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+
+              {% else %}
+                <div class="mcq-list">
+                  {% for q in tgroup.list %}
+                    <div class="mcq-card question-block" data-qid="{{ q.id }}" data-part="{{ part_num }}">
+                      <div class="mcq-head">
+                        <span class="q-badge question-no"></span>
+                        <div class="mcq-question">{{ q.savol }}</div>
+                      </div>
+                      {% if q.image %}
+                        <div class="question-image-box">
+                          <img src="{{ q.image.url }}" alt="Question image">
+                        </div>
+                      {% endif %}
+                      {% if q.image_a or q.image_b or q.image_c or q.image_d %}
+                        <div class="options-grid">
+                          {% if q.image_a %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="A"><span class="option-letter">A</span><span><img src="{{ q.image_a.url }}" alt="A" style="max-width:150px;border-radius:10px;border:1px solid #e4ebf2"></span></label>{% endif %}
+                          {% if q.image_b %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="B"><span class="option-letter">B</span><span><img src="{{ q.image_b.url }}" alt="B" style="max-width:150px;border-radius:10px;border:1px solid #e4ebf2"></span></label>{% endif %}
+                          {% if q.image_c %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="C"><span class="option-letter">C</span><span><img src="{{ q.image_c.url }}" alt="C" style="max-width:150px;border-radius:10px;border:1px solid #e4ebf2"></span></label>{% endif %}
+                          {% if q.image_d %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="D"><span class="option-letter">D</span><span><img src="{{ q.image_d.url }}" alt="D" style="max-width:150px;border-radius:10px;border:1px solid #e4ebf2"></span></label>{% endif %}
+                        </div>
+                      {% elif q.variant_a or q.variant_b or q.variant_c or q.variant_d %}
+                        <div class="options-grid">
+                          {% if q.variant_a %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="A"><span class="option-letter">A</span><span>{{ q.variant_a }}</span></label>{% endif %}
+                          {% if q.variant_b %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="B"><span class="option-letter">B</span><span>{{ q.variant_b }}</span></label>{% endif %}
+                          {% if q.variant_c %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="C"><span class="option-letter">C</span><span>{{ q.variant_c }}</span></label>{% endif %}
+                          {% if q.variant_d %}<label class="option-label"><input class="answer-control" type="radio" name="q_{{ q.id }}" value="D"><span class="option-letter">D</span><span>{{ q.variant_d }}</span></label>{% endif %}
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </section>
+        {% endfor %}
+      </div>
     </div>
-    {% endfor %}
 
-    <div class="submit-wrap">
-      <button type="submit" class="submit-btn">✓ Testni Yakunlash</button>
+    <!-- PART NAV BAR (fixed below audiobar) -->
+    <div class="partbar" id="partbar">
+      {% for part_num, part_qs in parts.items %}
+        {% if not forloop.first %}<div class="partbar-divider"></div>{% endif %}
+        <div class="part-nav-card {% if forloop.first %}active{% endif %}"
+             id="part-nav-{{ part_num }}" onclick="showPart({{ part_num }})">
+          <div>
+            <div class="part-nav-title">Part {{ part_num }}</div>
+            <div class="part-nav-meta">
+              <span id="answered-count-{{ part_num }}">0</span>/{{ part_qs|length }}
+            </div>
+          </div>
+          <div class="bubble-list">
+            {% for q in part_qs %}
+              <button type="button" class="bubble" id="bubble-q-{{ q.id }}"
+                      onclick="event.stopPropagation();showPart({{ part_num }});scrollToQuestion('{{ q.id }}');">
+                {{ forloop.counter }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </form>
-</div>
 
-<script>
-function showPart(partNum) {
-  document.querySelectorAll('.part-section').forEach(s => s.classList.remove('visible'));
-  const t = document.getElementById('part-section-' + partNum);
-  if (t) t.classList.add('visible');
-  document.querySelectorAll('.part-btn').forEach(b => b.classList.toggle('active', b.dataset.part == partNum));
-  document.getElementById('topbar-part').textContent = 'Part ' + partNum;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  <script>
+  (function(){
+    /* ═══════════════════════════════════════════
+       CONSTANTS
+    ═══════════════════════════════════════════ */
+    const TIMER_KEY   = `ielts_ls_timer_${"{{ test.id|default:test.title }}"}`;
+    const AUDIO_IDX_KEY = `ielts_ls_audioIdx_${"{{ test.id|default:test.title }}"}`;
+    const TIMER_MINS  = Number("{{ test.duration|default:60 }}") || 60;
+    const TIMER_SECS  = TIMER_MINS * 60;
 
-function markDone(partNum) {
-  const btn = document.querySelector('.part-btn[data-part="' + partNum + '"]');
-  if (btn) btn.classList.add('done');
-  updateProg();
-}
+    /* ═══════════════════════════════════════════
+       DOM REFS
+    ═══════════════════════════════════════════ */
+    const splash       = document.getElementById('splash');
+    const startBtn     = document.getElementById('start-test-btn');
+    const formEl       = document.getElementById('listening-form');
+    const examShell    = document.getElementById('exam-shell');
+    const timerEl      = document.getElementById('time-remaining');
+    const timerDot     = document.getElementById('timer-dot');
+    const progFill     = document.getElementById('prog-fill');
+    const nowPlayBar   = document.getElementById('now-playing-bar');
+    const playingLabel = document.getElementById('playing-label');
 
-function updateProg() {
-  const fills   = document.querySelectorAll('.fill-input');
-  const radios  = document.querySelectorAll('input[type=radio]');
-  const checks  = document.querySelectorAll('input[type=checkbox]');
-  let done = 0;
+    // Audiobar controls
+    const mainAudio      = document.getElementById('listening-audio-main');
+    const audioCurrent   = document.getElementById('audio-current');
+    const audioDuration  = document.getElementById('audio-duration');
+    const playPauseBtn   = document.getElementById('play-pause-btn');
+    const rewindBtn      = document.getElementById('rewind-btn');
+    const forwardBtn     = document.getElementById('forward-btn');
+    const muteBtn        = document.getElementById('mute-btn');
+    const progressTrack  = document.getElementById('audio-progress-track');
+    const progressFill   = document.querySelector('.progress-fill');
+    const progressKnob   = document.querySelector('.progress-knob');
+    const volumeTrack    = document.getElementById('volume-track');
+    const volumeFill     = document.querySelector('.volume-fill');
+    const volumeKnob     = document.querySelector('.volume-knob');
 
-  // Fill
-  const fillNames = new Set();
-  fills.forEach(i => { if (i.value.trim()) { done++; } fillNames.add(i.name); });
+    // Per-question audio sources (from template 2)
+    const audioSources = Array.from(document.querySelectorAll('#audio-data span'));
 
-  // Radio
-  const radioNames = new Set();
-  radios.forEach(r => radioNames.add(r.name));
-  const checkedRadio = new Set();
-  radios.forEach(r => { if (r.checked) checkedRadio.add(r.name); });
-  done += checkedRadio.size;
+    // Determine audio mode: per-question or single main audio
+    const usePerQ = audioSources.length > 0;
 
-  // Checkbox
-  const checkNames = new Set();
-  checks.forEach(c => checkNames.add(c.name));
-  const checkedCheck = new Set();
-  checks.forEach(c => { if (c.checked) checkedCheck.add(c.name); });
-  done += checkedCheck.size;
+    // Player — either the dedicated per-Q player or main audio element
+    const player = usePerQ ? new Audio() : mainAudio;
 
-  const total = fillNames.size + radioNames.size + checkNames.size;
-  document.getElementById('prog-fill').style.width = total > 0 ? Math.round(done/total*100)+'%' : '0%';
-}
+    let timerInterval = null;
+    let submitted     = false;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const startBtn = document.getElementById('start-test-btn');
-  const splash   = document.getElementById('splash');
-  const topbar   = document.getElementById('topbar');
-  const main     = document.getElementById('main-test-area');
-  const form     = document.getElementById('listening-form');
-  const timerEl  = document.getElementById('timer-display');
-  const timerDot = document.getElementById('timer-dot');
-  const nowPlay  = document.getElementById('now-playing');
-  const playLbl  = document.getElementById('playing-label');
+    /* ═══════════════════════════════════════════
+       HELPERS
+    ═══════════════════════════════════════════ */
+    function formatClock(total){
+      const safe = Math.max(0, Math.floor(total || 0));
+      return String(Math.floor(safe/60)).padStart(2,'0') + ':' + String(safe%60).padStart(2,'0');
+    }
 
-  const audioSources = Array.from(document.querySelectorAll('#audio-data span'));
-  let submitted = false, timerInt = null;
-  const TOTAL = 3600;
-  const player = new Audio();
+    /* ═══════════════════════════════════════════
+       TIMER  (localStorage-based, from template 2)
+    ═══════════════════════════════════════════ */
+    function getRemaining(){
+      const raw = localStorage.getItem(TIMER_KEY);
+      if(raw){
+        try{
+          const {endsAt} = JSON.parse(raw);
+          return Math.max(0, Math.floor((endsAt - Date.now()) / 1000));
+        }catch(e){}
+      }
+      return -1; // not started
+    }
 
-  function display(s) {
-    const m = String(Math.floor(s/60)).padStart(2,'0');
-    const sec = String(s%60).padStart(2,'0');
-    timerEl.textContent = m + ':' + sec;
-    const urgent = s <= 300;
-    timerEl.classList.toggle('danger', urgent);
-    timerDot.classList.toggle('urgent', urgent);
-  }
+    function saveEndsAt(seconds){
+      localStorage.setItem(TIMER_KEY, JSON.stringify({endsAt: Date.now() + seconds*1000}));
+    }
 
-  function startTimer() {
-    timerInt = setInterval(() => {
-      const end = localStorage.getItem('lEnd');
-      if (!end) { clearInterval(timerInt); return; }
-      const rem = Math.floor((end - Date.now()) / 1000);
-      if (rem <= 0) {
-        clearInterval(timerInt);
-        if (!submitted) { submitted = true; localStorage.removeItem('lEnd'); form.submit(); }
+    function renderTimer(rem){
+      if(!timerEl) return;
+      timerEl.textContent = formatClock(rem);
+      const urgent = rem <= 300;
+      timerEl.classList.toggle('danger', urgent);
+      if(timerDot) timerDot.classList.toggle('urgent', urgent);
+    }
+
+    function tickTimer(){
+      const rem = getRemaining();
+      renderTimer(rem);
+      if(rem <= 0){
+        clearInterval(timerInterval);
+        localStorage.removeItem(TIMER_KEY);
+        if(!submitted){
+          submitted = true;
+          player.pause();
+          formEl.submit();
+        }
+      }
+    }
+
+    function startTimer(fresh){
+      if(fresh) saveEndsAt(TIMER_SECS);
+      renderTimer(fresh ? TIMER_SECS : getRemaining());
+      timerInterval = setInterval(tickTimer, 1000);
+    }
+
+    /* ═══════════════════════════════════════════
+       PROGRESS BAR  (from template 2)
+    ═══════════════════════════════════════════ */
+    function updateProg(){
+      const fills  = document.querySelectorAll('.blank-input');
+      const radios = document.querySelectorAll('input[type=radio]');
+      const checks = document.querySelectorAll('input[type=checkbox]');
+
+      let done = 0;
+      const fillNames = new Set(); fills.forEach(i=>{fillNames.add(i.name);if(i.value.trim())done++;});
+      const radioNames = new Set(); radios.forEach(r=>radioNames.add(r.name));
+      const checkedR   = new Set(); radios.forEach(r=>{if(r.checked)checkedR.add(r.name);}); done += checkedR.size;
+      const checkNames = new Set(); checks.forEach(c=>checkNames.add(c.name));
+      const checkedC   = new Set(); checks.forEach(c=>{if(c.checked)checkedC.add(c.name);}); done += checkedC.size;
+
+      const total = fillNames.size + radioNames.size + checkNames.size;
+      if(progFill) progFill.style.width = total>0 ? Math.round(done/total*100)+'%' : '0%';
+    }
+
+    /* ═══════════════════════════════════════════
+       QUESTION BUBBLES / ANSWERED COUNT  (template 1)
+    ═══════════════════════════════════════════ */
+    const allQBlocks = Array.from(document.querySelectorAll('.question-block'));
+    let globalCounter = 0;
+    allQBlocks.forEach(block=>{
+      globalCounter++;
+      block.dataset.global = globalCounter;
+      const badge = block.querySelector('.question-no');
+      if(badge) badge.textContent = globalCounter;
+    });
+
+    function isAnswered(block){
+      const qid = block.dataset.qid;
+      const radios = document.querySelectorAll(`input[name="q_${qid}"][type=radio]`);
+      const checks = document.querySelectorAll(`input[name="q_${qid}"][type=checkbox]`);
+      const text   = document.querySelector(`input[name="q_${qid}"][type=text]`);
+      if(radios.length) return Array.from(radios).some(x=>x.checked);
+      if(checks.length) return Array.from(checks).some(x=>x.checked);
+      if(text) return text.value.trim().length>0;
+      return false;
+    }
+
+    function updateProgress(){
+      const partMap = {};
+      allQBlocks.forEach(block=>{
+        const qid  = block.dataset.qid;
+        const part = block.dataset.part;
+        if(!partMap[part]) partMap[part]={total:0,done:0};
+        partMap[part].total++;
+        const done = isAnswered(block);
+        const bubble = document.getElementById(`bubble-q-${qid}`);
+        if(bubble) bubble.classList.toggle('done', done);
+        if(done) partMap[part].done++;
+      });
+      Object.keys(partMap).forEach(part=>{
+        const t = document.getElementById(`answered-count-${part}`);
+        if(t) t.textContent = partMap[part].done;
+      });
+      updateProg();
+    }
+
+    document.querySelectorAll('.answer-control').forEach(el=>{
+      el.addEventListener('input',  updateProgress);
+      el.addEventListener('change', updateProgress);
+    });
+
+    /* ═══════════════════════════════════════════
+       PART NAV
+    ═══════════════════════════════════════════ */
+    function showPart(partNum){
+      document.querySelectorAll('.part-panel').forEach(el=>el.classList.remove('active'));
+      document.querySelectorAll('.part-nav-card').forEach(el=>el.classList.remove('active'));
+      const panel = document.getElementById(`part-panel-${partNum}`);
+      const nav   = document.getElementById(`part-nav-${partNum}`);
+      if(panel) panel.classList.add('active');
+      if(nav)   nav.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function scrollToQuestion(qid){
+      const el = document.querySelector(`.question-block[data-qid="${qid}"]`);
+      if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    window.showPart = showPart;
+    window.scrollToQuestion = scrollToQuestion;
+
+    /* ═══════════════════════════════════════════
+       AUDIO UTILS
+    ═══════════════════════════════════════════ */
+    function formatAudio(s){ return formatClock(s); }
+
+    function setPlayState(){
+      if(!playPauseBtn) return;
+      playPauseBtn.textContent = player.paused ? '▶' : '❚❚';
+    }
+
+    function updateAudioBar(){
+      const cur  = player.currentTime || 0;
+      const dur  = player.duration    || 0;
+      if(audioCurrent)  audioCurrent.textContent  = formatAudio(cur);
+      if(audioDuration) audioDuration.textContent = formatAudio(dur);
+      const pct = dur ? (cur/dur)*100 : 0;
+      if(progressFill)  progressFill.style.width = `${pct}%`;
+      if(progressKnob)  progressKnob.style.left  = `${pct}%`;
+    }
+
+    function setVolumeUI(v){
+      const pct = Math.max(0, Math.min(100, v*100));
+      if(volumeFill) volumeFill.style.width = `${pct}%`;
+      if(volumeKnob) volumeKnob.style.left  = `${pct}%`;
+      if(muteBtn)    muteBtn.textContent = pct===0 ? '🔇' : '🔊';
+    }
+
+    player.volume = 0.75;
+    setVolumeUI(player.volume);
+    player.addEventListener('loadedmetadata', updateAudioBar);
+    player.addEventListener('timeupdate',     updateAudioBar);
+    player.addEventListener('play',           setPlayState);
+    player.addEventListener('pause',          setPlayState);
+    player.addEventListener('volumechange',   ()=>setVolumeUI(player.muted ? 0 : player.volume));
+
+    // Audiobar controls
+    if(playPauseBtn){
+      playPauseBtn.addEventListener('click', async()=>{
+        try{ player.paused ? await player.play() : player.pause(); }catch(e){}
+      });
+    }
+    if(rewindBtn)  rewindBtn.addEventListener('click',  ()=>{ player.currentTime = Math.max(0,(player.currentTime||0)-5); updateAudioBar(); });
+    if(forwardBtn) forwardBtn.addEventListener('click', ()=>{ player.currentTime = Math.min(isFinite(player.duration)?player.duration:(player.currentTime||0),(player.currentTime||0)+5); updateAudioBar(); });
+    if(muteBtn)    muteBtn.addEventListener('click',    ()=>{ player.muted=!player.muted; setVolumeUI(player.muted?0:player.volume); });
+
+    if(progressTrack){
+      progressTrack.addEventListener('click', e=>{
+        const r = progressTrack.getBoundingClientRect();
+        const ratio = Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+        if(isFinite(player.duration)){ player.currentTime=ratio*player.duration; updateAudioBar(); }
+      });
+    }
+    if(volumeTrack){
+      volumeTrack.addEventListener('click', e=>{
+        const r = volumeTrack.getBoundingClientRect();
+        const ratio = Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
+        player.muted=false; player.volume=ratio; setVolumeUI(ratio);
+      });
+    }
+
+    /* ═══════════════════════════════════════════
+       PER-QUESTION AUDIO SEQUENCE  (from template 2)
+    ═══════════════════════════════════════════ */
+    function playIdx(idx){
+      if(idx >= audioSources.length){
+        nowPlayBar.classList.remove('show');
         return;
       }
-      display(rem);
-    }, 1000);
-  }
+      const src = audioSources[idx];
+      const partNum = src.dataset.part;
+      const qid     = src.dataset.qid;
 
-  function playIdx(idx) {
-    if (idx >= audioSources.length) { nowPlay.classList.remove('show'); return; }
-    const src = audioSources[idx];
-    const partNum = src.dataset.part;
-    const qid = src.dataset.qid;
-    localStorage.setItem('lAudioIdx', idx);
-    showPart(parseInt(partNum));
-    playLbl.textContent = 'Part ' + partNum;
-    nowPlay.classList.add('show');
-    document.querySelectorAll('.q-card').forEach(c => c.classList.remove('active-question'));
-    const card = document.getElementById('qcard-' + qid);
-    if (card) { card.classList.add('active-question'); setTimeout(() => card.scrollIntoView({behavior:'smooth',block:'center'}), 200); }
-    player.src = src.dataset.src;
-    player.play().catch(() => document.addEventListener('click', () => player.play(), {once:true}));
-    player.onended = () => playIdx(idx + 1);
-  }
+      localStorage.setItem(AUDIO_IDX_KEY, idx);
+      showPart(parseInt(partNum));
 
-  function beginTest() {
-    splash.style.opacity = '0';
-    splash.style.transition = 'opacity .35s';
-    setTimeout(() => splash.style.display = 'none', 350);
-    topbar.style.display = '';
-    main.style.display = '';
-    const end = Date.now() + TOTAL * 1000;
-    localStorage.setItem('lEnd', end);
-    localStorage.setItem('lAudioIdx', '0');
-    display(TOTAL);
-    startTimer();
-    if (audioSources.length > 0) playIdx(0);
-  }
+      if(playingLabel) playingLabel.textContent = 'Part '+partNum;
+      nowPlayBar.classList.add('show');
 
-  startBtn.addEventListener('click', beginTest);
+      // Highlight current question card
+      document.querySelectorAll('.question-block').forEach(c=>c.classList.remove('active-question'));
+      const card = document.querySelector(`.question-block[data-qid="${qid}"]`);
+      if(card){
+        card.classList.add('active-question');
+        setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'center'}), 200);
+      }
 
-  // Reload restore
-  const savedEnd = localStorage.getItem('lEnd');
-  if (savedEnd) {
-    const rem = Math.floor((savedEnd - Date.now()) / 1000);
-    if (rem > 0) {
-      splash.style.display = 'none';
-      topbar.style.display = '';
-      main.style.display = '';
-      display(rem);
-      startTimer();
-      const savedIdx = parseInt(localStorage.getItem('lAudioIdx')) || 0;
-      if (audioSources.length > 0) playIdx(savedIdx);
-    } else {
-      localStorage.removeItem('lEnd');
-      localStorage.removeItem('lAudioIdx');
+      player.src = src.dataset.src;
+      player.play().catch(()=>document.addEventListener('click',()=>player.play(),{once:true}));
+      player.onended = ()=>playIdx(idx+1);
+      setPlayState();
     }
-  }
 
-  form.addEventListener('submit', () => {
-    if (!submitted) {
-      submitted = true;
-      player.pause();
-      localStorage.removeItem('lEnd');
-      localStorage.removeItem('lAudioIdx');
+    /* ═══════════════════════════════════════════
+       START TEST
+    ═══════════════════════════════════════════ */
+    function beginTest(){
+      // Hide splash
+      splash.style.opacity='0';
+      setTimeout(()=>splash.style.display='none', 350);
+
+      // Show form
+      formEl.style.display='';
+
+      // Timer
+      startTimer(true);
+
+      // Audio
+      if(usePerQ){
+        playIdx(0);
+      } else if(mainAudio && mainAudio.querySelector('source')){
+        mainAudio.play().catch(()=>{});
+        nowPlayBar.classList.add('show');
+        if(playingLabel) playingLabel.textContent = 'Listening';
+        setPlayState();
+      }
+
+      updateProgress();
+      updateAudioBar();
     }
-  });
-});
-</script>
+
+    startBtn.addEventListener('click', beginTest);
+
+    /* ═══════════════════════════════════════════
+       RESTORE ON RELOAD  (from template 2)
+    ═══════════════════════════════════════════ */
+    const rem = getRemaining();
+    if(rem > 0){
+      splash.style.display='none';
+      formEl.style.display='';
+      renderTimer(rem);
+      timerInterval = setInterval(tickTimer, 1000);
+
+      if(usePerQ){
+        const savedIdx = parseInt(localStorage.getItem(AUDIO_IDX_KEY)||'0');
+        playIdx(savedIdx);
+      }
+      updateProgress();
+      updateAudioBar();
+    }
+
+    /* ═══════════════════════════════════════════
+       SUBMIT CLEANUP
+    ═══════════════════════════════════════════ */
+    formEl.addEventListener('submit', ()=>{
+      if(!submitted){
+        submitted=true;
+        player.pause();
+        clearInterval(timerInterval);
+        localStorage.removeItem(TIMER_KEY);
+        localStorage.removeItem(AUDIO_IDX_KEY);
+      }
+    });
+
+    updateProgress();
+    updateAudioBar();
+    renderTimer(TIMER_SECS);
+  })();
+  </script>
 </body>
 </html>

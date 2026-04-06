@@ -37,6 +37,7 @@
             font-size: 13px; color: #0f2742; transition: all 0.2s; white-space: nowrap;
         }
         .topbar-submit:hover { background: #38b8e0; transform: translateY(-1px); }
+        .topbar-submit:disabled, .submit-btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
         .layout {
             display: grid; grid-template-columns: 1fr 290px;
             gap: 22px; max-width: 1200px; margin: 26px auto; padding: 0 20px;
@@ -77,9 +78,10 @@
         .question-card {
             background: #fff; border-radius: 13px; padding: 20px 22px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.04); border: 1px solid #e8ecf1;
-            margin-bottom: 12px; transition: box-shadow 0.2s;
+            margin-bottom: 12px; transition: box-shadow 0.2s, opacity .3s;
         }
         .question-card:hover { box-shadow: 0 4px 18px rgba(15,39,66,0.08); }
+        .question-card.locked { opacity: .45; pointer-events: none; }
         .q-header { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 13px; }
         .q-num {
             width: 34px; height: 34px; min-width: 34px;
@@ -146,6 +148,25 @@
             font-size: 14px; cursor: pointer; transition: all 0.2s;
         }
         .submit-btn:hover { background: #1a3a5a; transform: translateY(-1px); }
+
+        /* vaqt tugadi overlay */
+        .timeup-overlay {
+            display: none; position: fixed; inset: 0; z-index: 9999;
+            background: rgba(15,39,66,.85); backdrop-filter: blur(6px);
+            align-items: center; justify-content: center;
+        }
+        .timeup-overlay.show { display: flex; }
+        .timeup-box {
+            background: #fff; border-radius: 18px; padding: 36px 40px;
+            text-align: center; max-width: 380px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+            animation: popIn .3s ease;
+        }
+        @keyframes popIn { from { opacity:0; transform:scale(.9) } to { opacity:1; transform:scale(1) } }
+        .timeup-icon { font-size: 3rem; margin-bottom: 12px; }
+        .timeup-title { font-size: 1.2rem; font-weight: 800; color: #0f2742; margin-bottom: 6px; }
+        .timeup-text { font-size: .88rem; color: #64748b; line-height: 1.6; }
+
         @media (max-width: 900px) {
             .layout { grid-template-columns: 1fr; }
             .navigator { position: relative; top: 0; max-height: none; }
@@ -160,13 +181,13 @@
 <div class="topbar">
     <a href="/" class="logo">UniBase</a>
     <div class="progress-wrap">
-        <div class="progress-label">0 / {{ total_questions }} savol</div>
+        <div class="progress-label" id="prog-label">0 / {{ total_questions }} savol</div>
         <div class="progress-bar-bg">
             <div class="progress-bar" id="p-bar"></div>
         </div>
     </div>
     <div class="timer-box" id="timer-display">180:00</div>
-    <button type="button" class="topbar-submit" onclick="submitConfirm()">✅ Yakunlash</button>
+    <button type="button" class="topbar-submit" id="top-submit" onclick="submitConfirm()">✅ Yakunlash</button>
 </div>
 
 <div class="layout">
@@ -203,7 +224,6 @@
             </div>
 
             {% for q in fanlar_item.questions %}
-            {# q.model_name = 'milliy' yoki 'majburiy' — view dan keladi #}
             <div class="question-card" id="q-card-{{ q.model_name }}-{{ q.id }}">
                 <div class="q-header">
                     <div class="q-num">{{ forloop.counter }}</div>
@@ -250,7 +270,7 @@
             {% endfor %}
             {% endfor %}
 
-            <button type="submit" class="submit-btn">✅ Testni Yakunlash</button>
+            <button type="submit" class="submit-btn" id="main-submit">✅ Testni Yakunlash</button>
         </form>
     </main>
 
@@ -302,84 +322,153 @@
             </div>
         </div>
 
-        <button class="submit-btn" onclick="submitConfirm()">Yakunlash →</button>
+        <button class="submit-btn" id="nav-submit" onclick="submitConfirm()">Yakunlash →</button>
     </aside>
 </div>
 
+<!-- vaqt tugadi overlay -->
+<div class="timeup-overlay" id="timeup-overlay">
+    <div class="timeup-box">
+        <div class="timeup-icon">⏰</div>
+        <div class="timeup-title">Vaqt tugadi!</div>
+        <div class="timeup-text">Test davomiyligi tugadi. Natijalaringiz avtomatik yuborilmoqda...</div>
+    </div>
+</div>
+
 <script>
-    function submitConfirm() {
-        const allRadios = document.querySelectorAll('input[type="radio"]');
-        const answered = new Set([...allRadios].filter(r => r.checked).map(r => r.name)).size;
-        const unanswered = {{ total_questions }} - answered;
-        if (unanswered > 0) {
-            const ok = confirm(`⚠️ Hali ${unanswered} ta savol javobsiz!\n\nBaribir yakunlashni xohlaysizmi?`);
-            if (!ok) return;
+(function(){
+
+    var form      = document.getElementById('main-form');
+    var timerEl   = document.getElementById('timer-display');
+    var pBar      = document.getElementById('p-bar');
+    var progLabel = document.getElementById('prog-label');
+    var ansEl     = document.getElementById('answered-count');
+    var overlay   = document.getElementById('timeup-overlay');
+    var TOTAL     = 180 * 60;
+    var totalQ    = {{ total_questions }};
+    var submitted = false;
+
+    var KEY = 'dtm_end_ts';
+    var savedEnd = localStorage.getItem(KEY);
+    var timeLeft;
+
+    if (savedEnd) {
+        var rem = Math.floor((parseInt(savedEnd) - Date.now()) / 1000);
+        if (rem > 0) {
+            timeLeft = rem;
+        } else {
+            localStorage.removeItem(KEY);
+            timeLeft = 0;
         }
-        document.getElementById('main-form').submit();
-    }
-
-    const TOTAL_TIME = 180 * 60;
-    const timerEl = document.getElementById("timer-display");
-    const mainForm = document.getElementById('main-form');
-
-    let timeLeft;
-    const savedTime = localStorage.getItem('test_timer_seconds');
-    const savedStart = localStorage.getItem('test_start_timestamp');
-
-    if (savedTime && savedStart) {
-        const passed = Math.floor(Date.now() / 1000) - parseInt(savedStart);
-        timeLeft = Math.max(0, parseInt(savedTime) - passed);
     } else {
-        timeLeft = TOTAL_TIME;
-        localStorage.setItem('test_timer_seconds', timeLeft);
-        localStorage.setItem('test_start_timestamp', Math.floor(Date.now() / 1000));
+        timeLeft = TOTAL;
+        localStorage.setItem(KEY, String(Date.now() + TOTAL * 1000));
     }
 
-    const timerInterval = setInterval(() => {
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            localStorage.removeItem('test_timer_seconds');
-            localStorage.removeItem('test_start_timestamp');
-            mainForm.submit();
+    if (timeLeft <= 0) {
+        showTimer(0);
+        lockForm();
+        overlay.classList.add('show');
+    } else {
+        showTimer(timeLeft);
+
+        setInterval(function(){
+            timeLeft--;
+            if (timeLeft <= 0) {
+                timeLeft = 0;
+                showTimer(0);
+                localStorage.removeItem(KEY);
+                lockForm();
+                overlay.classList.add('show');
+
+                if (!submitted) {
+                    submitted = true;
+                    setTimeout(function(){ form.submit(); }, 2000);
+                }
+                return;
+            }
+            showTimer(timeLeft);
+        }, 1000);
+    }
+
+    function showTimer(s){
+        var m = String(Math.floor(s / 60)).padStart(2, '0');
+        var sec = String(s % 60).padStart(2, '0');
+        timerEl.textContent = m + ':' + sec;
+        timerEl.style.color       = s < 300 ? '#ff4d4d' : '';
+        timerEl.style.borderColor = s < 300 ? '#ff4d4d' : '';
+    }
+
+    function lockForm(){
+        document.querySelectorAll('input[type="radio"]').forEach(function(r){ r.disabled = true; });
+        document.querySelectorAll('.question-card').forEach(function(c){ c.classList.add('locked'); });
+        document.getElementById('top-submit').disabled  = true;
+        document.getElementById('main-submit').disabled = true;
+        document.getElementById('nav-submit').disabled  = true;
+    }
+
+    /* ═══════════════════════════════════════════
+       ⚠️ BU YERDA lockForm() CHAQIRMAYMIZ!
+       Sababi: disabled input POST ga tushmasligi mumkin
+       ═══════════════════════════════════════════ */
+    form.addEventListener('submit', function(e){
+        if (submitted) {
+            e.preventDefault();
             return;
         }
-        timeLeft--;
-        if (timeLeft % 5 === 0) {
-            localStorage.setItem('test_timer_seconds', timeLeft);
-            localStorage.setItem('test_start_timestamp', Math.floor(Date.now() / 1000));
-        }
-        const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-        const s = String(timeLeft % 60).padStart(2, '0');
-        timerEl.textContent = `${m}:${s}`;
-        if (timeLeft < 300) {
-            timerEl.style.color = "#ff4d4d";
-            timerEl.style.borderColor = "#ff4d4d";
-        }
-    }, 1000);
-
-    mainForm.addEventListener('submit', () => {
-        localStorage.removeItem('test_timer_seconds');
-        localStorage.removeItem('test_start_timestamp');
+        submitted = true;
+        localStorage.removeItem(KEY);
+        /* lockForm() — BU YERDA EMAS, faqat tugmalarni o'chiramiz */
+        document.getElementById('top-submit').disabled  = true;
+        document.getElementById('main-submit').disabled = true;
+        document.getElementById('nav-submit').disabled  = true;
     });
 
-    const allRadios = document.querySelectorAll('input[type="radio"]');
-    const pBar = document.getElementById('p-bar');
-    const totalQuestions = {{ total_questions }};
+    window.submitConfirm = function(){
+        if (submitted) return;
+        var names = new Set();
+        document.querySelectorAll('input[type="radio"]').forEach(function(r){
+            if (r.checked) names.add(r.name);
+        });
+        var un = totalQ - names.size;
+        if (un > 0) {
+            if (!confirm('⚠️ Hali ' + un + ' ta savol javobsiz!\n\nBaribir yakunlashni xohlaysizmi?')) return;
+        }
 
-    allRadios.forEach(radio => {
-        radio.addEventListener('change', () => {
-            // name = "q_milliy_5" → split: ["q", "milliy", "5"]
-            const parts = radio.name.split('_');
-            const modelName = parts[1];      // milliy yoki majburiy
-            const qId = parts[2];            // id raqami
-            const navItem = document.getElementById(`nav-${modelName}-${qId}`);
-            if (navItem) navItem.classList.add('answered');
+        /* DEBUG — brauzer konsolida ko'ring, keyin o'chiring */
+        console.log('=== YUBORILAYOTGAN JAVOBLAR ===');
+        var fd = new FormData(form);
+        for (var pair of fd.entries()) {
+            if (pair[0].startsWith('q_')) {
+                console.log(pair[0] + ' = ' + pair[1]);
+            }
+        }
+        console.log('=== JAMI: ' + names.size + ' ta ===');
 
-            const answered = new Set([...allRadios].filter(r => r.checked).map(r => r.name)).size;
-            pBar.style.width = (answered / totalQuestions * 100) + '%';
-            document.getElementById('answered-count').textContent = answered;
+        form.submit();
+    };
+
+    var allR = document.querySelectorAll('input[type="radio"]');
+    allR.forEach(function(radio){
+        radio.addEventListener('change', function(){
+            var p = radio.name.split('_');
+            var nav = document.getElementById('nav-' + p[1] + '-' + p[2]);
+            if (nav) nav.classList.add('answered');
+
+            var names = new Set();
+            allR.forEach(function(r){ if (r.checked) names.add(r.name); });
+            var cnt = names.size;
+            pBar.style.width = (cnt / totalQ * 100) + '%';
+            progLabel.textContent = cnt + ' / ' + totalQ + ' savol';
+            ansEl.textContent = cnt;
         });
     });
+
+    window.addEventListener('beforeunload', function(e){
+        if (!submitted) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+})();
 </script>
 </body>
 </html>

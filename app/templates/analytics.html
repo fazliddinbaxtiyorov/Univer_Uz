@@ -1,89 +1,46 @@
+{% load i18n %}
+{% load static %}
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    {% load static %}
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Dashboard | UniBase</title>
+    <title>{% trans "Analytics Dashboard" %} | UniBase</title>
     <link rel="icon" href="/media/logo.png" type="image/jpeg">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
-        :root {
-            --primary: #4318FF;
-            --nav-dark: #274766;
-            --bg-color: #f8fafc;
-            --white: #ffffff;
-            --card-shadow: 0px 10px 30px rgba(112, 144, 176, 0.08);
-        }
-
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #1B254B;
-        }
-
-        /* HEADER */
+        :root { --primary: #4318FF; --nav-dark: #274766; --bg-color: #f8fafc; --white: #ffffff; --card-shadow: 0px 10px 30px rgba(112,144,176,0.08); }
+        html, body { max-width: 100%; overflow-x: hidden; margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Plus Jakarta Sans', sans-serif; color: #1B254B; }
         header { background: var(--nav-dark); padding: 12px 0; position: sticky; top: 0; z-index: 2000; }
         .header-container { display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; text-decoration: none; color: white; }
         .logo-img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover; }
         .logo-text { font-weight: 700; font-size: 1.2rem; }
-
-        /* NAV MENU */
         .nav-menu ul { display: flex; list-style: none; margin: 0; padding: 0; gap: 20px; align-items: center; }
         .nav-menu ul li a { color: rgba(255,255,255,0.8); text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
         .nav-menu ul li a:hover { color: white; }
-
-        /* MOBILE MENU */
         .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 5px; }
         .mobile-menu-btn span { width: 25px; height: 3px; background: #fff; display: block; transition: 0.4s; border-radius: 2px; }
-
         @media (max-width: 991px) {
             .mobile-menu-btn { display: flex; }
-            .nav-menu {
-                position: fixed; top: 0; right: -100%; width: 75%; height: 100vh;
-                background-color: var(--nav-dark); transition: 0.4s ease-in-out;
-                padding: 100px 40px; box-shadow: -10px 0 30px rgba(0,0,0,0.2); z-index: 3000;
-            }
+            .nav-menu { position: fixed; top: 0; right: -100%; width: 75%; height: 100vh; background-color: var(--nav-dark); transition: 0.4s ease-in-out; padding: 100px 40px; box-shadow: -10px 0 30px rgba(0,0,0,0.2); z-index: 3000; }
             .nav-menu.active { right: 0; }
             .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 25px; }
             .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
             .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
             .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
         }
-
-        /* DASHBOARD CARDS */
-        .glass-card {
-            background: var(--white); border-radius: 20px; padding: 25px;
-            box-shadow: var(--card-shadow); border: 1px solid rgba(226, 232, 240, 0.6);
-            height: 100%; transition: 0.3s;
-        }
+        .glass-card { background: var(--white); border-radius: 20px; padding: 25px; box-shadow: var(--card-shadow); border: 1px solid rgba(226,232,240,0.6); height: 100%; transition: 0.3s; }
         .label-text { color: #A3AED0; font-size: 13px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
         .value-text { font-size: 32px; font-weight: 800; margin: 0; }
-
-        .c-blue { color: #0061ff; }
-        .c-green { color: #05cd99; }
-        .c-yellow { color: #ffb547; }
-
-        .btn-select {
-            background: var(--primary); color: white; font-weight: 700;
-            padding: 12px 25px; border-radius: 12px; border: none;
-            box-shadow: 0px 10px 20px rgba(67, 24, 255, 0.2); margin: 30px 0;
-        }
-
+        .c-blue { color: #0061ff; } .c-green { color: #05cd99; } .c-yellow { color: #ffb547; }
+        .btn-select { background: var(--primary); color: white; font-weight: 700; padding: 12px 25px; border-radius: 12px; border: none; box-shadow: 0px 10px 20px rgba(67,24,255,0.2); margin: 30px 0; }
         .chart-wrapper { position: relative; height: 350px; width: 100%; }
-
-        /* TABLE */
         .table-card { margin-top: 30px; }
         .m-table thead th { color: #A3AED0; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; border: none; }
         .m-table tbody td { padding: 15px 10px; border-bottom: 1px solid #f1f4f9; vertical-align: middle; }
@@ -98,18 +55,16 @@
                 <img src="/media/media/logo.jpg" alt="UniBase" class="logo-img">
                 <span class="logo-text">UniBase</span>
             </a>
-            <button class="mobile-menu-btn" id="burgerBtn">
-                <span></span><span></span><span></span>
-            </button>
+            <button class="mobile-menu-btn" id="burgerBtn"><span></span><span></span><span></span></button>
             <nav class="nav-menu" id="mobileNav">
                 <ul>
-                    <li><a href="{% url 'home' %}#tests">Tests</a></li>
-                    <li><a href="{% url 'univers' %}">Universities</a></li>
-                    <li><a href="https://t.me/unibase_support_bot">Support</a></li>
+                    <li><a href="{% url 'home' %}#tests">{% trans "Home" %}</a></li>
+                    <li><a href="{% url 'univers' %}">{% trans "Universities" %}</a></li>
+                    <li><a href="https://t.me/unibase_support_bot">{% trans "Support" %}</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm px-3">Dashboard</a></li>
+                        <li><a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm px-3">{% trans "Dashboard" %}</a></li>
                     {% else %}
-                        <li><a href="{% url 'login' %}" class="btn btn-primary btn-sm px-3">Login</a></li>
+                        <li><a href="{% url 'login' %}" class="btn btn-primary btn-sm px-3">{% trans "Login" %}</a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -120,31 +75,29 @@
 <div class="container py-4">
     <div class="text-center">
         <button class="btn-select" data-bs-toggle="modal" data-bs-target="#subjectModal">
-            📊 ANALIZ TURINI TANLASH
+            📊 {% trans "SELECT ANALYSIS TYPE" %}
         </button>
     </div>
 
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="glass-card">
-                <h6 class="fw-bold mb-4" id="displayTitle">O'sish Grafigi (Writing)</h6>
-                <div class="chart-wrapper">
-                    <canvas id="analyticsChart"></canvas>
-                </div>
+                <h6 class="fw-bold mb-4" id="displayTitle">{% trans "Growth Chart" %} (Writing)</h6>
+                <div class="chart-wrapper"><canvas id="analyticsChart"></canvas></div>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="d-flex flex-column gap-3 h-100">
                 <div class="glass-card text-center text-lg-start">
-                    <p class="label-text">O'rtacha Ball</p>
+                    <p class="label-text">{% trans "Average Score" %}</p>
                     <h2 class="value-text c-blue" id="avgBox">{{ writing.avg|default:"0.0" }}</h2>
                 </div>
                 <div class="glass-card text-center text-lg-start">
-                    <p class="label-text">Jami Testlar</p>
+                    <p class="label-text">{% trans "Total Tests" %}</p>
                     <h2 class="value-text c-green" id="countBox">{{ writing.count|default:"0" }}</h2>
                 </div>
                 <div class="glass-card text-center text-lg-start">
-                    <p class="label-text">Eng Yuqori Natija</p>
+                    <p class="label-text">{% trans "Best Score" %}</p>
                     <h2 class="value-text c-yellow" id="maxBox">{{ writing.max|default:"0.0" }}</h2>
                 </div>
             </div>
@@ -152,11 +105,15 @@
     </div>
 
     <div class="glass-card table-card">
-        <h6 class="fw-bold mb-4">Oxirgi topshirilgan ishlar</h6>
+        <h6 class="fw-bold mb-4">{% trans "Recent Submissions" %}</h6>
         <div class="table-responsive">
             <table class="table m-table align-middle">
                 <thead>
-                    <tr><th>SANA</th><th>MAVZU / TEST</th><th class="text-center">NATIJA</th></tr>
+                    <tr>
+                        <th>{% trans "DATE" %}</th>
+                        <th>{% trans "SUBJECT / TEST" %}</th>
+                        <th class="text-center">{% trans "SCORE" %}</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for res in recent_results %}
@@ -168,7 +125,7 @@
                         </td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="3" class="text-center py-4 text-muted">Ma'lumot topilmadi</td></tr>
+                    <tr><td colspan="3" class="text-center py-4 text-muted">{% trans "No data found" %}</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -180,14 +137,14 @@
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content" style="border-radius: 20px; border: none;">
             <div class="modal-body p-4 text-center">
-                <h6 class="fw-bold mb-3">Analizni tanlang</h6>
+                <h6 class="fw-bold mb-3">{% trans "Select Analysis" %}</h6>
                 <div class="d-grid gap-2">
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('writing')">📝 Writing</button>
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('reading')">📖 Reading</button>
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('listening')">🎧 Listening</button>
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('sat')">🎓 SAT</button>
                     <button class="btn btn-light text-start p-3 border-0" onclick="updateView('dtm')">🏛️ DTM</button>
-                    <button class="btn btn-light text-start p-3 border-0" onclick="updateView('milliy')">🎓 Milliy Sertifikat</button>
+                    <button class="btn btn-light text-start p-3 border-0" onclick="updateView('milliy')">🎓 {% trans "Milliy Certificate" %}</button>
                 </div>
             </div>
         </div>
@@ -196,76 +153,38 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-   // store obyektida dtm dan keyin:
 const store = {
-    writing:   { title: "IELTS Writing",       avg: "{{ writing.avg }}",   count: "{{ writing.count }}",   max: "{{ writing.max }}",   scores: {{ writing.scores|safe }},   dates: {{ writing.dates|safe }} },
-    reading:   { title: "IELTS Reading",        avg: "{{ reading.avg }}",   count: "{{ reading.count }}",   max: "{{ reading.max }}",   scores: {{ reading.scores|safe }},   dates: {{ reading.dates|safe }} },
-    listening: { title: "IELTS Listening",      avg: "{{ listening.avg }}", count: "{{ listening.count }}", max: "{{ listening.max }}", scores: {{ listening.scores|safe }}, dates: {{ listening.dates|safe }} },
-    sat:       { title: "SAT Test",             avg: "{{ sat.avg }}",       count: "{{ sat.count }}",       max: "{{ sat.max }}",       scores: {{ sat.scores|safe }},       dates: {{ sat.dates|safe }} },
-    dtm:       { title: "DTM Test",             avg: "{{ dtm.avg }}",       count: "{{ dtm.count }}",       max: "{{ dtm.max }}",       scores: {{ dtm.scores|safe }},       dates: {{ dtm.dates|safe }} },
-    milliy:    { title: "Milliy Sertifikat",    avg: "{{ milliy.avg }}",    count: "{{ milliy.count }}",    max: "{{ milliy.max }}",    scores: {{ milliy.scores|safe }},    dates: {{ milliy.dates|safe }} }
+    writing:   { title: "IELTS Writing",    avg: "{{ writing.avg }}",   count: "{{ writing.count }}",   max: "{{ writing.max }}",   scores: {{ writing.scores|safe }},   dates: {{ writing.dates|safe }} },
+    reading:   { title: "IELTS Reading",    avg: "{{ reading.avg }}",   count: "{{ reading.count }}",   max: "{{ reading.max }}",   scores: {{ reading.scores|safe }},   dates: {{ reading.dates|safe }} },
+    listening: { title: "IELTS Listening",  avg: "{{ listening.avg }}", count: "{{ listening.count }}", max: "{{ listening.max }}", scores: {{ listening.scores|safe }}, dates: {{ listening.dates|safe }} },
+    sat:       { title: "SAT Test",         avg: "{{ sat.avg }}",       count: "{{ sat.count }}",       max: "{{ sat.max }}",       scores: {{ sat.scores|safe }},       dates: {{ sat.dates|safe }} },
+    dtm:       { title: "DTM Test",         avg: "{{ dtm.avg }}",       count: "{{ dtm.count }}",       max: "{{ dtm.max }}",       scores: {{ dtm.scores|safe }},       dates: {{ dtm.dates|safe }} },
+    milliy:    { title: "Milliy Sertifikat",avg: "{{ milliy.avg }}",    count: "{{ milliy.count }}",    max: "{{ milliy.max }}",    scores: {{ milliy.scores|safe }},    dates: {{ milliy.dates|safe }} }
 };
-
-    const ctx = document.getElementById('analyticsChart').getContext('2d');
-
-    // Gradient effekt
-    let blueGrad = ctx.createLinearGradient(0, 0, 0, 350);
-    blueGrad.addColorStop(0, 'rgba(67, 24, 255, 0.25)');
-    blueGrad.addColorStop(1, 'rgba(67, 24, 255, 0)');
-
-    let myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: store.writing.dates,
-            datasets: [{
-                data: store.writing.scores,
-                borderColor: '#4318FF',
-                borderWidth: 4,
-                backgroundColor: blueGrad,
-                fill: true,
-                tension: 0.45,
-                pointRadius: 0,
-                pointHoverRadius: 6,
-                pointBackgroundColor: '#4318FF',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f4f9' }, ticks: { color: '#A3AED0' } },
-                x: { grid: { display: false }, ticks: { color: '#A3AED0' } }
-            },
-            animation: { duration: 1500, easing: 'easeOutQuart' }
-        }
-    });
-
-    function updateView(key) {
-        const item = store[key];
-        document.getElementById('displayTitle').innerText = "O'sish Grafigi (" + item.title + ")";
-        document.getElementById('avgBox').innerText = item.avg;
-        document.getElementById('countBox').innerText = item.count;
-        document.getElementById('maxBox').innerText = item.max;
-
-        myChart.data.labels = item.dates;
-        myChart.data.datasets[0].data = item.scores;
-        myChart.update();
-        bootstrap.Modal.getInstance(document.getElementById('subjectModal')).hide();
-    }
-
-    // Burger Menu
-    const burgerBtn = document.getElementById("burgerBtn");
-    const mobileNav = document.getElementById("mobileNav");
-    burgerBtn.addEventListener("click", () => {
-        mobileNav.classList.toggle("active");
-        burgerBtn.classList.toggle("open");
-    });
+const ctx = document.getElementById('analyticsChart').getContext('2d');
+let blueGrad = ctx.createLinearGradient(0, 0, 0, 350);
+blueGrad.addColorStop(0, 'rgba(67,24,255,0.25)');
+blueGrad.addColorStop(1, 'rgba(67,24,255,0)');
+let myChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: store.writing.dates, datasets: [{ data: store.writing.scores, borderColor: '#4318FF', borderWidth: 4, backgroundColor: blueGrad, fill: true, tension: 0.45, pointRadius: 0, pointHoverRadius: 6, pointBackgroundColor: '#4318FF', pointBorderColor: '#fff', pointBorderWidth: 2 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f4f9' }, ticks: { color: '#A3AED0' } }, x: { grid: { display: false }, ticks: { color: '#A3AED0' } } }, animation: { duration: 1500, easing: 'easeOutQuart' } }
+});
+function updateView(key) {
+    const item = store[key];
+    document.getElementById('displayTitle').innerText = "{% trans 'Growth Chart' %} (" + item.title + ")";
+    document.getElementById('avgBox').innerText = item.avg;
+    document.getElementById('countBox').innerText = item.count;
+    document.getElementById('maxBox').innerText = item.max;
+    myChart.data.labels = item.dates;
+    myChart.data.datasets[0].data = item.scores;
+    myChart.update();
+    bootstrap.Modal.getInstance(document.getElementById('subjectModal')).hide();
+}
+const burgerBtn = document.getElementById("burgerBtn");
+const mobileNav = document.getElementById("mobileNav");
+burgerBtn.addEventListener("click", () => { mobileNav.classList.toggle("active"); burgerBtn.classList.toggle("open"); });
 </script>
-
 </body>
 </html>

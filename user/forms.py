@@ -39,15 +39,22 @@ class UserRegisterForm(UserCreationForm):
         # Widgetlarga class qo'shish
         self.fields['username'].widget.attrs.update({
             'class': 'form-input',
-            'placeholder': 'Username'
+            'placeholder': 'Alex'
         })
         self.fields['password1'].widget.attrs.update({
             'class': 'form-input',
-            'placeholder': 'Parol'
         })
         self.fields['password2'].widget.attrs.update({
             'class': 'form-input',
-            'placeholder': 'Parolni tasdiqlang'
+        })
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': '@gmail.com'
+        })
+        self.fields['phone_number'].widget.attrs.update({
+            'class': 'form-input',
+            'placeholder': '+998'
+
         })
 
     def save(self, commit=True):

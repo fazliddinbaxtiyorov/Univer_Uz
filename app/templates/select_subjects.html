@@ -1,134 +1,23 @@
 <!DOCTYPE html>
 <html lang="uz">
 {% load static %}
+{% load i18n %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DTM - UniBase</title>
+    <title>{% trans "DTM - UniBase" %}</title>
     <link rel="icon" href="/media/logo.png" type="image/jpeg">
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-          /* HEADER & NAVIGATION */
-        header {
-            background: var(--color-primary);
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo { display: flex; align-items: center; text-decoration: none; color: white; }
-        .logo-img { width: 40px; border-radius: 50%; margin-right: 10px; }
-        .logo-text { font-weight: 700; font-size: 1.2rem; }
-
-        /* NAV MENU (DESKTOP) */
-        .nav-menu ul {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-menu ul li a {
-            color: rgba(255, 255, 255, 0.9);
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 0.95rem;
-        }
-
-        .nav-menu ul li a:hover { color: var(--color-teal); }
-
-        /* MOBILE MENU BUTTON (BURGER) */
-        .mobile-menu-btn {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 2101; /* Menyudan ustun turishi uchun */
-            padding: 5px;
-        }
-
-        .mobile-menu-btn span {
-            width: 25px;
-            height: 3px;
-            background: #fff;
-            display: block;
-            transition: 0.4s ease;
-            border-radius: 2px;
-        }
-
-        /* BURGER ANIMATION TO 'X' */
-        .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
-        .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
-        .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-
-        /* MOBILE STYLES */
-        @media (max-width: 991px) {
-            .mobile-menu-btn { display: flex; }
-
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                right: -100%; /* O'ngda yashirin */
-                width: 75%;
-                max-width: 300px;
-                height: 100vh;
-                background-color: var(--color-primary);
-                transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                padding: 100px 30px;
-                z-index: 2100;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-            }
-
-            .nav-menu.active { right: 0; }
-
-            .nav-menu ul {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 30px;
-            }
-
-            .nav-menu ul li a {
-                font-size: 1.2rem;
-                display: block;
-                width: 100%;
-            }
-
-            .auth-links {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                margin-top: 20px;
-            }
-        }
-        :root {
-            --primary-mint: #1cc8c8;
-            --primary-dark: #1a3a5a;
-            --bg-light: #f8fafc;
-            --white: #ffffff;
-            --text-muted: #7f8c8d;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* ... (o'zgarmaydi) ... */
+        :root { --primary-mint: #1cc8c8; --primary-dark: #1a3a5a; --bg-light: #f8fafc; --white: #ffffff; --text-muted: #7f8c8d; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         * { box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-light); margin: 0; color: var(--primary-dark); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-        /* HEADER */
         header { background: var(--primary-dark); padding: 15px 0; position: sticky; top: 0; z-index: 2000; }
         .header-container { display: flex; justify-content: space-between; align-items: center; }
         .logo { display: flex; align-items: center; text-decoration: none; gap: 12px; }
@@ -147,100 +36,38 @@
         .mobile-menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
         .mobile-menu-btn.open span:nth-child(2) { opacity: 0; }
         .mobile-menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-        @media(max-width:991px) {
-            .mobile-menu-btn { display: flex; }
-            .nav-menu { position: fixed; top: 0; right: -100%; width: 75%; max-width: 300px; height: 100vh; background: var(--primary-dark); transition: 0.4s; padding: 100px 30px; z-index: 2100; }
-            .nav-menu.active { right: 0; }
-            .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; }
-            nav ul { display: flex; }
-        }
-
-        /* HERO */
+        @media(max-width:991px) { .mobile-menu-btn { display: flex; } .nav-menu { position: fixed; top: 0; right: -100%; width: 75%; max-width: 300px; height: 100vh; background: var(--primary-dark); transition: 0.4s; padding: 100px 30px; z-index: 2100; } .nav-menu.active { right: 0; } .nav-menu ul { flex-direction: column; align-items: flex-start; gap: 30px; } nav ul { display: flex; } }
         .hero { background: var(--primary-dark); padding: 80px 0 160px; text-align: center; color: #fff; }
         .hero-title { font-size: 48px; font-weight: 800; margin: 0 0 15px; }
         .hero-subtitle { font-size: 18px; color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto; }
-
-        /* MAIN */
         .main-content { margin-top: -80px; padding-bottom: 80px; }
-
-        /* INFO CARD */
-        .info-box {
-            background: #fff; border-radius: 20px; padding: 25px 30px;
-            border: 1.5px solid #e2e8f0; margin-bottom: 40px;
-            display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .info-box { background: #fff; border-radius: 20px; padding: 25px 30px; border: 1.5px solid #e2e8f0; margin-bottom: 40px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .info-item { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #475569; font-size: 15px; }
-
-        /* FAN SELECTION */
         .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
-        .selection-box {
-            background: #fff; border-radius: 20px; padding: 30px;
-            border: 1.5px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .selection-box { background: #fff; border-radius: 20px; padding: 30px; border: 1.5px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .selection-label { font-size: 13px; font-weight: 800; color: var(--primary-mint); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
         .selection-title { font-size: 18px; font-weight: 800; color: var(--primary-dark); margin-bottom: 20px; }
-
-        /* Fan grid */
         .fan-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
-        .fan-btn {
-            padding: 14px 10px; border: 2px solid #e2e8f0; border-radius: 14px;
-            background: #fff; text-align: center; cursor: pointer; transition: var(--transition);
-            font-family: inherit; font-size: 14px; font-weight: 600; color: var(--primary-dark);
-        }
+        .fan-btn { padding: 14px 10px; border: 2px solid #e2e8f0; border-radius: 14px; background: #fff; text-align: center; cursor: pointer; transition: var(--transition); font-family: inherit; font-size: 14px; font-weight: 600; color: var(--primary-dark); }
         .fan-btn:hover { border-color: var(--primary-mint); background: #f0fffe; }
         .fan-btn.selected-1 { border-color: var(--primary-mint); background: #e0fcfc; color: var(--primary-dark); }
         .fan-btn.selected-2 { border-color: #f59e0b; background: #fef9e7; color: var(--primary-dark); }
         .fan-btn.disabled { opacity: 0.4; cursor: not-allowed; }
         .fan-icon-sm { font-size: 22px; margin-bottom: 6px; }
-
-        /* Selected display */
-        .selected-display {
-            background: #f8fafc; border-radius: 14px; padding: 18px 20px;
-            border: 1.5px dashed #e2e8f0; margin-top: 20px; min-height: 60px;
-            display: flex; align-items: center; gap: 15px; flex-wrap: wrap;
-        }
-        .selected-tag {
-            padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 14px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .tag-1 { background: #e0fcfc; color: var(--primary-dark); border: 1.5px solid var(--primary-mint); }
-        .tag-2 { background: #fef9e7; color: var(--primary-dark); border: 1.5px solid #f59e0b; }
-
-        /* Ball info */
-        .ball-info {
-            background: #fff; border-radius: 20px; padding: 25px 30px;
-            border: 1.5px solid #e2e8f0; margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .ball-info { background: #fff; border-radius: 20px; padding: 25px 30px; border: 1.5px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .ball-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
-        .ball-item {
-            text-align: center; padding: 18px; border-radius: 14px; border: 1.5px solid #e2e8f0;
-        }
+        .ball-item { text-align: center; padding: 18px; border-radius: 14px; border: 1.5px solid #e2e8f0; }
         .ball-subject { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; }
         .ball-score { font-size: 22px; font-weight: 800; }
         .score-1 { color: var(--primary-mint); }
         .score-2 { color: #f59e0b; }
         .score-3 { color: #8b5cf6; }
-
-        /* Start button */
         .start-section { text-align: center; }
-        .btn-start {
-            display: inline-block; background: var(--primary-mint); color: #fff;
-            padding: 18px 60px; border-radius: 18px; font-weight: 800; font-size: 18px;
-            text-decoration: none; border: none; cursor: pointer; font-family: inherit;
-            transition: var(--transition); opacity: 0.5; pointer-events: none;
-        }
+        .btn-start { display: inline-block; background: var(--primary-mint); color: #fff; padding: 18px 60px; border-radius: 18px; font-weight: 800; font-size: 18px; text-decoration: none; border: none; cursor: pointer; font-family: inherit; transition: var(--transition); opacity: 0.5; pointer-events: none; }
         .btn-start.ready { opacity: 1; pointer-events: all; }
         .btn-start:hover { background: var(--primary-dark); }
-
         .error-msg { color: #ef4444; font-weight: 600; text-align: center; margin-bottom: 15px; font-size: 15px; }
-
-        @media(max-width:768px) {
-            .hero-title { font-size: 30px; }
-            .main-content { margin-top: -50px; }
-            .selection-grid { grid-template-columns: 1fr; }
-        }
+        @media(max-width:768px) { .hero-title { font-size: 30px; } .main-content { margin-top: -50px; } .selection-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -255,15 +82,15 @@
             <button class="mobile-menu-btn"><span></span><span></span><span></span></button>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'univers' %}">Universities</a></li>
-                    <li><a href="https://t.me/unibase_support_bot">Support</a></li>
+                    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+                    <li><a href="{% url 'univers' %}">{% trans "Universities" %}</a></li>
+                    <li><a href="https://t.me/unibase_support_bot">{% trans "Support" %}</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">Dashboard</a></li>
-                        <li><a href="{% url 'logout' %}" class="btn btn-danger btn-sm">Logout</a></li>
+                        <li><a href="{% url 'profile' %}" class="btn btn-secondary btn-sm">{% trans "Dashboard" %}</a></li>
+                        <li><a href="{% url 'logout' %}" class="btn btn-danger btn-sm">{% trans "Logout" %}</a></li>
                     {% else %}
-                        <li><a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Login</a></li>
-                        <li><a href="{% url 'sign' %}" class="btn btn-primary btn-sm">Register</a></li>
+                        <li><a href="{% url 'login' %}" class="btn btn-secondary btn-sm">{% trans "Login" %}</a></li>
+                        <li><a href="{% url 'sign' %}" class="btn btn-primary btn-sm">{% trans "Register" %}</a></li>
                     {% endif %}
                 </ul>
             </nav>
@@ -273,20 +100,18 @@
 
 <section class="hero">
     <div class="container">
-        <h1 class="hero-title">DTM Tayyorgarlik</h1>
-        <p class="hero-subtitle">2 ta asosiy fan tanlang va to'liq DTM simulyatsiyasini boshlang</p>
+        <h1 class="hero-title">{% trans "DTM Preparation" %}</h1>
+        <p class="hero-subtitle">{% trans "Choose 2 main subjects and start a full DTM simulation" %}</p>
     </div>
 </section>
 
 <div class="main-content">
     <div class="container">
-
-        <!-- Test haqida ma'lumot -->
         <div class="info-box">
-            <div class="info-item">⏱️ Davomiyligi: 3 soat</div>
-            <div class="info-item">📝 Jami: ~150 savol</div>
-            <div class="info-item">🎯 5 ta fan: 2 asosiy + Ona Tili + Matematika + Tarix</div>
-            <div class="info-item">🏆 Maksimal ball: ~189</div>
+            <div class="info-item">{% trans "⏱️ Duration: 3 hours" %}</div>
+            <div class="info-item">{% trans "📝 Total: 150 questions" %}</div>
+            <div class="info-item">{% trans "🎯 5 subjects: 2 core + Mother Tongue + Mathematics + History" %}</div>
+            <div class="info-item">{% trans "🏆 Maximum score: 189" %}</div>
         </div>
 
         {% if xato %}
@@ -299,14 +124,12 @@
             <input type="hidden" name="ikkinchi_fan" id="input-fan2">
 
             <div class="selection-grid">
-                <!-- 1-chi fan -->
                 <div class="selection-box">
-                    <div class="selection-label">1-chi asosiy fan</div>
-                    <div class="selection-title">Birinchi fanni tanlang <span style="color:#1cc8c8">★ 3.1 ball</span></div>
+                    <div class="selection-label">{% trans "1st core subject" %}</div>
+                    <div class="selection-title">{% trans "Select first subject" %} <span style="color:#1cc8c8">★ 3.1 {% trans "ball" %}</span></div>
                     <div class="fan-grid" id="fan-grid-1">
                         {% for fan_code, fan_name in fan_choices %}
-                        <button type="button" class="fan-btn" data-fan="{{ fan_code }}" data-slot="1"
-                                onclick="selectFan('{{ fan_code }}', '{{ fan_name }}', 1)">
+                        <button type="button" class="fan-btn" data-fan="{{ fan_code }}" data-slot="1" onclick="selectFan('{{ fan_code }}', '{{ fan_name }}', 1)">
                             <div class="fan-icon-sm">
                                 {% if fan_code == 'Matematika' %}🔢
                                 {% elif fan_code == 'Ona Tili' %}📝
@@ -323,14 +146,12 @@
                     </div>
                 </div>
 
-                <!-- 2-chi fan -->
                 <div class="selection-box">
-                    <div class="selection-label">2-chi asosiy fan</div>
-                    <div class="selection-title">Ikkinchi fanni tanlang <span style="color:#f59e0b">★ 2.1 ball</span></div>
+                    <div class="selection-label">{% trans "2nd core subject" %}</div>
+                    <div class="selection-title">{% trans "Select second subject" %} <span style="color:#f59e0b">★ 2.1 {% trans "ball" %}</span></div>
                     <div class="fan-grid" id="fan-grid-2">
                         {% for fan_code, fan_name in fan_choices %}
-                        <button type="button" class="fan-btn" data-fan="{{ fan_code }}" data-slot="2"
-                                onclick="selectFan('{{ fan_code }}', '{{ fan_name }}', 2)">
+                        <button type="button" class="fan-btn" data-fan="{{ fan_code }}" data-slot="2" onclick="selectFan('{{ fan_code }}', '{{ fan_name }}', 2)">
                             <div class="fan-icon-sm">
                                 {% if fan_code == 'Matematika' %}🔢
                                 {% elif fan_code == 'Ona Tili' %}📝
@@ -348,35 +169,33 @@
                 </div>
             </div>
 
-            <!-- Tanlangan fanlar ko'rsatgichi -->
             <div class="ball-info">
-                <div style="font-size:16px; font-weight:800; color:var(--primary-dark);">📊 Tanlangan fanlar va ball taqsimoti</div>
+                <div style="font-size:16px; font-weight:800; color:var(--primary-dark);">{% trans "📊 Selected subjects and score distribution" %}</div>
                 <div class="ball-grid">
                     <div class="ball-item">
-                        <div class="ball-subject" id="label-fan1">1-chi fan</div>
+                        <div class="ball-subject" id="label-fan1">{% trans "1st subject" %}</div>
                         <div class="ball-score score-1" id="name-fan1">—</div>
-                        <div style="font-size:12px; color:#aaa; margin-top:4px;">3.1 ball × savol</div>
+                        <div style="font-size:12px; color:#aaa; margin-top:4px;">3.1 {% trans "ball" %} × {% trans "question" %}</div>
                     </div>
                     <div class="ball-item">
-                        <div class="ball-subject" id="label-fan2">2-chi fan</div>
+                        <div class="ball-subject" id="label-fan2">{% trans "2nd subject" %}</div>
                         <div class="ball-score score-2" id="name-fan2">—</div>
-                        <div style="font-size:12px; color:#aaa; margin-top:4px;">2.1 ball × savol</div>
+                        <div style="font-size:12px; color:#aaa; margin-top:4px;">2.1 {% trans "ball" %} × {% trans "question" %}</div>
                     </div>
                     <div class="ball-item">
-                        <div class="ball-subject">Majburiy fanlar</div>
-                        <div class="ball-score score-3">Ona Tili + Mat + Tarix</div>
-                        <div style="font-size:12px; color:#aaa; margin-top:4px;">1.1 ball × savol</div>
+                        <div class="ball-subject">{% trans "Compulsory subjects" %}</div>
+                        <div class="ball-score score-3">{% trans "Mother Tongue + Math + History" %}</div>
+                        <div style="font-size:12px; color:#aaa; margin-top:4px;">1.1 {% trans "ball" %} × {% trans "question" %}</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Start tugmasi -->
             <div class="start-section">
                 <button type="submit" class="btn-start" id="start-btn">
-                    🚀 DTM Testini Boshlash
+                    {% trans "🚀 Start DTM Test" %}
                 </button>
                 <p style="margin-top:12px; color:var(--text-muted); font-size:14px;">
-                    Ikkala fanni tanlagandan keyin test boshlanadi
+                    {% trans "The test will start after selecting both subjects" %}
                 </p>
             </div>
         </form>
@@ -388,35 +207,23 @@
     let fan1 = null, fan2 = null;
 
     function selectFan(code, name, slot) {
-        // Avvalgi tanlangan fanni bekor qilish
         if (slot === 1) {
             if (fan1) {
-                document.querySelectorAll(`[data-fan="${fan1}"]`).forEach(b => {
-                    b.classList.remove('selected-1');
-                    b.classList.remove('disabled');
-                });
+                document.querySelectorAll(`[data-fan="${fan1}"]`).forEach(b => { b.classList.remove('selected-1'); b.classList.remove('disabled'); });
             }
             fan1 = code;
             document.getElementById('input-fan1').value = code;
             document.getElementById('name-fan1').textContent = name;
         } else {
             if (fan2) {
-                document.querySelectorAll(`[data-fan="${fan2}"]`).forEach(b => {
-                    b.classList.remove('selected-2');
-                    b.classList.remove('disabled');
-                });
+                document.querySelectorAll(`[data-fan="${fan2}"]`).forEach(b => { b.classList.remove('selected-2'); b.classList.remove('disabled'); });
             }
             fan2 = code;
             document.getElementById('input-fan2').value = code;
             document.getElementById('name-fan2').textContent = name;
         }
 
-        // Tanlangan tugmani belgilash
-        document.querySelectorAll(`[data-fan="${code}"]`).forEach(b => {
-            b.classList.add(slot === 1 ? 'selected-1' : 'selected-2');
-        });
-
-        // Bir xil fan tanlanmasin
+        document.querySelectorAll(`[data-fan="${code}"]`).forEach(b => { b.classList.add(slot === 1 ? 'selected-1' : 'selected-2'); });
         updateDisabled();
         checkReady();
     }
@@ -433,21 +240,13 @@
 
     function checkReady() {
         const btn = document.getElementById('start-btn');
-        if (fan1 && fan2 && fan1 !== fan2) {
-            btn.classList.add('ready');
-        } else {
-            btn.classList.remove('ready');
-        }
+        if (fan1 && fan2 && fan1 !== fan2) { btn.classList.add('ready'); } else { btn.classList.remove('ready'); }
     }
 
-    // Mobile menu
     const menuBtn = document.querySelector(".mobile-menu-btn");
     const navMenu = document.querySelector(".nav-menu");
     if (menuBtn) {
-        menuBtn.addEventListener("click", () => {
-            navMenu.classList.toggle("active");
-            menuBtn.classList.toggle("open");
-        });
+        menuBtn.addEventListener("click", () => { navMenu.classList.toggle("active"); menuBtn.classList.toggle("open"); });
     }
 </script>
 </body>

@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load i18n %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ friend.username }} - UniBase</title>
     <link rel="icon" href="/media/logo.png" type="image/jpeg">
-
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -23,42 +23,32 @@
         .logo span { font-weight: 700; font-size: 1.1rem; }
         .back-btn { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
         .back-btn:hover { color: var(--teal); }
-
         .container { max-width: 900px; margin: 2rem auto; padding: 0 20px; display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; }
         .card { background: white; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f6; overflow: hidden; }
         .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; font-weight: 700; color: var(--primary); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* LEFT */
         .left-card { text-align: center; padding-bottom: 1.5rem; }
         .avatar-big { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #9333ea); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white; font-weight: 800; margin: 1.5rem auto 0.8rem; }
         .friend-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; }
         .badge-tag { display: inline-block; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 3px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; margin-bottom: 0.8rem; }
         .viloyat-tag { display: inline-block; background: #e0e7ff; color: #4338ca; padding: 3px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
-
         .stat-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px 10px; }
         .stat-mini-item { background: #f8fafc; border-radius: 10px; padding: 12px 8px; text-align: center; }
         .stat-mini-item .val { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
         .stat-mini-item .lbl { font-size: 0.7rem; color: #64748b; margin-top: 3px; }
-
-        /* Action buttons */
         .action-area { padding: 15px 20px 0; }
         .btn-add { display: block; width: 100%; padding: 11px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; text-align: center; cursor: pointer; text-decoration: none; border: none; transition: 0.3s; }
         .btn-green { background: var(--teal); color: white; }
-        .btn-green:hover { background: #0d9488; transform: translateY(-1px); }
+        .btn-green:hover { background: #0d9488; }
         .btn-gray { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
         .btn-pending { background: #fef3c7; color: #b45309; border: 1px solid #fbbf24; }
         .btn-accept { background: #d1fae5; color: #059669; border: 1px solid #6ee7b7; margin-bottom: 8px; }
         .btn-reject { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-
-        /* RIGHT - results */
         .results-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; }
         .results-header h3 { margin: 0; font-size: 1rem; color: var(--primary); }
-
         .locked-box { padding: 3rem 2rem; text-align: center; color: #94a3b8; }
         .locked-box .lock-icon { font-size: 3rem; margin-bottom: 1rem; }
         .locked-box h3 { margin: 0 0 8px; color: #64748b; font-size: 1rem; }
         .locked-box p { margin: 0; font-size: 0.85rem; }
-
         table { width: 100%; border-collapse: collapse; }
         th { background: #f8fafc; padding: 10px 15px; text-align: left; font-size: 0.68rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
         td { padding: 13px 15px; border-bottom: 1px solid #f8fafc; font-size: 0.88rem; color: #334155; }
@@ -66,7 +56,6 @@
         .score-green { color: #10b981; font-weight: 700; }
         .score-yellow { color: #f59e0b; font-weight: 700; }
         .score-red { color: #ef4444; font-weight: 700; }
-
         @media(max-width: 700px) { .container { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -78,17 +67,15 @@
             <img src="/media/media/logo.jpg" alt="Logo">
             <span>UniBase</span>
         </a>
-        <a href="{% url 'my_friends' %}" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Do'stlar</a>
+        <a href="{% url 'my_friends' %}" class="back-btn"><i class="fa-solid fa-arrow-left"></i> {% trans "Friends" %}</a>
     </div>
 </header>
 
 <div class="container">
-
-    <!-- LEFT -->
     <div class="card left-card">
         <div class="avatar-big">{{ friend.username|slice:":1"|upper }}</div>
         <div class="friend-name">{{ friend.get_full_name|default:friend.username }}</div>
-        <div style="color: #64748b; font-size: 0.85rem; margin-bottom: 0.5rem;">@{{ friend.username }}</div>
+        <div style="color:#64748b; font-size:0.85rem; margin-bottom:0.5rem;">@{{ friend.username }}</div>
 
         {% if friend_profile.badge %}
         <div class="badge-tag">{{ friend_profile.badge }}</div><br>
@@ -102,35 +89,34 @@
         <div class="stat-mini">
             <div class="stat-mini-item">
                 <div class="val">{{ friend_avg }}%</div>
-                <div class="lbl">O'rtacha</div>
+                <div class="lbl">{% trans "Average" %}</div>
             </div>
             <div class="stat-mini-item">
                 <div class="val">{{ friend_best }}%</div>
-                <div class="lbl">Eng yaxshi</div>
+                <div class="lbl">{% trans "Best" %}</div>
             </div>
         </div>
         {% endif %}
 
         <div class="action-area">
             {% if is_friend %}
-                <div class="btn-add btn-gray"><i class="fa-solid fa-check"></i> Do'stlar ✅</div>
+                <div class="btn-add btn-gray"><i class="fa-solid fa-check"></i> {% trans "Friends" %} ✅</div>
             {% elif pending_received %}
-                <a href="{% url 'accept_friend' friend.username %}" class="btn-add btn-accept">✅ Qabul qilish</a>
-                <a href="{% url 'reject_friend' friend.username %}" class="btn-add btn-reject">❌ Rad etish</a>
+                <a href="{% url 'accept_friend' friend.username %}" class="btn-add btn-accept">✅ {% trans "Accept" %}</a>
+                <a href="{% url 'reject_friend' friend.username %}" class="btn-add btn-reject">❌ {% trans "Reject" %}</a>
             {% elif pending_sent %}
-                <div class="btn-add btn-pending">⏳ So'rov yuborilgan</div>
+                <div class="btn-add btn-pending">⏳ {% trans "Request Sent" %}</div>
             {% else %}
-                <a href="{% url 'add_friend' friend.username %}" class="btn-add btn-green"><i class="fa-solid fa-user-plus"></i> Do'st qo'shish</a>
+                <a href="{% url 'add_friend' friend.username %}" class="btn-add btn-green"><i class="fa-solid fa-user-plus"></i> {% trans "Add Friend" %}</a>
             {% endif %}
         </div>
     </div>
 
-    <!-- RIGHT -->
     <div class="card">
         <div class="results-header">
-            <h3>📊 Test natijalari</h3>
+            <h3>📊 {% trans "Test Results" %}</h3>
             {% if is_friend %}
-            <span style="font-size: 0.75rem; color: #10b981; font-weight: 600;">So'nggi 10 ta</span>
+            <span style="font-size:0.75rem; color:#10b981; font-weight:600;">{% trans "Last 10" %}</span>
             {% endif %}
         </div>
 
@@ -139,21 +125,21 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Test</th>
-                        <th>Natija</th>
-                        <th>Sana</th>
+                        <th>{% trans "Test" %}</th>
+                        <th>{% trans "Score" %}</th>
+                        <th>{% trans "Date" %}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for r in friend_results %}
                     <tr>
-                        <td style="font-weight: 600;">{{ r.test_name }}</td>
+                        <td style="font-weight:600;">{{ r.test_name }}</td>
                         <td>
                             <span class="{% if r.score >= 80 %}score-green{% elif r.score >= 50 %}score-yellow{% else %}score-red{% endif %}">
                                 {{ r.score }}%
                             </span>
                         </td>
-                        <td style="color: #94a3b8; font-size: 0.78rem;">{{ r.date_taken|date:"d M Y" }}</td>
+                        <td style="color:#94a3b8; font-size:0.78rem;">{{ r.date_taken|date:"d M Y" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -161,27 +147,23 @@
             {% else %}
             <div class="locked-box">
                 <div class="lock-icon">📭</div>
-                <h3>Hali natijalar yo'q</h3>
-                <p>{{ friend.username }} hali hech qanday test yechmagan.</p>
+                <h3>{% trans "No results yet" %}</h3>
+                <p>{{ friend.username }} {% trans "hasn't taken any tests yet." %}</p>
             </div>
             {% endif %}
         {% else %}
             <div class="locked-box">
                 <div class="lock-icon">🔒</div>
-                <h3>Natijalar yashirin</h3>
+                <h3>{% trans "Results are hidden" %}</h3>
                 <p>
-                    {% if pending_sent %}
-                        So'rovingiz ko'rib chiqilmoqda. Qabul qilgandan so'ng natijalarni ko'rasiz.
-                    {% elif pending_received %}
-                        Do'stlik so'rovini qabul qiling va natijalarni ko'ring!
-                    {% else %}
-                        Do'st bo'lgach natijalarni ko'rishingiz mumkin.
+                    {% if pending_sent %}{% trans "Your request is being reviewed." %}
+                    {% elif pending_received %}{% trans "Accept the friend request to see results!" %}
+                    {% else %}{% trans "Become friends to see their results." %}
                     {% endif %}
                 </p>
             </div>
         {% endif %}
     </div>
-
 </div>
 </body>
 </html>
